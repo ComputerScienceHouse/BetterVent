@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,7 +43,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         mTextMessage = (TextView) findViewById(R.id.message);
         mHomeLayout = (ConstraintLayout) findViewById(R.id.HomeLayout);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
