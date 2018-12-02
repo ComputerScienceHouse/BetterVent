@@ -11,13 +11,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -27,8 +23,12 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.util.DateTime;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.*;
+
+import org.w3c.dom.Text;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +40,8 @@ public class HomeActivity extends AppCompatActivity {
     GoogleAccountCredential credential;
     private TextView mStatusText;
     private TextView mResultsText;
+    private String APIOut;
+    private List<Event> APIOutList;
     final HttpTransport transport = AndroidHttp.newCompatibleTransport();
     final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
 
@@ -50,6 +52,10 @@ public class HomeActivity extends AppCompatActivity {
     private static final String[] SCOPES = { CalendarScopes.CALENDAR_READONLY };
 
     private TextView mTextMessage;
+    private TextView mEventTitle;
+    private TextView mEventTime;
+    private TextView mNextTitle;
+    private TextView mNextTime;
 
     private ConstraintLayout mHomeLayout;
 
@@ -61,6 +67,7 @@ public class HomeActivity extends AppCompatActivity {
             switch (item.getItemId()) { // What to do if each of the three buttons are pressed.
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home);
+                    refreshResults(); // Refresh Calendar API Boi
                     mHomeLayout.setVisibility(View.VISIBLE);
                     return true;
                 case R.id.navigation_dashboard:
@@ -79,31 +86,40 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ConstraintLayout activityLayout = new ConstraintLayout(this);
+//        ConstraintLayout activityLayout = findViewById(R.id.HomeLayout);
         setContentView(R.layout.activity_home);
         mTextMessage = (TextView) findViewById(R.id.message);
+        mEventTitle = (TextView) findViewById(R.id.eventTitle);
+        mEventTime = (TextView) findViewById(R.id.eventTime);
+
+        mNextTitle = (TextView) findViewById(R.id.nextEventTitle);
+        mNextTime = (TextView) findViewById(R.id.nextEventTime);
         mHomeLayout = (ConstraintLayout) findViewById(R.id.HomeLayout);
+
+        mStatusText = mTextMessage;
+        mResultsText = mEventTitle;
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        ViewGroup.LayoutParams tlp = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+//        ViewGroup.LayoutParams tlp = new ViewGroup.LayoutParams(
+//                ViewGroup.LayoutParams.WRAP_CONTENT,
+//                ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        mStatusText = new TextView(this);
+//        mStatusText = new TextView(this);
 //        mStatusText.setLayoutParams(tlp);
 //        mStatusText.setTypeface(null, Typeface.BOLD);
-        mStatusText.setText("Retrieving data...");
-        activityLayout.addView(mStatusText);
+          mEventTitle.setText("Retrieving data...");
+//        mHomeLayout.addView(mStatusText);
 
-        mResultsText = new TextView(this);
-        mResultsText.setLayoutParams(tlp);
-        mResultsText.setPadding(16, 16, 16, 16);
-        mResultsText.setVerticalScrollBarEnabled(true);
-        mResultsText.setMovementMethod(new ScrollingMovementMethod());
-        activityLayout.addView(mResultsText);
+//        APICall = new TextView(this);
+//        APICall.setLayoutParams(tlp);
+//        APICall.setPadding(16, 16, 16, 16);
+//        APICall.setVerticalScrollBarEnabled(true);
+//        APICall.setMovementMethod(new ScrollingMovementMethod());
+//        mHomeLayout.addView(APICall);
 
-        setContentView(activityLayout);
+//        setContentView(mHomeLayout);
 
         // Initialize credentials and service object.
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
@@ -211,7 +227,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void run() {
                 mStatusText.setText("Retrieving data…");
-                mResultsText.setText("");
+                APIOut(mResultsText, "");
+//                mResultsText.setText("");
             }
         });
     }
@@ -220,20 +237,22 @@ public class HomeActivity extends AppCompatActivity {
      * Fill the data TextView with the given List of Strings; called from
      * background threads and async tasks that need to update the UI (in the
      * UI thread).
-     * @param dataStrings a List of Strings to populate the main TextView with.
+     * @param dataEvents a List of Strings to populate the main TextView with.
      */
-    public void updateResultsText(final List<String> dataStrings) {
+    public void updateResultsText(final List<Event> dataEvents) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (dataStrings == null) {
+                if (dataEvents == null) {
                     mStatusText.setText("Error retrieving data!");
-                } else if (dataStrings.size() == 0) {
+                } else if (dataEvents.size() == 0) {
                     mStatusText.setText("No data found.");
                 } else {
-                    mStatusText.setText("Data retrieved using" +
-                            " the Google Calendar API:");
-                    mResultsText.setText(TextUtils.join("\n\n", dataStrings));
+                    mStatusText.setText("API Call Complete.");
+//                    APIOutList = dataStrings;
+                    APIOutList(mResultsText, dataEvents);
+                    isFree(mResultsText);
+                    getNextEvent(mNextTitle, mNextTime);
                 }
             }
         });
@@ -310,5 +329,57 @@ public class HomeActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
+    }
+
+    private void APIOut(String input){
+        APIOut = input;
+    }
+
+    private void APIOut(TextView mTargetView, String input){
+        APIOut = input;
+        mTargetView.setText(APIOut);
+    }
+
+    private void APIOutList(TextView mTargetView, List<Event> input){
+        APIOutList = input;
+        DateTime start = APIOutList.get(0).getStart().getDateTime();
+        if (start == null) {
+            // All-day events don't have start times, so just use
+            // the start date.
+            start = APIOutList.get(0).getStart().getDate();
+        }
+        mTargetView.setText(APIOutList.get(0).getSummary());
+        mEventTime.setText(String.valueOf(start));
+    }
+
+    private void getNextEvent(TextView mTargetView, TextView mTargetTimeView){
+        String nextEvent = APIOutList.get(1).getSummary();
+        DateTime nextTime = APIOutList.get(1).getStart().getDateTime();
+        if (nextTime == null) {
+            // All-day events don't have start times, so just use
+            // the start date.
+            nextTime = APIOutList.get(1).getStart().getDate();
+        }
+
+        mTargetView.setText(nextEvent);
+        mTargetTimeView.setText(nextTime.toString());
+    }
+
+    private boolean isFree(){
+        DateTime now = new DateTime(System.currentTimeMillis());
+        DateTime firstEvent = APIOutList.get(0).getStart().getDateTime();
+        if (now == firstEvent) return false;
+        else return true;
+    }
+
+    private boolean isFree(TextView mTargetView){
+        DateTime now = new DateTime(System.currentTimeMillis());
+        DateTime firstEventStart = APIOutList.get(0).getStart().getDateTime();
+        DateTime firstEventEnd = APIOutList.get(0).getEnd().getDateTime();
+        if (now.getValue() > firstEventStart.getValue() && now.getValue() < firstEventEnd.getValue()) return false;
+        else {
+            mTargetView.setText("Free");
+            return true;
+        }
     }
 }

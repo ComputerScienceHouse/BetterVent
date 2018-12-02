@@ -48,8 +48,23 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <View
+            android:layout_width="350dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="336dp"
+            android:layout_marginBottom="8dp"
+            android:background="#737373"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.996"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.566" />
+
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/eventTitle"
             android:layout_width="525dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="248dp"
@@ -61,12 +76,52 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+            android:id="@+id/eventTime"
+            android:layout_width="427dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="460dp"
+            android:layout_marginStart="296dp"
             android:layout_marginTop="156dp"
             android:text="Event Time"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/nextEventTitle"
+            android:layout_width="428dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="132dp"
+            android:text="Next Event Title"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/nextEventTime"
+            android:layout_width="388dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="104dp"
+            android:text="Next Event Time"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/nextLabel"
+            android:layout_width="115dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="452dp"
+            android:layout_marginTop="272dp"
+            android:text="Next Event"
             android:textAlignment="center"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"

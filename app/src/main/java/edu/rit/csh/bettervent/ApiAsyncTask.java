@@ -62,7 +62,7 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
      * @return List of Strings describing returned events.
      * @throws IOException
      */
-    private List<String> getDataFromApi() throws IOException {
+    private List<Event> getDataFromApi() throws IOException {
         // List the next 10 events from the primary calendar.
         DateTime now = new DateTime(System.currentTimeMillis());
         List<String> eventStrings = new ArrayList<String>();
@@ -73,18 +73,22 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
                 .setSingleEvents(true)
                 .execute();
         List<Event> items = events.getItems();
-
-        for (Event event : items) {
-            DateTime start = event.getStart().getDateTime();
-            if (start == null) {
-                // All-day events don't have start times, so just use
-                // the start date.
-                start = event.getStart().getDate();
-            }
-            eventStrings.add(
-                    String.format("%s (%s)", event.getSummary(), start));
-        }
-        return eventStrings;
+        return items;
+//        for (Event event : items) {
+//            DateTime start = event.getStart().getDateTime();
+//            if (start == null) {
+//                // All-day events don't have start times, so just use
+//                // the start date.
+//                start = event.getStart().getDate();
+//            }
+//
+//            // Add event's title and date to the event list. index n and n+1 respectively.
+//            eventStrings.add(event.getSummary());
+//            eventStrings.add(String.valueOf(start));
+//            // So it will be added to the list as a pair. Honestly it might be better to do a tuple or something.
+//
+//        }
+//        return eventStrings;
     }
 
 }
