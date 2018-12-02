@@ -1,6 +1,7 @@
 package edu.rit.csh.bettervent;
 
 import android.accounts.AccountManager;
+import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,9 +9,11 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.content.res.TypedArrayUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +60,9 @@ public class HomeActivity extends AppCompatActivity {
     private TextView mNextTitle;
     private TextView mNextTime;
 
+    private TextView mReservedLabel;
+
+    private ActionBar mActionBar;
     private ConstraintLayout mHomeLayout;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -88,6 +94,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        ConstraintLayout activityLayout = findViewById(R.id.HomeLayout);
         setContentView(R.layout.activity_home);
+//        ActionBar.setTitle("Hello world App");
         mTextMessage = (TextView) findViewById(R.id.message);
         mEventTitle = (TextView) findViewById(R.id.eventTitle);
         mEventTime = (TextView) findViewById(R.id.eventTime);
@@ -95,6 +102,12 @@ public class HomeActivity extends AppCompatActivity {
         mNextTitle = (TextView) findViewById(R.id.nextEventTitle);
         mNextTime = (TextView) findViewById(R.id.nextEventTime);
         mHomeLayout = (ConstraintLayout) findViewById(R.id.HomeLayout);
+
+//        mActionBar = getActionBar();
+//        mActionBar.hide();
+//        setTitle("Welcome to Computer Science House!");
+
+        mReservedLabel = (TextView) findViewById(R.id.reservedLabel);
 
         mStatusText = mTextMessage;
         mResultsText = mEventTitle;
@@ -132,6 +145,19 @@ public class HomeActivity extends AppCompatActivity {
                 transport, jsonFactory, credential)
                 .setApplicationName("Google Calendar API Android Quickstart")
                 .build();
+
+        // Init
+        final Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                refreshResults();
+                handler.postDelayed(this, 60000);
+            }
+        };
+
+//Start
+        handler.postDelayed(runnable, 1000);
     }
     /**
      * Called whenever this activity is pushed to the foreground, such as after
@@ -247,6 +273,11 @@ public class HomeActivity extends AppCompatActivity {
                     mStatusText.setText("Error retrieving data!");
                 } else if (dataEvents.size() == 0) {
                     mStatusText.setText("No data found.");
+                    mResultsText.setText("Free");
+                    mEventTime.setText("");
+                    mHomeLayout.setBackgroundColor(getResources().getColor(R.color.CSHGreen));
+                    mNextTitle.setText("There are no upcoming events.");
+                    mNextTime.setText("");
                 } else {
                     mStatusText.setText("API Call Complete.");
 //                    APIOutList = dataStrings;
@@ -349,20 +380,25 @@ public class HomeActivity extends AppCompatActivity {
             start = APIOutList.get(0).getStart().getDate();
         }
         mTargetView.setText(APIOutList.get(0).getSummary());
-        mEventTime.setText(String.valueOf(start));
+        mEventTime.setText(formatDateTime(start));
     }
 
     private void getNextEvent(TextView mTargetView, TextView mTargetTimeView){
-        String nextEvent = APIOutList.get(1).getSummary();
-        DateTime nextTime = APIOutList.get(1).getStart().getDateTime();
-        if (nextTime == null) {
-            // All-day events don't have start times, so just use
-            // the start date.
-            nextTime = APIOutList.get(1).getStart().getDate();
-        }
+        try{
+            String nextEvent = APIOutList.get(1).getSummary();
+            DateTime nextTime = APIOutList.get(1).getStart().getDateTime();
+            if (nextTime == null) {
+                // All-day events don't have start times, so just use
+                // the start date.
+                nextTime = APIOutList.get(1).getStart().getDate();
+            }
 
-        mTargetView.setText(nextEvent);
-        mTargetTimeView.setText(nextTime.toString());
+            mTargetView.setText(nextEvent);
+            mTargetTimeView.setText(formatDateTime(nextTime));
+        }catch (Exception e){
+            mTargetView.setText("There are no upcoming events.");
+            mTargetTimeView.setText("");
+        }
     }
 
     private boolean isFree(){
@@ -373,13 +409,43 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private boolean isFree(TextView mTargetView){
-        DateTime now = new DateTime(System.currentTimeMillis());
-        DateTime firstEventStart = APIOutList.get(0).getStart().getDateTime();
-        DateTime firstEventEnd = APIOutList.get(0).getEnd().getDateTime();
-        if (now.getValue() > firstEventStart.getValue() && now.getValue() < firstEventEnd.getValue()) return false;
-        else {
-            mTargetView.setText("Free");
+        try{
+            DateTime now = new DateTime(System.currentTimeMillis());
+            DateTime firstEventStart = APIOutList.get(0).getStart().getDateTime();
+            DateTime firstEventEnd = APIOutList.get(0).getEnd().getDateTime();
+            if (now.getValue() > firstEventStart.getValue() && now.getValue() < firstEventEnd.getValue()) {
+                mReservedLabel.setVisibility(View.VISIBLE);
+//            mTargetView.setText("Reserved\n" + mTargetView.getText());
+                mHomeLayout.setBackgroundColor(getResources().getColor(R.color.CSHRed));
+                return false;
+            }else {
+                setFree(mTargetView);
+                return true;
+            }
+        }catch(Exception e){
+            setFree(mTargetView);
             return true;
         }
+    }
+
+    private void setFree(TextView mTargetView){
+        mTargetView.setText("Free");
+        mNextTime.setText("");
+        mReservedLabel.setVisibility(View.GONE);
+        mHomeLayout.setBackgroundColor(getResources().getColor(R.color.CSHGreen));
+    }
+
+    private String formatDateTime(DateTime dateTime){
+        String[] t = dateTime.toString().split("T");
+        // UGH.
+//        StringBuilder dateBuilder = new StringBuilder();
+//        dateBuilder.append(t[0]);
+//        dateBuilder.reverse();
+//
+        String time = t[1].substring(0, 5);
+        String[] date = t[0].toString().split("-");
+        String dateString = date[0] + "-" + date[1] + "-" + date[2];
+
+        return time + " on " + dateString;
     }
 }
