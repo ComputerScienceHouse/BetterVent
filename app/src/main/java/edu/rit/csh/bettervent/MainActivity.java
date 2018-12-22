@@ -1,5 +1,15 @@
 package edu.rit.csh.bettervent;
 
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+
 import android.accounts.AccountManager;
 import android.app.ActionBar;
 import android.app.Dialog;
@@ -36,13 +46,13 @@ import org.w3c.dom.Text;
 import java.util.Arrays;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     com.google.api.services.calendar.Calendar mService;
 
     GoogleAccountCredential credential;
-    private TextView mStatusText;
-    private TextView mResultsText;
+//    private TextView mStatusText;
+//    private TextView mResultsText;
     private String APIOut;
     private List<Event> APIOutList;
     final HttpTransport transport = AndroidHttp.newCompatibleTransport();
@@ -54,85 +64,28 @@ public class HomeActivity extends AppCompatActivity {
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { CalendarScopes.CALENDAR_READONLY };
 
-    private TextView mTextMessage;
-    private TextView mEventTitle;
-    private TextView mEventTime;
-    private TextView mNextTitle;
-    private TextView mNextTime;
-
-    private TextView mReservedLabel;
-
-    private ActionBar mActionBar;
-    private ConstraintLayout mHomeLayout;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) { // What to do if each of the three buttons are pressed.
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    refreshResults(); // Refresh Calendar API Boi
-                    mHomeLayout.setVisibility(View.VISIBLE);
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    mHomeLayout.setVisibility(View.INVISIBLE);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    mHomeLayout.setVisibility(View.INVISIBLE);
-                    return true;
-            }
-            return false;
-        }
-    };
+    public String APIStatusMessage;
+    public String APIResultsMessage;
+    public String currentEventTitle;
+    public String currentEventTime;
+    public String nextEventTitle;
+    public String nextEventTime;
+    public boolean isReserved;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        ConstraintLayout activityLayout = findViewById(R.id.HomeLayout);
-        setContentView(R.layout.activity_home);
-//        ActionBar.setTitle("Hello world App");
-        mTextMessage = (TextView) findViewById(R.id.message);
-        mEventTitle = (TextView) findViewById(R.id.eventTitle);
-        mEventTime = (TextView) findViewById(R.id.eventTime);
+        setContentView(R.layout.activity_main);
 
-        mNextTitle = (TextView) findViewById(R.id.nextEventTitle);
-        mNextTime = (TextView) findViewById(R.id.nextEventTime);
-        mHomeLayout = (ConstraintLayout) findViewById(R.id.HomeLayout);
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-//        mActionBar = getActionBar();
-//        mActionBar.hide();
-//        setTitle("Welcome to Computer Science House!");
+        //I added this if statement to keep the selected fragment when rotating the device
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new StatusFragment()).commit();
+        }
 
-        mReservedLabel = (TextView) findViewById(R.id.reservedLabel);
-
-        mStatusText = mTextMessage;
-        mResultsText = mEventTitle;
-
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-//        ViewGroup.LayoutParams tlp = new ViewGroup.LayoutParams(
-//                ViewGroup.LayoutParams.WRAP_CONTENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-//        mStatusText = new TextView(this);
-//        mStatusText.setLayoutParams(tlp);
-//        mStatusText.setTypeface(null, Typeface.BOLD);
-          mEventTitle.setText("Retrieving data...");
-//        mHomeLayout.addView(mStatusText);
-
-//        APICall = new TextView(this);
-//        APICall.setLayoutParams(tlp);
-//        APICall.setPadding(16, 16, 16, 16);
-//        APICall.setVerticalScrollBarEnabled(true);
-//        APICall.setMovementMethod(new ScrollingMovementMethod());
-//        mHomeLayout.addView(APICall);
-
-//        setContentView(mHomeLayout);
 
         // Initialize credentials and service object.
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
@@ -146,7 +99,7 @@ public class HomeActivity extends AppCompatActivity {
                 .setApplicationName("Google Calendar API Android Quickstart")
                 .build();
 
-        // Init
+        // Initialize API Refresher
         final Handler handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
@@ -156,9 +109,36 @@ public class HomeActivity extends AppCompatActivity {
             }
         };
 
-//Start
+        //Start API Refresher
         handler.postDelayed(runnable, 1000);
+
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selectedFragment = null;
+
+                    switch (item.getItemId()) {
+                        case R.id.navigation_status:
+                            selectedFragment = new StatusFragment();
+                            break;
+                        case R.id.navigation_schedule:
+                            selectedFragment = new ScheduleFragment();
+                            break;
+                        case R.id.navigation_quick_mode:
+                            selectedFragment = new QuickModeFragment();
+                            break;
+                    }
+
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            selectedFragment).commit();
+
+                    return true;
+                }
+            };
+
     /**
      * Called whenever this activity is pushed to the foreground, such as after
      * a call to onCreate().
@@ -169,8 +149,8 @@ public class HomeActivity extends AppCompatActivity {
         if (isGooglePlayServicesAvailable()) {
             refreshResults();
         } else {
-            mStatusText.setText("Google Play Services required: " +
-                    "after installing, close and relaunch this app.");
+            APIStatusMessage = "Google Play Services required: " +
+                    "after installing, close and relaunch this app.";
         }
     }
 
@@ -211,7 +191,7 @@ public class HomeActivity extends AppCompatActivity {
                         refreshResults();
                     }
                 } else if (resultCode == RESULT_CANCELED) {
-                    mStatusText.setText("Account unspecified.");
+                    APIStatusMessage = "Account unspecified.";
                 }
                 break;
             case REQUEST_AUTHORIZATION:
@@ -238,7 +218,7 @@ public class HomeActivity extends AppCompatActivity {
             if (isDeviceOnline()) {
                 new ApiAsyncTask(this).execute();
             } else {
-                mStatusText.setText("No network connection available.");
+                APIStatusMessage = "No network connection available.";
             }
         }
     }
@@ -252,8 +232,9 @@ public class HomeActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mStatusText.setText("Retrieving data…");
-                APIOut(mResultsText, "");
+                APIStatusMessage = "Retrieving data…";
+                // TODO: WTF does this do?
+//                APIOut(APIStatusMessage, "");
 //                mResultsText.setText("");
             }
         });
@@ -270,20 +251,22 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (dataEvents == null) {
-                    mStatusText.setText("Error retrieving data!");
+                    APIStatusMessage = "Error retrieving data!";
                 } else if (dataEvents.size() == 0) {
-                    mStatusText.setText("No data found.");
-                    mResultsText.setText("Free");
-                    mEventTime.setText("");
-                    mHomeLayout.setBackgroundColor(getResources().getColor(R.color.CSHGreen));
-                    mNextTitle.setText("There are no upcoming events.");
-                    mNextTime.setText("");
+                    // TODO: Call a "setFree" method in StatusFragment or something.
+                    APIStatusMessage = "No data found.";
+                    APIResultsMessage = "Free" ;
+                    currentEventTime = "";
+//                    mHomeLayout.setBackgroundColor(getResources().getColor(R.color.CSHGreen));
+                    nextEventTitle = "There are no upcoming events.";
+                    nextEventTime = "";
                 } else {
-                    mStatusText.setText("API Call Complete.");
+                    APIStatusMessage = "API Call Complete.";
 //                    APIOutList = dataStrings;
-                    APIOutList(mResultsText, dataEvents);
-                    isFree(mResultsText);
-                    getNextEvent(mNextTitle, mNextTime);
+//                    APIOutList(APIResultsMessage, dataEvents);
+//                    isFree(APIResultsMessage);
+                    // TODO: Put this into StatusFragment.
+//                    getNextEvent(nextEventTitle, nextEventTime);
                 }
             }
         });
@@ -298,7 +281,7 @@ public class HomeActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mStatusText.setText(message);
+                APIStatusMessage = message;
             }
         });
     }
@@ -355,21 +338,21 @@ public class HomeActivity extends AppCompatActivity {
             public void run() {
                 Dialog dialog = GooglePlayServicesUtil.getErrorDialog(
                         connectionStatusCode,
-                        HomeActivity.this,
+                        MainActivity.this,
                         REQUEST_GOOGLE_PLAY_SERVICES);
                 dialog.show();
             }
         });
     }
 
-    private void APIOut(String input){
-        APIOut = input;
-    }
+//    private void APIOut(String input){
+//        APIOut = input;
+//    }
 
-    private void APIOut(TextView mTargetView, String input){
-        APIOut = input;
-        mTargetView.setText(APIOut);
-    }
+//    private void APIOut(TextView mTargetView, String input){
+//        APIOut = input;
+//        mTargetView.setText(APIOut);
+//    }
 
     private void APIOutList(TextView mTargetView, List<Event> input){
         APIOutList = input;
@@ -380,7 +363,7 @@ public class HomeActivity extends AppCompatActivity {
             start = APIOutList.get(0).getStart().getDate();
         }
         mTargetView.setText(APIOutList.get(0).getSummary());
-        mEventTime.setText(formatDateTime(start));
+        currentEventTime = formatDateTime(start);
     }
 
     private void getNextEvent(TextView mTargetView, TextView mTargetTimeView){
@@ -414,9 +397,13 @@ public class HomeActivity extends AppCompatActivity {
             DateTime firstEventStart = APIOutList.get(0).getStart().getDateTime();
             DateTime firstEventEnd = APIOutList.get(0).getEnd().getDateTime();
             if (now.getValue() > firstEventStart.getValue() && now.getValue() < firstEventEnd.getValue()) {
-                mReservedLabel.setVisibility(View.VISIBLE);
+                // Then the room is currently in use.
+                // TODO: Make this a method in the fragment to change
+                // TODO: the layout accordingly.
+//                mReservedLabel.setVisibility(View.VISIBLE);
+                isReserved = true;
 //            mTargetView.setText("Reserved\n" + mTargetView.getText());
-                mHomeLayout.setBackgroundColor(getResources().getColor(R.color.CSHRed));
+//                mHomeLayout.setBackgroundColor(getResources().getColor(R.color.CSHRed));
                 return false;
             }else {
                 setFree(mTargetView);
@@ -429,10 +416,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setFree(TextView mTargetView){
-        mTargetView.setText("Free");
-        mNextTime.setText("");
-        mReservedLabel.setVisibility(View.GONE);
-        mHomeLayout.setBackgroundColor(getResources().getColor(R.color.CSHGreen));
+        // TODO: This is mostly UI stuff. Chuck this into StatusFragment.java
+//        mTargetView.setText("Free");
+        currentEventTitle = "Free"; // TODO: Just have a separate layout for if the room is free?
+        nextEventTime = "";
+//        mReservedLabel.setVisibility(View.GONE);
+        isReserved = false;
+//        mHomeLayout.setBackgroundColor(getResources().getColor(R.color.CSHGreen));
     }
 
     private String formatDateTime(DateTime dateTime){
@@ -448,4 +438,5 @@ public class HomeActivity extends AppCompatActivity {
 
         return time + " on " + dateString;
     }
+
 }

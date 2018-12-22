@@ -21,13 +21,13 @@ import java.util.List;
  */
 
 public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
-    private HomeActivity mActivity;
+    private MainActivity mActivity;
 
     /**
      * Constructor.
      * @param activity MainActivity that spawned this task.
      */
-    ApiAsyncTask(HomeActivity activity) {
+    ApiAsyncTask(MainActivity activity) {
         this.mActivity = activity;
     }
 
@@ -42,13 +42,16 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
             mActivity.updateResultsText(getDataFromApi());
 
         } catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
-            mActivity.showGooglePlayServicesAvailabilityErrorDialog(
-                    availabilityException.getConnectionStatusCode());
+//            mActivity.showGooglePlayServicesAvailabilityErrorDialog(
+//                    availabilityException.getConnectionStatusCode()); //TODO: Make this work :3
+            System.err.println("Error connecting to Google Play Services. Error code: "
+                    + availabilityException.getConnectionStatusCode());
+
 
         } catch (UserRecoverableAuthIOException userRecoverableException) {
             mActivity.startActivityForResult(
                     userRecoverableException.getIntent(),
-                    HomeActivity.REQUEST_AUTHORIZATION);
+                    MainActivity.REQUEST_AUTHORIZATION);
 
         } catch (IOException e) {
             mActivity.updateStatus("The following error occurred: " +
