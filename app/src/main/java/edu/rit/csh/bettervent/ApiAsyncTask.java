@@ -54,7 +54,7 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
                     MainActivity.REQUEST_AUTHORIZATION);
 
         } catch (IOException e) {
-            System.err.println("*** The following error occurred: \n" + e.getMessage());
+//            System.err.println("*** The following error occurred: \n" + e.getMessage());
             mActivity.updateStatus("The following error occurred: " +
                     e.getMessage());
         }
@@ -67,7 +67,7 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
      * @throws IOException
      */
     private List<Event> getDataFromApi() throws IOException {
-        System.out.println("*** Attempting to get data from API. ***");
+//        System.out.println("*** Attempting to get data from API. ***");
         // List the next 10 events from the primary calendar.
         DateTime now = new DateTime(System.currentTimeMillis());
 //        List<String> eventStrings = new ArrayList<String>();
@@ -78,7 +78,7 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
                 .setSingleEvents(true)
                 .execute();
         List<Event> items = events.getItems();
-        System.out.println("*** items: " + items);
+//        System.out.println("*** items: " + items);
         return items;
 //        for (Event event : items) {
 //            DateTime start = event.getStart().getDateTime();

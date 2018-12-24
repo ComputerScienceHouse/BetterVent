@@ -86,12 +86,6 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        //I added this if statement to keep the selected fragment when rotating the device
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new StatusFragment()).commit();
-        }
-
         // Initialize credentials and service object.
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
         credential = GoogleAccountCredential.usingOAuth2(
@@ -104,18 +98,31 @@ public class MainActivity extends AppCompatActivity {
                 .setApplicationName("Google Calendar API Android Quickstart")
                 .build();
 
+        refreshResults();
+
         // Initialize API Refresher
         final Handler handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 refreshResults();
+                // TODO: Make some kind of timeout for refreshing and switching back to this fragment. This is just for now.
+                StatusFragment fragment = StatusFragment.newInstance(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        fragment).commit();
                 handler.postDelayed(this, 60000);
             }
         };
 
         //Start API Refresher
         handler.postDelayed(runnable, 1000);
+
+        //I added this if statement to keep the selected fragment when rotating the device
+        if (savedInstanceState == null) {
+            StatusFragment fragment = StatusFragment.newInstance(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    fragment).commit();
+        }
 
     }
 
@@ -127,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
 
                     switch (item.getItemId()) {
                         case R.id.navigation_status:
-                            selectedFragment = new StatusFragment();
+//                            selectedFragment = new StatusFragment();
+                            selectedFragment = StatusFragment.newInstance(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
                             break;
                         case R.id.navigation_schedule:
                             selectedFragment = new ScheduleFragment();
@@ -137,9 +145,10 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
 
-                    if (selectedFragment instanceof StatusFragment)
-                        ((StatusFragment) selectedFragment).updateViews(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
+//                    if (selectedFragment instanceof StatusFragment)
+//                        ((StatusFragment) selectedFragment).updateViews(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
 
+                    System.out.println("*** currentEventTitle: " + currentEventTitle);
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             selectedFragment).commit();
 //
@@ -286,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
                     nextEventTime = "";
                 } else {
                     APIStatusMessage = "API Call Complete.";
-                    System.out.println("*** Events found.  ***");
+                    System.out.println("*** Events found.  *** " + dataEvents);
                     APIOutList = dataEvents;
                     getCurrentEvent();
                     isFree();
@@ -377,6 +386,7 @@ public class MainActivity extends AppCompatActivity {
         }
         currentEventTitle = APIOutList.get(0).getSummary();
         currentEventTime = formatDateTime(start);
+
     }
 
     //TODO: This looks like you should put it in the StatusFragment.
