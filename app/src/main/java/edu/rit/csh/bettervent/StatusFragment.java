@@ -82,6 +82,8 @@ public class StatusFragment extends Fragment {
             textMessage = eventTitle = eventTime = nextTitle = nextTime = "";
         }
 
+        if (nextTitle == null) nextTitle = "";
+
         return view;
     }
 
@@ -92,7 +94,7 @@ public class StatusFragment extends Fragment {
             setRoomStatus(eventTitle, eventTime);
             if (!nextTitle.equals("")) {
                 setRoomFuture(nextTitle, nextTime);
-            }
+            }else setRoomFuture("There are no upcoming events.", "");
         } else setRoomFree();
     }
 
@@ -111,8 +113,8 @@ public class StatusFragment extends Fragment {
         mEventTitle.setText("");
         mEventTime.setText("");
         if (!nextTitle.equals("")){
-            mNextTitle.setText(nextTime);
-            mNextTime.setText("");
+            mNextTitle.setText(nextTitle);
+            mNextTime.setText(nextTime);
         }else{
             mNextTitle.setText("There are no upcoming events.");
             mNextTime.setText("");

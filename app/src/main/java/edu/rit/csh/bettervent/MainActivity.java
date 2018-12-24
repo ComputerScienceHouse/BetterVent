@@ -1,40 +1,26 @@
 package edu.rit.csh.bettervent;
 
-import android.os.AsyncTask;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 
 import android.accounts.AccountManager;
-import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.content.res.TypedArrayUtils;
-import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
@@ -42,8 +28,6 @@ import com.google.api.client.util.DateTime;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.*;
-
-import org.w3c.dom.Text;
 
 import java.util.Arrays;
 import java.util.List;
@@ -151,19 +135,6 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("*** currentEventTitle: " + currentEventTitle);
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             selectedFragment).commit();
-//
-//                    if (selectedFragment instanceof StatusFragment){
-//
-//
-////                        if (selectedFragment != null) {
-////                            if (isReserved) {
-////                                ((StatusFragment) selectedFragment).setRoomStatus(currentEventTitle, currentEventTime);
-////                                if (!nextEventTitle.equals("")) {
-////                                    ((StatusFragment) selectedFragment).setRoomFuture(nextEventTitle, nextEventTime);
-////                                }
-////                            } else ((StatusFragment) selectedFragment).setRoomFree();
-////                        }
-//                    }
 
                     return true;
                 }
@@ -297,9 +268,10 @@ public class MainActivity extends AppCompatActivity {
                     APIStatusMessage = "API Call Complete.";
                     System.out.println("*** Events found.  *** " + dataEvents);
                     APIOutList = dataEvents;
-                    getCurrentEvent();
                     isFree();
-                    getNextEvent();
+                    getCurrentAndNextEvents();
+//                    getCurrentEvent();
+//                    getNextEvent();
                 }
             }
         });
@@ -378,15 +350,32 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void getCurrentEvent(){
+    private void getCurrentAndNextEvents(){
+        //Here's all the data we'll need.
+        String summary = APIOutList.get(0).getSummary();
         DateTime start = APIOutList.get(0).getStart().getDateTime();
-        if (start == null) {
-            // All-day events don't have start times, so just use the start date.
-            start = APIOutList.get(0).getStart().getDate();
-        }
-        currentEventTitle = APIOutList.get(0).getSummary();
-        currentEventTime = formatDateTime(start);
+        DateTime end = APIOutList.get(0).getEnd().getDateTime();
 
+        if (start == null) { // If the event will last all day...
+            // (All-day events don't have start times, so just use the start date)
+            start = APIOutList.get(0).getStart().getDate();
+            currentEventTitle = summary;
+            currentEventTime = formatDateTime(start);
+        }else{ // If the event has a set start and end time...
+            DateTime now = new DateTime(System.currentTimeMillis());
+            if (start.getValue() > now.getValue()){ // If the first event will happen in the future...
+                // Then we don't have a current event.
+                currentEventTitle = "";
+                currentEventTime = "";
+                nextEventTitle = summary;
+                nextEventTime = formatDateTime(start) + " — " + formatDateTime(end);
+            }else{ // If the first event is happening right now...
+                currentEventTitle = summary;
+                currentEventTime = formatDateTime(start) + " — " + formatDateTime(end);
+                if (APIOutList.size() > 1) // If there's an event after this one...
+                    getNextEvent();
+            }
+        }
     }
 
     //TODO: This looks like you should put it in the StatusFragment.
@@ -394,13 +383,14 @@ public class MainActivity extends AppCompatActivity {
         try{
             String nextEvent = APIOutList.get(1).getSummary();
             DateTime nextTime = APIOutList.get(1).getStart().getDateTime();
+            DateTime nextEnd =  APIOutList.get(1).getEnd().getDateTime();
             if (nextTime == null) {
                 // All-day events don't have start times, so just use
                 // the start date.
                 nextTime = APIOutList.get(1).getStart().getDate();
             }
             nextEventTitle = nextEvent;
-            nextEventTime = formatDateTime(nextTime);
+            nextEventTime = formatDateTime(nextTime) + " — " + formatDateTime(nextEnd);
         }catch (Exception e){
             nextEventTitle = "";
             nextEventTime = "";
@@ -431,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
         String[] t = dateTime.toString().split("T");
         String time = t[1].substring(0, 5);
         String[] date = t[0].toString().split("-");
-        String dateString = date[0] + "-" + date[1] + "-" + date[2];
+        String dateString = date[0] + "/" + date[1] + "/" + date[2];
 
         return time + " on " + dateString;
     }
