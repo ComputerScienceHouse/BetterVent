@@ -6,25 +6,12 @@
     android:layout_height="match_parent">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/HomeLayout"
+        android:id="@+id/home_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="636dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="Status"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.499" />
 
         <TextView
             android:id="@+id/message"
@@ -47,45 +34,57 @@
             android:background="#ffffff"
             app:layout_constraintBottom_toTopOf="@+id/nextLabel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.996"
+            app:layout_constraintHorizontal_bias="0.779"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/eventTime"
-            app:layout_constraintVertical_bias="0.571" />
+            app:layout_constraintTop_toBottomOf="@+id/event_time"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/eventTitle"
+            android:id="@+id/event_title"
             android:layout_width="525dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="248dp"
             android:layout_marginTop="96dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:text="Event Title"
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:textSize="32sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.26"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.22" />
 
         <TextView
-            android:id="@+id/eventTime"
+            android:id="@+id/event_time"
             android:layout_width="427dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="296dp"
             android:layout_marginTop="156dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:text="Event Time"
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.238"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.257" />
 
 
         <TextView
-            android:id="@+id/nextEventTitle"
+            android:id="@+id/next_event_title"
             android:layout_width="428dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="188dp"
+            android:layout_marginBottom="264dp"
             android:text="Next Event Title"
             android:textAlignment="center"
             android:textColor="#ffffff"
@@ -95,12 +94,12 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/nextEventTime"
+            android:id="@+id/next_event_time"
             android:layout_width="388dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="156dp"
+            android:layout_marginBottom="232dp"
             android:text="Next Event Time"
             android:textAlignment="center"
             android:textColor="#ffffff"
@@ -112,8 +111,8 @@
             android:id="@+id/nextLabel"
             android:layout_width="115dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="452dp"
-            android:layout_marginTop="216dp"
+            android:layout_marginStart="580dp"
+            android:layout_marginTop="348dp"
             android:text="Next Event"
             android:textAlignment="center"
             android:textColor="#ffffff"

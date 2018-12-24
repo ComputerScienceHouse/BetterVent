@@ -1,5 +1,7 @@
 package edu.rit.csh.bettervent;
 
+import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     com.google.api.services.calendar.Calendar mService;
 
     GoogleAccountCredential credential;
-//    private TextView mStatusText;
+    //    private TextView mStatusText;
 //    private TextView mResultsText;
     private String APIOut;
     private List<Event> APIOutList;
@@ -70,7 +72,11 @@ public class MainActivity extends AppCompatActivity {
     public String currentEventTime;
     public String nextEventTitle;
     public String nextEventTime;
-    public boolean isReserved;
+    public boolean isReserved = true;
+
+    // So here's the strat. This MainActivity gets the data from the API, and holds it
+    // as various strings and Booleans and all that. The Fragments then update themselves using
+    // that. Think of this as a model, and the fragments as a view. I think. IDK.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new StatusFragment()).commit();
         }
-
 
         // Initialize credentials and service object.
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
@@ -132,8 +137,24 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
 
+                    if (selectedFragment instanceof StatusFragment)
+                        ((StatusFragment) selectedFragment).updateViews(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
+
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             selectedFragment).commit();
+//
+//                    if (selectedFragment instanceof StatusFragment){
+//
+//
+////                        if (selectedFragment != null) {
+////                            if (isReserved) {
+////                                ((StatusFragment) selectedFragment).setRoomStatus(currentEventTitle, currentEventTime);
+////                                if (!nextEventTitle.equals("")) {
+////                                    ((StatusFragment) selectedFragment).setRoomFuture(nextEventTitle, nextEventTime);
+////                                }
+////                            } else ((StatusFragment) selectedFragment).setRoomFree();
+////                        }
+//                    }
 
                     return true;
                 }
@@ -212,12 +233,15 @@ public class MainActivity extends AppCompatActivity {
      * user can pick an account.
      */
     private void refreshResults() {
+        System.out.println("*** Refreshing results... ***");
         if (credential.getSelectedAccountName() == null) {
             chooseAccount();
         } else {
             if (isDeviceOnline()) {
+                System.out.println("*** Executing APIAsyncTask. ***");
                 new ApiAsyncTask(this).execute();
             } else {
+                System.out.println("*** Can't refresh calendar. ***");
                 APIStatusMessage = "No network connection available.";
             }
         }
@@ -233,9 +257,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 APIStatusMessage = "Retrieving data…";
-                // TODO: WTF does this do?
-//                APIOut(APIStatusMessage, "");
-//                mResultsText.setText("");
+                APIStatusMessage = "";
+                APIResultsMessage = "";
             }
         });
     }
@@ -255,18 +278,19 @@ public class MainActivity extends AppCompatActivity {
                 } else if (dataEvents.size() == 0) {
                     // TODO: Call a "setFree" method in StatusFragment or something.
                     APIStatusMessage = "No data found.";
+                    System.out.println("*** No data found. ***");
                     APIResultsMessage = "Free" ;
+                    currentEventTitle = "";
                     currentEventTime = "";
-//                    mHomeLayout.setBackgroundColor(getResources().getColor(R.color.CSHGreen));
-                    nextEventTitle = "There are no upcoming events.";
+                    nextEventTitle = "";
                     nextEventTime = "";
                 } else {
                     APIStatusMessage = "API Call Complete.";
-//                    APIOutList = dataStrings;
-//                    APIOutList(APIResultsMessage, dataEvents);
-//                    isFree(APIResultsMessage);
-                    // TODO: Put this into StatusFragment.
-//                    getNextEvent(nextEventTitle, nextEventTime);
+                    System.out.println("*** Events found.  ***");
+                    APIOutList = dataEvents;
+                    getCurrentEvent();
+                    isFree();
+                    getNextEvent();
                 }
             }
         });
@@ -345,28 +369,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-//    private void APIOut(String input){
-//        APIOut = input;
-//    }
-
-//    private void APIOut(TextView mTargetView, String input){
-//        APIOut = input;
-//        mTargetView.setText(APIOut);
-//    }
-
-    private void APIOutList(TextView mTargetView, List<Event> input){
-        APIOutList = input;
+    private void getCurrentEvent(){
         DateTime start = APIOutList.get(0).getStart().getDateTime();
         if (start == null) {
-            // All-day events don't have start times, so just use
-            // the start date.
+            // All-day events don't have start times, so just use the start date.
             start = APIOutList.get(0).getStart().getDate();
         }
-        mTargetView.setText(APIOutList.get(0).getSummary());
+        currentEventTitle = APIOutList.get(0).getSummary();
         currentEventTime = formatDateTime(start);
     }
 
-    private void getNextEvent(TextView mTargetView, TextView mTargetTimeView){
+    //TODO: This looks like you should put it in the StatusFragment.
+    private void getNextEvent(){
         try{
             String nextEvent = APIOutList.get(1).getSummary();
             DateTime nextTime = APIOutList.get(1).getStart().getDateTime();
@@ -375,68 +389,40 @@ public class MainActivity extends AppCompatActivity {
                 // the start date.
                 nextTime = APIOutList.get(1).getStart().getDate();
             }
-
-            mTargetView.setText(nextEvent);
-            mTargetTimeView.setText(formatDateTime(nextTime));
+            nextEventTitle = nextEvent;
+            nextEventTime = formatDateTime(nextTime);
         }catch (Exception e){
-            mTargetView.setText("There are no upcoming events.");
-            mTargetTimeView.setText("");
+            nextEventTitle = "";
+            nextEventTime = "";
         }
     }
 
     private boolean isFree(){
-        DateTime now = new DateTime(System.currentTimeMillis());
-        DateTime firstEvent = APIOutList.get(0).getStart().getDateTime();
-        if (now == firstEvent) return false;
-        else return true;
-    }
-
-    private boolean isFree(TextView mTargetView){
         try{
             DateTime now = new DateTime(System.currentTimeMillis());
             DateTime firstEventStart = APIOutList.get(0).getStart().getDateTime();
             DateTime firstEventEnd = APIOutList.get(0).getEnd().getDateTime();
             if (now.getValue() > firstEventStart.getValue() && now.getValue() < firstEventEnd.getValue()) {
                 // Then the room is currently in use.
-                // TODO: Make this a method in the fragment to change
-                // TODO: the layout accordingly.
-//                mReservedLabel.setVisibility(View.VISIBLE);
                 isReserved = true;
-//            mTargetView.setText("Reserved\n" + mTargetView.getText());
-//                mHomeLayout.setBackgroundColor(getResources().getColor(R.color.CSHRed));
                 return false;
             }else {
-                setFree(mTargetView);
+                isReserved = false;
                 return true;
             }
         }catch(Exception e){
-            setFree(mTargetView);
+            // If something weird happens, just assume the room is free.
+            isReserved = false;
             return true;
         }
     }
 
-    private void setFree(TextView mTargetView){
-        // TODO: This is mostly UI stuff. Chuck this into StatusFragment.java
-//        mTargetView.setText("Free");
-        currentEventTitle = "Free"; // TODO: Just have a separate layout for if the room is free?
-        nextEventTime = "";
-//        mReservedLabel.setVisibility(View.GONE);
-        isReserved = false;
-//        mHomeLayout.setBackgroundColor(getResources().getColor(R.color.CSHGreen));
-    }
-
-    private String formatDateTime(DateTime dateTime){
+    private String formatDateTime(DateTime dateTime) {
         String[] t = dateTime.toString().split("T");
-        // UGH.
-//        StringBuilder dateBuilder = new StringBuilder();
-//        dateBuilder.append(t[0]);
-//        dateBuilder.reverse();
-//
         String time = t[1].substring(0, 5);
         String[] date = t[0].toString().split("-");
         String dateString = date[0] + "-" + date[1] + "-" + date[2];
 
         return time + " on " + dateString;
     }
-
 }
