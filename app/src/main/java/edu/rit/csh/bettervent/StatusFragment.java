@@ -15,6 +15,7 @@ public class StatusFragment extends Fragment {
     private ConstraintLayout mStatusLayout;
     private TextView mReserved;
     private TextView mFree;
+    private TextView mNext;
 
     private TextView mTextMessage;
     private TextView mEventTitle;
@@ -71,6 +72,7 @@ public class StatusFragment extends Fragment {
         mTextMessage = view.findViewById(R.id.message);
         mReserved = view.findViewById(R.id.reserved_label);
         mFree = view.findViewById(R.id.free_label);
+        mNext = view.findViewById(R.id.next_label);
 
         mEventTitle = view.findViewById(R.id.event_title);
         mEventTime = view.findViewById(R.id.event_time);
@@ -90,12 +92,13 @@ public class StatusFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         System.out.println("*** Fragment Event Title: " + eventTitle); // TODO: The fragment is STILL not getting updates. Fuck.
-        if (!eventTitle.equals("")) {
-            setRoomStatus(eventTitle, eventTime);
-            if (!nextTitle.equals("")) {
-                setRoomFuture(nextTitle, nextTime);
-            }else setRoomFuture("There are no upcoming events.", "");
-        } else setRoomFree();
+        setRoomStatus();
+//        if (!eventTitle.equals("")) {
+//
+//            if (!nextTitle.equals("")) {
+//                setRoomFuture();
+//            }else setRoomFuture("There are no upcoming events.", "");
+//        } else setRoomFree();
     }
 
     public void updateViews(String textMessage, String eventTitle, String eventTime, String nextTitle, String nextTime){
@@ -107,31 +110,43 @@ public class StatusFragment extends Fragment {
         System.out.println("*** Ran updateViews.");
     }
 
-    public void setRoomFree() {
+    private void setRoomFree() {
         mReserved.setVisibility(View.INVISIBLE);
         mFree.setVisibility(View.VISIBLE);
         mEventTitle.setText("");
         mEventTime.setText("");
-        if (!nextTitle.equals("")){
-            mNextTitle.setText(nextTitle);
-            mNextTime.setText(nextTime);
-        }else{
-            mNextTitle.setText("There are no upcoming events.");
-            mNextTime.setText("");
-        }
+//        if (!nextTitle.equals("")){
+//            mNextTitle.setText(nextTitle);
+//            mNextTime.setText(nextTime);
+//        }else{
+//            mNextTitle.setText("There are no upcoming events.");
+//            mNextTime.setText("");
+//        }
         mStatusLayout.setBackgroundColor(getResources().getColor(R.color.CSHGreen));
     }
 
-    public void setRoomStatus(String currentTitle, String currentTime){
-        mFree.setVisibility(View.INVISIBLE);
-        mReserved.setVisibility(View.VISIBLE);
-        mEventTitle.setText(currentTitle); // mEventTitle is null when this method is caused, thus invoking a NullPointerException.
-        mEventTime.setText(currentTime);
-        mStatusLayout.setBackgroundColor(getResources().getColor(R.color.CSHRed));
+    private void setRoomStatus(){
+        if (!eventTitle.equals("")){
+            mFree.setVisibility(View.INVISIBLE);
+            mReserved.setVisibility(View.VISIBLE);
+            mEventTitle.setText(eventTitle); // mEventTitle is null when this method is caused, thus invoking a NullPointerException.
+            mEventTime.setText(eventTime);
+            mStatusLayout.setBackgroundColor(getResources().getColor(R.color.CSHRed));
+        }else {
+            setRoomFree();
+        }
+        setRoomFuture();
     }
 
-    public void setRoomFuture(String nextTitle, String nextTime){
-        mNextTitle.setText(nextTitle);
-        mNextTime.setText(nextTime);
+    private void setRoomFuture(){
+        if (nextTitle != ""){
+            mNext.setVisibility(View.VISIBLE);
+            mNextTitle.setText(nextTitle);
+            mNextTime.setText(nextTime);
+        }else{
+            mNext.setVisibility(View.INVISIBLE);
+            mNextTitle.setText("There are no upcoming events.");
+            mNextTime.setText("");
+        }
     }
 }

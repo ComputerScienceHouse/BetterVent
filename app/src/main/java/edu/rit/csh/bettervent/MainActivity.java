@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     public String nextEventTime;
     public boolean isReserved = true;
 
+    public Fragment selectedFragment;
+
     // So here's the strat. This MainActivity gets the data from the API, and holds it
     // as various strings and Booleans and all that. The Fragments then update themselves using
     // that. Think of this as a model, and the fragments as a view. I think. IDK.
@@ -83,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         refreshResults();
+        if (selectedFragment == null) {
+            selectedFragment = StatusFragment.newInstance(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    selectedFragment).commit();
+        }
 
         // Initialize API Refresher
         final Handler handler = new Handler();
@@ -90,23 +97,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 refreshResults();
-                // TODO: Make some kind of timeout for refreshing and switching back to this fragment. This is just for now.
-                StatusFragment fragment = StatusFragment.newInstance(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        fragment).commit();
-                handler.postDelayed(this, 60000);
+                // TODO: java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState ???
+                try {
+                    if (selectedFragment instanceof StatusFragment){
+                        selectedFragment = StatusFragment.newInstance(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                selectedFragment).commit();
+                    }
+                }catch (IllegalStateException e ){
+                    System.err.println("OwO? Not sure why this happened. Whatever." + e.toString());
+                }
+                handler.postDelayed(this, 30000);
             }
         };
 
         //Start API Refresher
         handler.postDelayed(runnable, 1000);
-
-        //I added this if statement to keep the selected fragment when rotating the device
-        if (savedInstanceState == null) {
-            StatusFragment fragment = StatusFragment.newInstance(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    fragment).commit();
-        }
 
     }
 
@@ -114,8 +120,7 @@ public class MainActivity extends AppCompatActivity {
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment selectedFragment = null;
-
+                    selectedFragment = null;
                     switch (item.getItemId()) {
                         case R.id.navigation_status:
 //                            selectedFragment = new StatusFragment();
