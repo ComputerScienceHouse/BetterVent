@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                             selectedFragment = StatusFragment.newInstance(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
                             break;
                         case R.id.navigation_schedule:
-                            selectedFragment = new ScheduleFragment();
+                            selectedFragment = ScheduleFragment.newInstance(APIOutList);
                             break;
                         case R.id.navigation_quick_mode:
                             selectedFragment = new QuickModeFragment();

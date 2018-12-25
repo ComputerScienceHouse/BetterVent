@@ -17,19 +17,31 @@ public class StatusFragment extends Fragment {
     private TextView mFree;
     private TextView mNext;
 
-    private TextView mTextMessage;
     private TextView mEventTitle;
     private TextView mEventTime;
     private TextView mNextTitle;
     private TextView mNextTime;
 
-    // AAA
+    // TODO: Delet. See instructions below.
     public String textMessage;
     public String eventTitle;
     public String eventTime;
     public String nextTitle;
     public String nextTime;
 
+    // TODO: Serialize the events and then do all the parsing in here. Simplify the shit out of the
+    // TODO: MainActivity. Its only job should be to get the events and control the fragments.
+
+    /**
+     * Create a new instance of StatusFragment, passing in variables and Objects by bundling them and
+     * setting arguments.
+     * @param textMessage: A message output by the API for diagnostic information.
+     * @param eventTitle: The title of the current event.
+     * @param eventTime: The start time and end time of the current event.
+     * @param nextTitle: The title of the next event.
+     * @param nextTime: The start time and end time of the next event.
+     * @return: A StatusFragment with the above information bundled into it.
+     */
     public static StatusFragment newInstance(String textMessage, String eventTitle, String eventTime, String nextTitle, String nextTime){
         StatusFragment f = new StatusFragment();
         Bundle args = new Bundle();
@@ -42,34 +54,36 @@ public class StatusFragment extends Fragment {
         return f;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
+    /**
+     * Extract information from the bundle that may have been provided with the StatusFragment,
+     * inflate status_layout and set it as the currently active view, then make references to all of
+     * the various pieces of the UI so that the class can update the UI with the API data.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        System.out.println("########Loaded Status Fragment.");
+        System.out.println("STAT_: Loaded Status Fragment.");
 
         Bundle args = getArguments();
         if (args != null) {
-            System.out.println("*** Found data: " + args.getString("eventTitle"));
+            System.out.println("STAT_: Found data: " + args.getString("eventTitle"));
             textMessage = args.getString("textMessage");
             eventTitle = args.getString("eventTitle");
             eventTime = args.getString("eventTime");
             nextTitle = args.getString("nextTitle");
             nextTime = args.getString("nextTime");
         }else{
-            System.out.println("*** An impossibility has occurred. Go get your Nobel Prize.");
+            System.out.println("STAT_: An impossibility has occurred. Go get your Nobel Prize.");
         }
 
         View view = inflater.inflate(R.layout.fragment_status, container, false);
 
         mStatusLayout = view.findViewById(R.id.status_layout);
 
-        mTextMessage = view.findViewById(R.id.message);
         mReserved = view.findViewById(R.id.reserved_label);
         mFree = view.findViewById(R.id.free_label);
         mNext = view.findViewById(R.id.next_label);
@@ -89,42 +103,31 @@ public class StatusFragment extends Fragment {
         return view;
     }
 
+    /**
+     *
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
-        System.out.println("*** Fragment Event Title: " + eventTitle); // TODO: The fragment is STILL not getting updates. Fuck.
+        System.out.println("STAT_: Fragment Event Title: " + eventTitle); // TODO: The fragment is STILL not getting updates. Fuck.
         setRoomStatus();
-//        if (!eventTitle.equals("")) {
-//
-//            if (!nextTitle.equals("")) {
-//                setRoomFuture();
-//            }else setRoomFuture("There are no upcoming events.", "");
-//        } else setRoomFree();
     }
 
-    public void updateViews(String textMessage, String eventTitle, String eventTime, String nextTitle, String nextTime){
-        this.textMessage = textMessage;
-        this.eventTitle = eventTitle;
-        this.eventTime = eventTime;
-        this.nextTitle = nextTitle;
-        this.nextTime = nextTime;
-        System.out.println("*** Ran updateViews.");
-    }
-
+    /**
+     *
+     */
     private void setRoomFree() {
         mReserved.setVisibility(View.INVISIBLE);
         mFree.setVisibility(View.VISIBLE);
         mEventTitle.setText("");
         mEventTime.setText("");
-//        if (!nextTitle.equals("")){
-//            mNextTitle.setText(nextTitle);
-//            mNextTime.setText(nextTime);
-//        }else{
-//            mNextTitle.setText("There are no upcoming events.");
-//            mNextTime.setText("");
-//        }
         mStatusLayout.setBackgroundColor(getResources().getColor(R.color.CSHGreen));
     }
 
+    /**
+     *
+     */
     private void setRoomStatus(){
         if (!eventTitle.equals("")){
             mFree.setVisibility(View.INVISIBLE);
@@ -138,6 +141,9 @@ public class StatusFragment extends Fragment {
         setRoomFuture();
     }
 
+    /**
+     *
+     */
     private void setRoomFuture(){
         if (nextTitle != ""){
             mNext.setVisibility(View.VISIBLE);
