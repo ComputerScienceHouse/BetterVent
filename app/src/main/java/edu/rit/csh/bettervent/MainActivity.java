@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     // So here's the strat. This MainActivity gets the data from the API, and holds it
     // as various strings and Booleans and all that. The Fragments then update themselves using
-    // that. Think of this as a model, and the fragments as a view. I think. IDK.
+    // that.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         refreshResults();
         if (selectedFragment == null) {
-            selectedFragment = StatusFragment.newInstance(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
+            selectedFragment = StatusFragment.newInstance(APIOutList);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     selectedFragment).commit();
         }
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 // TODO: java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState ???
                 try {
                     if (selectedFragment instanceof StatusFragment){
-                        selectedFragment = StatusFragment.newInstance(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
+                        selectedFragment = StatusFragment.newInstance(APIOutList);
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                 selectedFragment).commit();
                     }
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.navigation_status:
 //                            selectedFragment = new StatusFragment();
-                            selectedFragment = StatusFragment.newInstance(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
+                            selectedFragment = StatusFragment.newInstance(APIOutList);
                             break;
                         case R.id.navigation_schedule:
                             selectedFragment = ScheduleFragment.newInstance(APIOutList);
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("*** Events found.  *** " + dataEvents);
                     APIOutList = dataEvents;
                     isFree();
-                    getCurrentAndNextEvents();
+//                    getCurrentAndNextEvents();
 //                    getCurrentEvent();
 //                    getNextEvent();
                 }
@@ -355,53 +355,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void getCurrentAndNextEvents(){
-        //Here's all the data we'll need.
-        String summary = APIOutList.get(0).getSummary();
-        DateTime start = APIOutList.get(0).getStart().getDateTime();
-        DateTime end = APIOutList.get(0).getEnd().getDateTime();
-
-        if (start == null) { // If the event will last all day...
-            // (All-day events don't have start times, so just use the start date)
-            start = APIOutList.get(0).getStart().getDate();
-            currentEventTitle = summary;
-            currentEventTime = formatDateTime(start);
-        }else{ // If the event has a set start and end time...
-            DateTime now = new DateTime(System.currentTimeMillis());
-            if (start.getValue() > now.getValue()){ // If the first event will happen in the future...
-                // Then we don't have a current event.
-                currentEventTitle = "";
-                currentEventTime = "";
-                nextEventTitle = summary;
-                nextEventTime = formatDateTime(start) + " — " + formatDateTime(end);
-            }else{ // If the first event is happening right now...
-                currentEventTitle = summary;
-                currentEventTime = formatDateTime(start) + " — " + formatDateTime(end);
-                if (APIOutList.size() > 1) // If there's an event after this one...
-                    getNextEvent();
-            }
-        }
-    }
-
-    //TODO: This looks like you should put it in the StatusFragment.
-    private void getNextEvent(){
-        try{
-            String nextEvent = APIOutList.get(1).getSummary();
-            DateTime nextTime = APIOutList.get(1).getStart().getDateTime();
-            DateTime nextEnd =  APIOutList.get(1).getEnd().getDateTime();
-            if (nextTime == null) {
-                // All-day events don't have start times, so just use
-                // the start date.
-                nextTime = APIOutList.get(1).getStart().getDate();
-            }
-            nextEventTitle = nextEvent;
-            nextEventTime = formatDateTime(nextTime) + " — " + formatDateTime(nextEnd);
-        }catch (Exception e){
-            nextEventTitle = "";
-            nextEventTime = "";
-        }
-    }
-
+    /**
+     * Checks the times of the first event in APIOutList (the List of Events generated by the API)
+     * and if the current time is within those times, then the room is booked
+     * and if the current time is not within those times, the room is free.
+     * @return: true if the current time is outside of the time of the
+     * next event, and false if vice-versa.
+     */
     private boolean isFree(){
         try{
             DateTime now = new DateTime(System.currentTimeMillis());
@@ -420,14 +380,5 @@ public class MainActivity extends AppCompatActivity {
             isReserved = false;
             return true;
         }
-    }
-
-    private String formatDateTime(DateTime dateTime) {
-        String[] t = dateTime.toString().split("T");
-        String time = t[1].substring(0, 5);
-        String[] date = t[0].toString().split("-");
-        String dateString = date[0] + "/" + date[1] + "/" + date[2];
-
-        return time + " on " + dateString;
     }
 }

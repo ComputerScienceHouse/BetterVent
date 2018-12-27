@@ -10,6 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.model.Event;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 public class StatusFragment extends Fragment {
 
     private ConstraintLayout mStatusLayout;
@@ -23,33 +30,36 @@ public class StatusFragment extends Fragment {
     private TextView mNextTime;
 
     // TODO: Delet. See instructions below.
+    public List<Event> events;
+
     public String textMessage;
-    public String eventTitle;
-    public String eventTime;
+    public String currentTitle;
+    public String currentTime;
     public String nextTitle;
     public String nextTime;
 
     // TODO: Serialize the events and then do all the parsing in here. Simplify the shit out of the
     // TODO: MainActivity. Its only job should be to get the events and control the fragments.
 
-    /**
-     * Create a new instance of StatusFragment, passing in variables and Objects by bundling them and
-     * setting arguments.
-     * @param textMessage: A message output by the API for diagnostic information.
-     * @param eventTitle: The title of the current event.
-     * @param eventTime: The start time and end time of the current event.
-     * @param nextTitle: The title of the next event.
-     * @param nextTime: The start time and end time of the next event.
-     * @return: A StatusFragment with the above information bundled into it.
-     */
-    public static StatusFragment newInstance(String textMessage, String eventTitle, String eventTime, String nextTitle, String nextTime){
+
+//    public static StatusFragment newInstance(String textMessage, String currentTitle, String currentTime, String nextTitle, String nextTime){
+//        StatusFragment f = new StatusFragment();
+//        Bundle args = new Bundle();
+//        args.putString("textMessage", textMessage);
+//        args.putString("currentTitle", currentTitle);
+//        args.putString("currentTime", currentTime);
+//        args.putString("nextTitle", nextTitle);
+//        args.putString("nextTime", nextTime);
+//        f.setArguments(args);
+//        return f;
+//    }
+
+    public static StatusFragment newInstance(List<Event> events) {
         StatusFragment f = new StatusFragment();
         Bundle args = new Bundle();
-        args.putString("textMessage", textMessage);
-        args.putString("eventTitle", eventTitle);
-        args.putString("eventTime", eventTime);
-        args.putString("nextTitle", nextTitle);
-        args.putString("nextTime", nextTime);
+        // I guess you can serialize events. Huh.
+        System.out.print("STAT_: *** " + events);
+        args.putSerializable("events", (Serializable) events);
         f.setArguments(args);
         return f;
     }
@@ -58,6 +68,7 @@ public class StatusFragment extends Fragment {
      * Extract information from the bundle that may have been provided with the StatusFragment,
      * inflate status_layout and set it as the currently active view, then make references to all of
      * the various pieces of the UI so that the class can update the UI with the API data.
+     *
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -66,18 +77,21 @@ public class StatusFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        System.out.println("STAT_: Loaded Status Fragment.");
+        infoPrint("Loaded Status Fragment.");
 
         Bundle args = getArguments();
         if (args != null) {
-            System.out.println("STAT_: Found data: " + args.getString("eventTitle"));
-            textMessage = args.getString("textMessage");
-            eventTitle = args.getString("eventTitle");
-            eventTime = args.getString("eventTime");
-            nextTitle = args.getString("nextTitle");
-            nextTime = args.getString("nextTime");
-        }else{
-            System.out.println("STAT_: An impossibility has occurred. Go get your Nobel Prize.");
+            infoPrint("Found status data: " + args.getString("currentTitle"));
+            events = (List<Event>) args.getSerializable("events");
+            getCurrentAndNextEvents();
+//            textMessage = args.getString("textMessage");
+//            currentTitle = args.getString("currentTitle");
+//            currentTime = args.getString("currentTime");
+//            nextTitle = args.getString("nextTitle");
+//            nextTime = args.getString("nextTime");
+
+        } else {
+            infoPrint("ERROR! NO DATA FOUND!");
         }
 
         View view = inflater.inflate(R.layout.fragment_status, container, false);
@@ -94,8 +108,8 @@ public class StatusFragment extends Fragment {
         mNextTitle = view.findViewById(R.id.next_event_title);
         mNextTime = view.findViewById(R.id.next_event_time);
 
-        if (eventTitle == null){
-            textMessage = eventTitle = eventTime = nextTitle = nextTime = "";
+        if (currentTitle == null) {
+            textMessage = currentTitle = currentTime = nextTitle = nextTime = "";
         }
 
         if (nextTitle == null) nextTitle = "";
@@ -104,13 +118,12 @@ public class StatusFragment extends Fragment {
     }
 
     /**
-     *
      * @param view
      * @param savedInstanceState
      */
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
-        System.out.println("STAT_: Fragment Event Title: " + eventTitle); // TODO: The fragment is STILL not getting updates. Fuck.
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        infoPrint("Fragment Event Title: " + currentTitle); // TODO: The fragment is STILL not getting updates. Fuck.
         setRoomStatus();
     }
 
@@ -128,14 +141,14 @@ public class StatusFragment extends Fragment {
     /**
      *
      */
-    private void setRoomStatus(){
-        if (!eventTitle.equals("")){
+    private void setRoomStatus() {
+        if (!currentTitle.equals("")) {
             mFree.setVisibility(View.INVISIBLE);
             mReserved.setVisibility(View.VISIBLE);
-            mEventTitle.setText(eventTitle); // mEventTitle is null when this method is caused, thus invoking a NullPointerException.
-            mEventTime.setText(eventTime);
+            mEventTitle.setText(currentTitle); // mEventTitle is null when this method is caused, thus invoking a NullPointerException.
+            mEventTime.setText(currentTime);
             mStatusLayout.setBackgroundColor(getResources().getColor(R.color.CSHRed));
-        }else {
+        } else {
             setRoomFree();
         }
         setRoomFuture();
@@ -144,15 +157,99 @@ public class StatusFragment extends Fragment {
     /**
      *
      */
-    private void setRoomFuture(){
-        if (nextTitle != ""){
+    private void setRoomFuture() {
+        if (nextTitle != "") {
             mNext.setVisibility(View.VISIBLE);
             mNextTitle.setText(nextTitle);
             mNextTime.setText(nextTime);
-        }else{
+        } else {
             mNext.setVisibility(View.INVISIBLE);
             mNextTitle.setText("There are no upcoming events.");
             mNextTime.setText("");
         }
+    }
+
+
+    /**
+     * Looks at the APIOutList (the List of Events generated by the API),
+     * and based on how many there are and when they are, sets the string
+     * values for currentEventTitle, currentEventTime, nextEventTitle, and
+     * nextEventTime.
+     */
+    private void getCurrentAndNextEvents() {
+        // Flawless™ software engineering.
+        if (events == null || events.size() == 0) {
+            if (events == null)
+                infoPrint("There may have been an issue getting the data.");
+            currentTitle = currentTime = nextTitle = nextTime = "";
+        } else {
+            //Here's all the data we'll need.
+            String summary = events.get(0).getSummary();
+            DateTime start = events.get(0).getStart().getDateTime();
+            DateTime end = events.get(0).getEnd().getDateTime();
+
+            if (start == null) { // If the event will last all day...
+                // (All-day events don't have start times, so just use the start date)
+                start = events.get(0).getStart().getDate();
+                currentTitle = summary;
+                currentTime = formatDateTime(start);
+            } else { // If the event has a set start and end time...
+                DateTime now = new DateTime(System.currentTimeMillis());
+                if (start.getValue() > now.getValue()) { // If the first event will happen in the future...
+                    // Then we don't have a current event.
+                    currentTitle = "";
+                    currentTime = "";
+                    nextTitle = summary;
+                    nextTime = formatDateTime(start) + " — " + formatDateTime(end);
+                } else { // If the first event is happening right now...
+                    currentTitle = summary;
+                    currentTime = formatDateTime(start) + " — " + formatDateTime(end);
+                    if (events.size() > 1) // If there's an event after this one...
+                        getNextEvent();
+                }
+            }
+        }
+    }
+
+    /**
+     * Takes the second index of APIOutList (the List of Events generated by the API)
+     * and sets nextEventTitle and nextEventTime.
+     */
+    //TODO: This looks like you should put it in the StatusFragment.
+    private void getNextEvent() {
+        try {
+            String nextEventSummary = events.get(1).getSummary();
+            DateTime nextEventStart = events.get(1).getStart().getDateTime();
+            DateTime nextEventEnd = events.get(1).getEnd().getDateTime();
+            if (nextEventStart == null) {
+                // All-day events don't have start times, so just use
+                // the start date.
+                nextEventStart = events.get(1).getStart().getDate();
+            }
+            nextTitle = nextEventSummary;
+            nextTime = formatDateTime(nextEventStart) + " — " + formatDateTime(nextEventEnd);
+        } catch (Exception e) {
+            nextTitle = "";
+            nextTime = "";
+        }
+    }
+
+    /**
+     * Method to format DateTimes into human-readable strings
+     *
+     * @param dateTime: DateTime to make readable
+     * @return: HH:MM on YYYY/MM/DD
+     */
+    private String formatDateTime(DateTime dateTime) {
+        String[] t = dateTime.toString().split("T");
+        String time = t[1].substring(0, 5);
+        String[] date = t[0].toString().split("-");
+        String dateString = date[0] + "/" + date[1] + "/" + date[2];
+
+        return time + " on " + dateString;
+    }
+
+    private void infoPrint(String info) {
+        System.out.println("STAT_: " + info);
     }
 }
