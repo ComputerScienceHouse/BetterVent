@@ -39,7 +39,6 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
 //    private int mWeekViewType = TYPE_WEEK_VIEW;
 
     List<Event> events;
-    List<WeekViewDisplayable<Event>> weekViewEvents;
 
     public static ScheduleFragment newInstance(List<Event> events){
         ScheduleFragment f = new ScheduleFragment();
@@ -60,12 +59,12 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
         if (args != null) {
             infoPrint("Found events data");
             events = (List<Event>) args.getSerializable("events");
-            infoPrint("First event title: " + events.get(0).getSummary());
+            if (events != null)
+                 infoPrint("First event title: " + events.get(0).getSummary());
         }else{
             infoPrint("ERROR! NO DATA FOUND!");
         }
         mWeekView = view.findViewById(R.id.week_view);
-        weekViewEvents = new ArrayList<>();
         mWeekView.setMonthChangeListener(this);
         mWeekView.setNumberOfVisibleDays(7);
 
@@ -139,66 +138,50 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
 
     @Override
     public List<WeekViewDisplayable<Event>> onMonthChange(Calendar startDate, Calendar endDate) {
+
+        List<WeekViewDisplayable<Event>> weekViewEvents = new ArrayList<>();
+
         final int color1 = getResources().getColor(R.color.event_color_01);
         final int color2 = getResources().getColor(R.color.event_color_02);
         final int color3 = getResources().getColor(R.color.event_color_03);
         final int color4 = getResources().getColor(R.color.event_color_04);
 
-        infoPrint("event size : " + events.size());
-        for (int i = 0; i < events.size(); i++){
-            Event e = events.get(i);
-            WeekViewEvent wve = new WeekViewEvent();
+        if (events != null){
+            infoPrint("event size : " + events.size());
+            for (int i = 0; i < events.size(); i++){
+                Event e = events.get(i);
+                WeekViewEvent wve = new WeekViewEvent();
 
-            // Set ID (not the Google Calendar ID. I guess. Long.parseLong(e.getId()))
-            wve.setId(i);
+                // Set ID (not the Google Calendar ID. I guess. Long.parseLong(e.getId()))
+                wve.setId(i);
 
-            // Set Title
-            wve.setTitle(e.getSummary());
+                // Set Title
+                wve.setTitle(e.getSummary());
+                
+                final int newYear = startDate.get(Calendar.YEAR);
+                final int newMonth = startDate.get(Calendar.MONTH);
 
-            // Start Time
-            Calendar startCal = Calendar.getInstance();
-            startCal.setTimeInMillis(e.getStart().getDateTime().getValue());
-            wve.setStartTime(startCal);
+                // Start Time
+                Calendar startCal = Calendar.getInstance();
+                startCal.setTimeInMillis(e.getStart().getDateTime().getValue());
+                startCal.set(Calendar.MONTH, newMonth);
+                startCal.set(Calendar.YEAR, newYear);
+                wve.setStartTime(startCal);
 
-            // End Time
-            Calendar endCal = Calendar.getInstance();
-            endCal.setTimeInMillis(e.getEnd().getDateTime().getValue());
-            wve.setEndTime(endCal);
+                // End Time
+                Calendar endCal = Calendar.getInstance();
+                endCal.setTimeInMillis(e.getEnd().getDateTime().getValue());
+                endCal.set(Calendar.MONTH, newMonth);
+                endCal.set(Calendar.YEAR, newYear);
+                wve.setEndTime(endCal);
 
-            wve.setColor(color1);
+                wve.setColor(color1);
 
-            wve.setIsAllDay(false);
+                wve.setIsAllDay(false);
 
-            this.weekViewEvents.add(wve);
+                weekViewEvents.add(wve);
+            }
         }
-        //        return mDatabase.getEventsInRange(startDate, endDate);
-        return this.weekViewEvents;
-//
-//        final int newYear = startDate.get(Calendar.YEAR);
-//        final int newMonth = startDate.get(Calendar.MONTH);
-//
-//        List<WeekViewDisplayable<Event>> coolevents = new ArrayList<>();
-//        WeekViewEvent event;
-//
-//        Calendar startTime = Calendar.getInstance();
-//        startTime.set(Calendar.HOUR_OF_DAY, 3);
-//        startTime.set(Calendar.MINUTE, 0);
-//        startTime.set(Calendar.MONTH, newMonth);
-//        startTime.set(Calendar.YEAR, newYear);
-//        Calendar endTime = (Calendar) startTime.clone();
-//        endTime.add(Calendar.MINUTE, 90);
-//        endTime.set(Calendar.MONTH, newMonth);
-//
-//        event = new WeekViewEvent(); // Make event
-//        event.setId(1); // ID
-//        event.setTitle("Bitch lasaga time"); // Name
-//        event.setStartTime(startTime); // Start Time
-//        event.setEndTime(endTime); // End Time
-//        event.setColor(color1); // Color
-//        event.setIsAllDay(false); // Is All Day
-//
-//        coolevents.add(event);
-//        return coolevents;
-
+        return weekViewEvents;
     }
 }

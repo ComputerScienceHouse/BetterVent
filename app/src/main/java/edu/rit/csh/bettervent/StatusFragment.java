@@ -178,10 +178,14 @@ public class StatusFragment extends Fragment {
      */
     private void getCurrentAndNextEvents() {
         // Flawless™ software engineering.
+        if (events == null)
+            infoPrint("There may have been an issue getting the data.");
+
         if (events == null || events.size() == 0) {
-            if (events == null)
-                infoPrint("There may have been an issue getting the data.");
-            currentTitle = currentTime = nextTitle = nextTime = "";
+            currentTitle = "";
+            currentTime = "";
+            nextTitle = "";
+            nextTime = "";
         } else {
             //Here's all the data we'll need.
             String summary = events.get(0).getSummary();
