@@ -1,5 +1,6 @@
 package edu.rit.csh.bettervent;
 
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alamkanak.weekview.DateTimeInterpreter;
+import com.alamkanak.weekview.EmptyViewLongPressListener;
+import com.alamkanak.weekview.EventClickListener;
+import com.alamkanak.weekview.EventLongPressListener;
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewDisplayable;
@@ -28,11 +32,11 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
 
     WeekView mWeekView;
 
-    private static final int TYPE_DAY_VIEW = 1;
-    private static final int TYPE_THREE_DAY_VIEW = 2;
-    private static final int TYPE_WEEK_VIEW = 3;
-
-    private int mWeekViewType = TYPE_WEEK_VIEW;
+//    private static final int TYPE_DAY_VIEW = 1;
+//    private static final int TYPE_THREE_DAY_VIEW = 2;
+//    private static final int TYPE_WEEK_VIEW = 3;
+//
+//    private int mWeekViewType = TYPE_WEEK_VIEW;
 
     List<Event> events;
     List<WeekViewDisplayable<Event>> weekViewEvents;
@@ -63,12 +67,22 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
         mWeekView = view.findViewById(R.id.week_view);
         weekViewEvents = new ArrayList<>();
         mWeekView.setMonthChangeListener(this);
+        mWeekView.setNumberOfVisibleDays(7);
+
+        // Lets change some dimensions to best fit the view.
+        mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
+        mWeekView.setTimeColumnTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
+        mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
         return view;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+//        item.setChecked(!item.isChecked());
+
 
         // Get a reference for the week view in the layout.
 
@@ -83,51 +97,6 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
 //        mWeekView.setEventLongPressListener(mEventLongPressListener);
 
 //        mWeekView.setWeekViewLoader(null);
-    }
-
-    private void openDayView(MenuItem item) {
-        if (mWeekViewType == TYPE_DAY_VIEW) {
-            return;
-        }
-
-        item.setChecked(!item.isChecked());
-        mWeekViewType = TYPE_DAY_VIEW;
-        mWeekView.setNumberOfVisibleDays(1);
-
-        // Lets change some dimensions to best fit the view.
-        mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
-        mWeekView.setTimeColumnTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()));
-        mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()));
-    }
-
-    private void openThreeDayView(MenuItem item) {
-        if (mWeekViewType == TYPE_THREE_DAY_VIEW) {
-            return;
-        }
-
-        item.setChecked(!item.isChecked());
-        mWeekViewType = TYPE_THREE_DAY_VIEW;
-        mWeekView.setNumberOfVisibleDays(3);
-
-        // Lets change some dimensions to best fit the view.
-        mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
-        mWeekView.setTimeColumnTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()));
-        mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()));
-    }
-
-    private void openWeekView(MenuItem item) {
-        if (mWeekViewType == TYPE_WEEK_VIEW) {
-            return;
-        }
-
-        item.setChecked(!item.isChecked());
-        mWeekViewType = TYPE_WEEK_VIEW;
-        mWeekView.setNumberOfVisibleDays(7);
-
-        // Lets change some dimensions to best fit the view.
-        mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
-        mWeekView.setTimeColumnTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
-        mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
     }
 
     /**
@@ -170,6 +139,12 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
 
     @Override
     public List<WeekViewDisplayable<Event>> onMonthChange(Calendar startDate, Calendar endDate) {
+        final int color1 = getResources().getColor(R.color.event_color_01);
+        final int color2 = getResources().getColor(R.color.event_color_02);
+        final int color3 = getResources().getColor(R.color.event_color_03);
+        final int color4 = getResources().getColor(R.color.event_color_04);
+
+        infoPrint("event size : " + events.size());
         for (int i = 0; i < events.size(); i++){
             Event e = events.get(i);
             WeekViewEvent wve = new WeekViewEvent();
@@ -189,9 +164,41 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
             Calendar endCal = Calendar.getInstance();
             endCal.setTimeInMillis(e.getEnd().getDateTime().getValue());
             wve.setEndTime(endCal);
+
+            wve.setColor(color1);
+
+            wve.setIsAllDay(false);
+
             this.weekViewEvents.add(wve);
         }
         //        return mDatabase.getEventsInRange(startDate, endDate);
         return this.weekViewEvents;
+//
+//        final int newYear = startDate.get(Calendar.YEAR);
+//        final int newMonth = startDate.get(Calendar.MONTH);
+//
+//        List<WeekViewDisplayable<Event>> coolevents = new ArrayList<>();
+//        WeekViewEvent event;
+//
+//        Calendar startTime = Calendar.getInstance();
+//        startTime.set(Calendar.HOUR_OF_DAY, 3);
+//        startTime.set(Calendar.MINUTE, 0);
+//        startTime.set(Calendar.MONTH, newMonth);
+//        startTime.set(Calendar.YEAR, newYear);
+//        Calendar endTime = (Calendar) startTime.clone();
+//        endTime.add(Calendar.MINUTE, 90);
+//        endTime.set(Calendar.MONTH, newMonth);
+//
+//        event = new WeekViewEvent(); // Make event
+//        event.setId(1); // ID
+//        event.setTitle("Bitch lasaga time"); // Name
+//        event.setStartTime(startTime); // Start Time
+//        event.setEndTime(endTime); // End Time
+//        event.setColor(color1); // Color
+//        event.setIsAllDay(false); // Is All Day
+//
+//        coolevents.add(event);
+//        return coolevents;
+
     }
 }
