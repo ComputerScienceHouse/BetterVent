@@ -21,13 +21,13 @@ import java.util.List;
  */
 
 public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
-    private HomeActivity mActivity;
+    private MainActivity mActivity;
 
     /**
      * Constructor.
      * @param activity MainActivity that spawned this task.
      */
-    ApiAsyncTask(HomeActivity activity) {
+    ApiAsyncTask(MainActivity activity) {
         this.mActivity = activity;
     }
 
@@ -42,15 +42,19 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
             mActivity.updateResultsText(getDataFromApi());
 
         } catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
-            mActivity.showGooglePlayServicesAvailabilityErrorDialog(
-                    availabilityException.getConnectionStatusCode());
+//            mActivity.showGooglePlayServicesAvailabilityErrorDialog(
+//                    availabilityException.getConnectionStatusCode()); //TODO: Make this work :3
+            System.err.println("Error connecting to Google Play Services. Error code: "
+                    + availabilityException.getConnectionStatusCode());
+
 
         } catch (UserRecoverableAuthIOException userRecoverableException) {
             mActivity.startActivityForResult(
                     userRecoverableException.getIntent(),
-                    HomeActivity.REQUEST_AUTHORIZATION);
+                    MainActivity.REQUEST_AUTHORIZATION);
 
         } catch (IOException e) {
+//            System.err.println("*** The following error occurred: \n" + e.getMessage());
             mActivity.updateStatus("The following error occurred: " +
                     e.getMessage());
         }
@@ -63,9 +67,10 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
      * @throws IOException
      */
     private List<Event> getDataFromApi() throws IOException {
+//        System.out.println("*** Attempting to get data from API. ***");
         // List the next 10 events from the primary calendar.
         DateTime now = new DateTime(System.currentTimeMillis());
-        List<String> eventStrings = new ArrayList<String>();
+//        List<String> eventStrings = new ArrayList<String>();
         Events events = mActivity.mService.events().list("primary")
                 .setMaxResults(10)
                 .setTimeMin(now)
@@ -73,6 +78,7 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
                 .setSingleEvents(true)
                 .execute();
         List<Event> items = events.getItems();
+//        System.out.println("*** items: " + items);
         return items;
 //        for (Event event : items) {
 //            DateTime start = event.getStart().getDateTime();
