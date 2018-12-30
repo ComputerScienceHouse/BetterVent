@@ -29,7 +29,6 @@ public class StatusFragment extends Fragment {
     private TextView mNextTitle;
     private TextView mNextTime;
 
-    // TODO: Delet. See instructions below.
     public List<Event> events;
 
     public String textMessage;
@@ -38,27 +37,11 @@ public class StatusFragment extends Fragment {
     public String nextTitle;
     public String nextTime;
 
-    // TODO: Serialize the events and then do all the parsing in here. Simplify the shit out of the
-    // TODO: MainActivity. Its only job should be to get the events and control the fragments.
-
-
-//    public static StatusFragment newInstance(String textMessage, String currentTitle, String currentTime, String nextTitle, String nextTime){
-//        StatusFragment f = new StatusFragment();
-//        Bundle args = new Bundle();
-//        args.putString("textMessage", textMessage);
-//        args.putString("currentTitle", currentTitle);
-//        args.putString("currentTime", currentTime);
-//        args.putString("nextTitle", nextTitle);
-//        args.putString("nextTime", nextTime);
-//        f.setArguments(args);
-//        return f;
-//    }
-
     public static StatusFragment newInstance(List<Event> events) {
         StatusFragment f = new StatusFragment();
         Bundle args = new Bundle();
         // I guess you can serialize events. Huh.
-        System.out.print("STAT_: *** " + events);
+        System.out.println("STAT_: " + events);
         args.putSerializable("events", (Serializable) events);
         f.setArguments(args);
         return f;
@@ -81,7 +64,7 @@ public class StatusFragment extends Fragment {
 
         Bundle args = getArguments();
         if (args != null) {
-            infoPrint("Found status data: " + args.getString("currentTitle"));
+            infoPrint("Found status data: " + args.getSerializable("events"));
             events = (List<Event>) args.getSerializable("events");
             getCurrentAndNextEvents();
 //            textMessage = args.getString("textMessage");

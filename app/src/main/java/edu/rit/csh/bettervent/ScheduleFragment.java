@@ -59,7 +59,7 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
         if (args != null) {
             infoPrint("Found events data");
             events = (List<Event>) args.getSerializable("events");
-            if (events != null)
+            if (events != null && events.size() > 0)
                  infoPrint("First event title: " + events.get(0).getSummary());
         }else{
             infoPrint("ERROR! NO DATA FOUND!");

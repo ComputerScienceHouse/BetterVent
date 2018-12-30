@@ -25,7 +25,7 @@
         app:overlappingEventGap="1dp"
         app:showHeaderRowBottomLine="true"
         app:showNowLine="true"
-        app:showNowLineDot="true"
+        app:showNowLineDot="false"
         app:showTimeColumnSeparator="true"
         app:singleDayHorizontalMargin="8dp"
         app:timeColumnBackgroundColor="#ffffffff"

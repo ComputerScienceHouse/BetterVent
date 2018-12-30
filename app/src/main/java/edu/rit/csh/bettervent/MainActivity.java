@@ -29,6 +29,7 @@ import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -97,15 +98,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 refreshResults();
-                // TODO: java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState ???
+                System.out.println(" *** Refreshed.");
+
                 try {
-                    if (selectedFragment instanceof StatusFragment){
+                    if (selectedFragment.getClass() == StatusFragment.class){
                         selectedFragment = StatusFragment.newInstance(APIOutList);
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                 selectedFragment).commit();
+                        System.out.println(" *** Refreshed Status UI");
+                    }else if (selectedFragment.getClass() == ScheduleFragment.class){
+                        selectedFragment = ScheduleFragment.newInstance(APIOutList);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                selectedFragment).commit();
+                        System.out.println(" *** Refreshed Schedule UI");
+                    }else {
+                        System.out.println(" *** UI is not status.");
                     }
-                }catch (IllegalStateException e ){
-                    System.err.println("OwO? Not sure why this happened. Whatever." + e.toString());
+                }catch (Exception e ){
+                    System.err.println("Caught Exception\n" + e.toString());
                 }
                 handler.postDelayed(this, 30000);
             }
@@ -225,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
             if (isDeviceOnline()) {
                 System.out.println("*** Executing APIAsyncTask. ***");
                 new ApiAsyncTask(this).execute();
+                // TODO: java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState ???
             } else {
                 System.out.println("*** Can't refresh calendar. ***");
                 APIStatusMessage = "No network connection available.";
@@ -265,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
                     APIStatusMessage = "No data found.";
                     System.out.println("*** No data found. ***");
                     APIResultsMessage = "Free" ;
+                    APIOutList = new ArrayList<>();
                     currentEventTitle = "";
                     currentEventTime = "";
                     nextEventTitle = "";
