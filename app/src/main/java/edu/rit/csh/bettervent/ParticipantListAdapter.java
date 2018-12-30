@@ -71,11 +71,40 @@ public class ParticipantListAdapter extends RecyclerView.Adapter<ParticipantList
                             // The 'which' argument contains the index position
                             // of the selected item
                             switch(which){
-                                case 0:
+                                case 0: // Edit
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(adapterContext);
+                                    builder.setTitle("Edit " + mData.get(getAdapterPosition()) + "'s name");
+
+// Set up the input
+                                    final EditText input = new EditText(adapterContext);
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+                                    builder.setView(input);
+
+// Set up the buttons
+                                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            String nameToAdd = input.getText().toString();
+                                            mData.set(getAdapterPosition(), nameToAdd);
+                                            notifyItemChanged(getAdapterPosition());
+                                        }
+                                    });
+                                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    });
+
+                                    builder.show();
                                     break;
-                                case 1:
+                                case 1: // Delete
+                                    mData.remove(getAdapterPosition());
+                                    notifyItemRemoved(getAdapterPosition());
                                     break;
-                                case 2:
+                                case 2: // Cancel
+                                    dialog.cancel();
                                     break;
                             }
                         }
