@@ -4,4 +4,12 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="participants">Participants</string>
+    <string name="event_time">Event Time</string>
+    <string name="next_event_title">Next Event Title</string>
+    <string name="event_title">Event Title</string>
+    <string name="next_event">Next Event</string>
+    <string name="next_event_time">Next Event Time</string>
+    <string name="reserved">Reserved</string>
+    <string name="free">Free</string>
 </resources>

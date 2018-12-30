@@ -177,7 +177,6 @@ public class StatusFragment extends Fragment {
      * nextEventTime.
      */
     private void getCurrentAndNextEvents() {
-        // Flawless™ software engineering.
         if (events == null)
             infoPrint("There may have been an issue getting the data.");
 

@@ -5,7 +5,9 @@
     <color name="colorAccent">#D81B60</color>
     <color name="CSHGreen"> #5BA215</color>
     <color name="CSHRed"> #E11C52</color>
-    <color name="Black"> #000000</color>
+    <color name="black"> #000000</color>
+    <color name="white"> #FFFFFF</color>
+
 
     <color name="event_color_01">#59dbe0</color>
     <color name="event_color_02">#f57f68</color>
@@ -15,4 +17,5 @@
     <color name="header_bottom_line">#EEEEEE</color>
     <color name="toolbar_text">#8f000000</color>
     <color name="accent">#2789e4</color>
+    <color name="default_text">#757575</color>
 </resources>

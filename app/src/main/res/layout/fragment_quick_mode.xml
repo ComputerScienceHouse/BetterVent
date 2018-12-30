@@ -2,7 +2,69 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/quick_mode_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/add_participant_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Add"
+            app:layout_constraintBottom_toTopOf="@+id/participants_list"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/name_set_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="172dp"
+            android:text="This room is currently reserved for: "
+            android:textSize="35sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/label_participants"
+            app:layout_constraintEnd_toStartOf="@+id/label_participants" />
+
+        <TextView
+            android:id="@+id/event_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Enter event title..."
+            android:textSize="40sp"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="@+id/name_set_label"
+            app:layout_constraintTop_toBottomOf="@+id/name_set_label" />
+
+        <TextView
+            android:id="@+id/label_participants"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="216dp"
+            android:layout_marginBottom="8dp"
+            android:text="Participants"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toTopOf="@+id/participants_list"
+            app:layout_constraintEnd_toStartOf="@+id/add_participant_button"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/participants_list"
+            android:layout_width="521dp"
+            android:layout_height="546dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="56dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

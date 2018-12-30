@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Black"
+    android:background="@color/black"
     android:visibility="visible"
     tools:context=".MainActivity">
 
@@ -15,23 +15,23 @@
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_navigation" />
 
-    <fragment android:name="edu.rit.csh.bettervent.StatusFragment"
-        android:id="@+id/status_fragment"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent" />
+    <!--<fragment android:name="edu.rit.csh.bettervent.StatusFragment"-->
+        <!--android:id="@+id/status_fragment"-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent" />-->
 
-    <fragment android:name="edu.rit.csh.bettervent.ScheduleFragment"
-        android:id="@+id/schedule_fragment"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent" />
+    <!--<fragment android:name="edu.rit.csh.bettervent.ScheduleFragment"-->
+        <!--android:id="@+id/schedule_fragment"-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent" />-->
 
-    <fragment android:name="edu.rit.csh.bettervent.QuickModeFragment"
-        android:id="@+id/quick_mode_fragment"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent" />
+    <!--<fragment android:name="edu.rit.csh.bettervent.QuickModeFragment"-->
+        <!--android:id="@+id/quick_mode_fragment"-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent" />-->
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"
