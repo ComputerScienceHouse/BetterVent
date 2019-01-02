@@ -2,6 +2,7 @@ package edu.rit.csh.bettervent;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -59,7 +62,9 @@ public class MainActivity extends AppCompatActivity {
     public String nextEventTime;
     public boolean isReserved = true;
 
-    public Fragment selectedFragment;
+    public Fragment mSelectedFragment;
+    public BottomNavigationView mBottomNav;
+    public FloatingActionButton mRefreshButton;
 
     // So here's the strat. This MainActivity gets the data from the API, and holds it
     // as various strings and Booleans and all that. The Fragments then update themselves using
@@ -70,8 +75,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setOnNavigationItemSelectedListener(navListener);
+        mBottomNav = findViewById(R.id.bottom_navigation);
+        mBottomNav.setOnNavigationItemSelectedListener(navListener);
+
+        mRefreshButton = findViewById(R.id.refresh_button);
+
+        mRefreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: figure out why you have to do this twice to make anything happen.
+                    refreshResults();
+                    refreshUI();
+            }
+        });
 
         // Initialize credentials and service object.
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
@@ -86,10 +102,10 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         refreshResults();
-        if (selectedFragment == null) {
-            selectedFragment = StatusFragment.newInstance(APIOutList);
+        if (mSelectedFragment == null) {
+            mSelectedFragment = StatusFragment.newInstance(APIOutList);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    selectedFragment).commit();
+                    mSelectedFragment).commit();
         }
 
         // Initialize API Refresher
@@ -99,24 +115,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 refreshResults();
                 System.out.println(" *** Refreshed.");
-
-                try {
-                    if (selectedFragment.getClass() == StatusFragment.class){
-                        selectedFragment = StatusFragment.newInstance(APIOutList);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                selectedFragment).commit();
-                        System.out.println(" *** Refreshed Status UI");
-                    }else if (selectedFragment.getClass() == ScheduleFragment.class){
-                        selectedFragment = ScheduleFragment.newInstance(APIOutList);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                selectedFragment).commit();
-                        System.out.println(" *** Refreshed Schedule UI");
-                    }else {
-                        System.out.println(" *** UI is not status.");
-                    }
-                }catch (Exception e ){
-                    System.err.println("Caught Exception\n" + e.toString());
-                }
+                refreshUI();
                 handler.postDelayed(this, 30000);
             }
         };
@@ -130,26 +129,23 @@ public class MainActivity extends AppCompatActivity {
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    selectedFragment = null;
+                    mSelectedFragment = null;
                     switch (item.getItemId()) {
                         case R.id.navigation_status:
-//                            selectedFragment = new StatusFragment();
-                            selectedFragment = StatusFragment.newInstance(APIOutList);
+//                            mSelectedFragment = new StatusFragment();
+                            mSelectedFragment = StatusFragment.newInstance(APIOutList);
                             break;
                         case R.id.navigation_schedule:
-                            selectedFragment = ScheduleFragment.newInstance(APIOutList);
+                            mSelectedFragment = ScheduleFragment.newInstance(APIOutList);
                             break;
                         case R.id.navigation_quick_mode:
-                            selectedFragment = new QuickModeFragment();
+                            mSelectedFragment = new QuickModeFragment();
                             break;
                     }
 
-//                    if (selectedFragment instanceof StatusFragment)
-//                        ((StatusFragment) selectedFragment).updateViews(APIStatusMessage, currentEventTitle, currentEventTime, nextEventTitle, nextEventTime);
-
                     System.out.println("*** currentEventTitle: " + currentEventTitle);
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
+                            mSelectedFragment).commit();
 
                     return true;
                 }
@@ -240,6 +236,26 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("*** Can't refresh calendar. ***");
                 APIStatusMessage = "No network connection available.";
             }
+        }
+    }
+
+    public void refreshUI(){
+        try {
+            if (mSelectedFragment.getClass() == StatusFragment.class){
+                mSelectedFragment = StatusFragment.newInstance(APIOutList);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        mSelectedFragment).commit();
+                System.out.println(" *** Refreshed Status UI");
+            }else if (mSelectedFragment.getClass() == ScheduleFragment.class){
+                mSelectedFragment = ScheduleFragment.newInstance(APIOutList);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        mSelectedFragment).commit();
+                System.out.println(" *** Refreshed Schedule UI");
+            }else {
+                System.out.println(" *** UI is not status.");
+            }
+        }catch (Exception e ){
+            System.err.println("Caught Exception\n" + e.toString());
         }
     }
 
