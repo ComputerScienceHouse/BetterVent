@@ -109,19 +109,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Initialize API Refresher
-        final Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                refreshResults();
-                System.out.println(" *** Refreshed.");
-                refreshUI();
-                handler.postDelayed(this, 30000);
-            }
-        };
-
-        //Start API Refresher
-        handler.postDelayed(runnable, 1000);
+//        final Handler handler = new Handler();
+//        Runnable runnable = new Runnable() {
+//            @Override
+//            public void run() {
+////                if (credential.getSelectedAccountName() != null){
+//                    refreshResults();
+//                    System.out.println(" *** Refreshed.");
+//                    refreshUI();
+//                    handler.postDelayed(this, 30000);
+////                }
+//            }
+//        };
+//
+//        //Start API Refresher
+//        handler.postDelayed(runnable, 1000);
 
     }
 
@@ -180,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(
             int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        infoPrint("API Request code returned: " + requestCode);
         switch(requestCode) {
             case REQUEST_GOOGLE_PLAY_SERVICES:
                 if (resultCode == RESULT_OK) {
@@ -408,5 +411,9 @@ public class MainActivity extends AppCompatActivity {
             isReserved = false;
             return true;
         }
+    }
+
+    private void infoPrint(Object info){
+        System.out.println("MAIN_: " + info);
     }
 }
