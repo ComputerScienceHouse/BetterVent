@@ -13,3 +13,9 @@ It has three main functions:
 # How do I get it?
 Currently, BetterVent is not on the Play Store, but you can download the .apk file in the top directory of this repo.
 (I'll try to keep it up to date)
+
+# Future Features
+- UI Fixes
+- Settings panel to customize colors
+- Kiosk mode to prevent users from leaving the app
+- Ability to only display events at a certain location
