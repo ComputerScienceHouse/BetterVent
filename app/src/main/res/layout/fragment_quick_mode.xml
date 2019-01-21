@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
+            android:enabled="false"
             android:text="Add"
             app:layout_constraintBottom_toTopOf="@+id/participants_list"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -27,12 +28,12 @@
             android:id="@+id/name_set_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="172dp"
+            android:layout_marginStart="32dp"
             android:text="This room is currently reserved for: "
             android:textSize="35sp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/label_participants"
-            app:layout_constraintEnd_toStartOf="@+id/label_participants" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/event_name"

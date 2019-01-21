@@ -1,5 +1,6 @@
 package edu.rit.csh.bettervent;
 
+import android.accounts.Account;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -109,19 +110,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Initialize API Refresher
-        final Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                refreshResults();
-                System.out.println(" *** Refreshed.");
-                refreshUI();
-                handler.postDelayed(this, 30000);
-            }
-        };
-
-        //Start API Refresher
-        handler.postDelayed(runnable, 1000);
+//        final Handler handler = new Handler();
+//        Runnable runnable = new Runnable() {
+//            @Override
+//            public void run() {
+////                if (credential.getSelectedAccountName() != null){
+//                    refreshResults();
+//                    System.out.println(" *** Refreshed.");
+//                    refreshUI();
+//                    handler.postDelayed(this, 30000);
+////                }
+//            }
+//        };
+//
+//        //Start API Refresher
+//        handler.postDelayed(runnable, 1000);
 
     }
 
@@ -180,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(
             int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        infoPrint("API Request code returned: " + requestCode);
         switch(requestCode) {
             case REQUEST_GOOGLE_PLAY_SERVICES:
                 if (resultCode == RESULT_OK) {
@@ -189,12 +193,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case REQUEST_ACCOUNT_PICKER:
+                infoPrint("Pick your account.");
                 if (resultCode == RESULT_OK && data != null &&
                         data.getExtras() != null) {
+                    infoPrint("Result = " + resultCode);
                     String accountName =
                             data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                    infoPrint("Account name = " + accountName);
                     if (accountName != null) {
-                        credential.setSelectedAccountName(accountName);
+//                        credential.setSelectedAccountName(accountName);
+                        credential.setSelectedAccount(new Account(accountName, "edu.rit.csh.bettervent"));
+                        infoPrint("Account name set. Account name = " + accountName);
+                        infoPrint(credential.getSelectedAccountName());
                         SharedPreferences settings =
                                 getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = settings.edit();
@@ -203,11 +213,14 @@ public class MainActivity extends AppCompatActivity {
                         refreshResults();
                     }
                 } else if (resultCode == RESULT_CANCELED) {
+                    infoPrint("Account Unspecified");
                     APIStatusMessage = "Account unspecified.";
                 }
+
                 break;
             case REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
+                    if (credential.getSelectedAccountName().length() < 1)
                     refreshResults();
                 } else {
                     chooseAccount();
@@ -226,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
     private void refreshResults() {
         System.out.println("*** Refreshing results... ***");
         if (credential.getSelectedAccountName() == null) {
+            infoPrint("No account selected.");
             chooseAccount();
         } else {
             if (isDeviceOnline()) {
@@ -408,5 +422,9 @@ public class MainActivity extends AppCompatActivity {
             isReserved = false;
             return true;
         }
+    }
+
+    private void infoPrint(Object info){
+        System.out.println("MAIN_: " + info);
     }
 }
