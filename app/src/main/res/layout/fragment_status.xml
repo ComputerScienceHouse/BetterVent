@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/status_layout"
@@ -19,62 +19,60 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <View
-            android:layout_width="350dp"
+            android:id="@+id/view"
+            android:layout_width="698dp"
             android:layout_height="1dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="336dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="292dp"
             android:background="#ffffff"
-            app:layout_constraintBottom_toTopOf="@+id/next_label"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.779"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/event_time"
-            app:layout_constraintVertical_bias="0.363" />
+            app:layout_constraintTop_toBottomOf="@+id/event_time" />
 
         <TextView
             android:id="@+id/event_title"
-            android:layout_width="525dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="248dp"
+            android:layout_width="841dp"
+            android:layout_height="87dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="220dp"
+            android:layout_marginBottom="408dp"
             android:text="@string/event_title"
+            android:textAlignment="center"
+            android:textColor="#ffffff"
+            android:textSize="64sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/reserved_label"
+            app:layout_constraintVertical_bias="0.989" />
+
+        <TextView
+            android:id="@+id/event_time"
+            android:layout_width="789dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="236dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/event_time"
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:textSize="32sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.26"
+            app:layout_constraintHorizontal_bias="0.963"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/reserved_label"
-            app:layout_constraintVertical_bias="0.005" />
-
-        <TextView
-            android:id="@+id/event_time"
-            android:layout_width="489dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="296dp"
-            android:layout_marginTop="156dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/event_time"
-            android:textAlignment="center"
-            android:textColor="#ffffff"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.238"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.257" />
+            app:layout_constraintTop_toBottomOf="@+id/event_title"
+            app:layout_constraintVertical_bias="0.0" />
 
 
         <TextView
             android:id="@+id/next_event_title"
-            android:layout_width="428dp"
+            android:layout_width="656dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
@@ -83,17 +81,17 @@
             android:text="@string/next_event_title"
             android:textAlignment="center"
             android:textColor="#ffffff"
-            android:textSize="18sp"
+            android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/next_label"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.135" />
 
         <TextView
             android:id="@+id/next_event_time"
-            android:layout_width="428dp"
-            android:layout_height="23dp"
+            android:layout_width="611dp"
+            android:layout_height="74dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
@@ -101,6 +99,7 @@
             android:text="@string/next_event_time"
             android:textAlignment="center"
             android:textColor="#ffffff"
+            android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -109,21 +108,21 @@
 
         <TextView
             android:id="@+id/next_label"
-            android:layout_width="115dp"
+            android:layout_width="244dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="580dp"
-            android:layout_marginTop="332dp"
+            android:layout_marginStart="516dp"
+            android:layout_marginTop="8dp"
             android:text="@string/next_event"
             android:textAlignment="center"
             android:textColor="#ffffff"
-            android:textSize="20sp"
+            android:textSize="45sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/view" />
 
         <TextView
             android:id="@+id/reserved_label"
-            android:layout_width="290dp"
+            android:layout_width="726dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="68dp"
@@ -132,18 +131,18 @@
             android:text="@string/reserved"
             android:textAlignment="center"
             android:textColor="#ffffff"
-            android:textSize="40sp"
+            android:textSize="80sp"
             android:textStyle="bold"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.172" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/free_label"
-            android:layout_width="290dp"
+            android:layout_width="687dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="68dp"
@@ -152,14 +151,14 @@
             android:text="@string/free"
             android:textAlignment="center"
             android:textColor="#ffffff"
-            android:textSize="40sp"
+            android:textSize="80sp"
             android:textStyle="bold"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.271" />
+            app:layout_constraintVertical_bias="0.221" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

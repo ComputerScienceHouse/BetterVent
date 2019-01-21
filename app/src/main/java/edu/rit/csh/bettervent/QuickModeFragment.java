@@ -30,6 +30,7 @@ public class QuickModeFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private TextView mParticipantsLabel;
     private TextView mNameSetLabel;
     private TextView mEventName;
     private Button mAddButton;
@@ -52,6 +53,8 @@ public class QuickModeFragment extends Fragment {
         mAdapter = new ParticipantListAdapter(this.getContext(), participants);
         mRecyclerView.setAdapter(mAdapter);
 
+        mParticipantsLabel = view.findViewById(R.id.label_participants);
+
         mNameSetLabel = view.findViewById(R.id.name_set_label);
         mEventName = view.findViewById(R.id.event_name);
         mEventName.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +74,13 @@ public class QuickModeFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String title = input.getText().toString();
+                        mAddButton.setEnabled(true);
                         mQuickModeLayout.setBackgroundColor(getResources().getColor(R.color.CSHRed));
+
+                        mNameSetLabel.setTextColor(getResources().getColor(R.color.white));
+                        mEventName.setTextColor(getResources().getColor(R.color.white));
+                        mParticipantsLabel.setTextColor(getResources().getColor(R.color.white));
+
                         mNameSetLabel.setVisibility(View.VISIBLE);
                         mEventName.setText(title);
                         mEventName.setTypeface(null, Typeface.BOLD);

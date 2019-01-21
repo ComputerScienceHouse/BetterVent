@@ -1,5 +1,6 @@
 package edu.rit.csh.bettervent;
 
+import android.accounts.Account;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -192,12 +193,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case REQUEST_ACCOUNT_PICKER:
+                infoPrint("Pick your account.");
                 if (resultCode == RESULT_OK && data != null &&
                         data.getExtras() != null) {
+                    infoPrint("Result = " + resultCode);
                     String accountName =
                             data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                    infoPrint("Account name = " + accountName);
                     if (accountName != null) {
-                        credential.setSelectedAccountName(accountName);
+//                        credential.setSelectedAccountName(accountName);
+                        credential.setSelectedAccount(new Account(accountName, "edu.rit.csh.bettervent"));
+                        infoPrint("Account name set. Account name = " + accountName);
+                        infoPrint(credential.getSelectedAccountName());
                         SharedPreferences settings =
                                 getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = settings.edit();
@@ -206,11 +213,14 @@ public class MainActivity extends AppCompatActivity {
                         refreshResults();
                     }
                 } else if (resultCode == RESULT_CANCELED) {
+                    infoPrint("Account Unspecified");
                     APIStatusMessage = "Account unspecified.";
                 }
+
                 break;
             case REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
+                    if (credential.getSelectedAccountName().length() < 1)
                     refreshResults();
                 } else {
                     chooseAccount();
@@ -229,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
     private void refreshResults() {
         System.out.println("*** Refreshing results... ***");
         if (credential.getSelectedAccountName() == null) {
+            infoPrint("No account selected.");
             chooseAccount();
         } else {
             if (isDeviceOnline()) {
