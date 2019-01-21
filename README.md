@@ -25,7 +25,7 @@ View when the room is reserved:
 <img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/Screenshot_20190121_042635.png" width="50%" height="50%">
 
 # How do I get it?
-Currently, BetterVent is not on the Play Store, but you can download the .apk file in the top directory of this repo.
+Currently, BetterVent is not on the Play Store, but you can download the .apk file in the releases tab.
 (I'll try to keep it up to date)
 
 # Future Features
