@@ -29,9 +29,14 @@ Currently, BetterVent is not on the Play Store, but you can download the .apk fi
 (I'll try to keep it up to date)
 
 # Future Features
+- UI fixes
+  - Adaptive layout that conforms to more screensizes
 - Quality of life changes for Quick Mode
   - Add confirmation when leaving the fragment
   - Add button to clear Quick Mode without leaving the fragment
-- Settings panel to customize colors
 - Kiosk mode to prevent users from leaving the app
-- Ability to only display events at a certain location
+  - Device provisioning (make app admin?)
+- Ability to filter events by keyword
+- Settings panel
+  - Event filtering
+  - Colors
