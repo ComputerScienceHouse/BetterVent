@@ -63,13 +63,13 @@ public class QuickModeFragment extends Fragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Enter event title");
 
-// Set up the input
+                // Set up the input
                 final EditText input = new EditText(getContext());
-// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
                 builder.setView(input);
 
-// Set up the buttons
+                // Set up the buttons
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -80,6 +80,7 @@ public class QuickModeFragment extends Fragment {
                         mNameSetLabel.setTextColor(getResources().getColor(R.color.white));
                         mEventName.setTextColor(getResources().getColor(R.color.white));
                         mParticipantsLabel.setTextColor(getResources().getColor(R.color.white));
+                        mAddButton.setTextColor(getResources().getColor(R.color.white));
 
                         mNameSetLabel.setVisibility(View.VISIBLE);
                         mEventName.setText(title);
@@ -102,16 +103,17 @@ public class QuickModeFragment extends Fragment {
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                infoPrint("Add button clicked.");
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Add a new participant");
 
-// Set up the input
+                // Set up the input
                 final EditText input = new EditText(getContext());
-// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
                 builder.setView(input);
 
-// Set up the buttons
+                // Set up the buttons
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

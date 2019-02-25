@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -13,60 +12,75 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <Button
-            android:id="@+id/add_participant_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:enabled="false"
-            android:text="Add"
-            app:layout_constraintBottom_toTopOf="@+id/participants_list"
-            app:layout_constraintEnd_toEndOf="parent" />
-
         <TextView
             android:id="@+id/name_set_label"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:text="This room is currently reserved for: "
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/this_room_is_currently_reserved_for"
+            android:textAlignment="center"
+            android:textColor="@color/black"
             android:textSize="35sp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/label_participants"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/event_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Enter event title..."
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/enter_event_title"
+            android:textAlignment="center"
             android:textSize="40sp"
             android:visibility="visible"
-            app:layout_constraintStart_toStartOf="@+id/name_set_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name_set_label" />
 
         <TextView
             android:id="@+id/label_participants"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="216dp"
-            android:layout_marginBottom="8dp"
-            android:text="Participants"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/participants"
+            android:textColor="@color/black"
             android:textSize="40sp"
-            app:layout_constraintBottom_toTopOf="@+id/participants_list"
-            app:layout_constraintEnd_toStartOf="@+id/add_participant_button"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="@+id/participants_list"
+            app:layout_constraintHorizontal_bias="0.509"
+            app:layout_constraintStart_toStartOf="@+id/participants_list"
+            app:layout_constraintTop_toBottomOf="@+id/event_name" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/participants_list"
-            android:layout_width="520dp"
-            android:layout_height="546dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="56dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_participants" />
+
+        <Button
+            android:id="@+id/add_participant_button"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="+"
+            android:textSize="50sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 

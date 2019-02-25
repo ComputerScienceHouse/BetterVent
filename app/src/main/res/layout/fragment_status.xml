@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black">
@@ -18,26 +17,54 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <Button
+            android:id="@+id/leave_button"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="191dp"
+            android:layout_height="128dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/settings_button"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="191dp"
+            android:layout_height="128dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5"/>
+
         <View
             android:id="@+id/view"
             android:layout_width="698dp"
             android:layout_height="1dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="290dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="292dp"
             android:background="#ffffff"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/event_time" />
 
         <TextView
             android:id="@+id/event_title"
-            android:layout_width="841dp"
+            android:layout_width="1053dp"
             android:layout_height="87dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="220dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="408dp"
             android:text="@string/event_title"
             android:textAlignment="center"
@@ -45,84 +72,77 @@
             android:textSize="64sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/reserved_label"
             app:layout_constraintVertical_bias="0.989" />
 
         <TextView
             android:id="@+id/event_time"
-            android:layout_width="789dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="236dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:text="@string/event_time"
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:textSize="32sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.963"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/event_title"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/event_title" />
 
 
         <TextView
             android:id="@+id/next_event_title"
-            android:layout_width="656dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="268dp"
             android:text="@string/next_event_title"
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:textSize="36sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/next_label"
-            app:layout_constraintVertical_bias="0.135" />
+            app:layout_constraintTop_toBottomOf="@+id/next_label" />
 
         <TextView
             android:id="@+id/next_event_time"
-            android:layout_width="611dp"
+            android:layout_width="0dp"
             android:layout_height="74dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="232dp"
             android:text="@string/next_event_time"
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/next_event_title"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/next_event_title" />
 
         <TextView
             android:id="@+id/next_label"
-            android:layout_width="244dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="516dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:text="@string/next_event"
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:textSize="45sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view" />
 
         <TextView
             android:id="@+id/reserved_label"
-            android:layout_width="726dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="68dp"
@@ -142,7 +162,7 @@
 
         <TextView
             android:id="@+id/free_label"
-            android:layout_width="687dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="68dp"

@@ -1,12 +1,17 @@
 package edu.rit.csh.bettervent;
 
 import android.accounts.Account;
+import android.app.AlertDialog;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.MenuItem;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
@@ -21,6 +26,8 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -75,6 +82,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Following code allow the app packages to lock task in true kiosk mode
+        // get policy manager
+        DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        // get this app package name
+        ComponentName mDPM = new ComponentName(this, AdminReceiver.class);
+
+        if (myDevicePolicyManager.isDeviceOwnerApp(this.getPackageName())) {
+            // get this app package name
+            String[] packages = {this.getPackageName()};
+            // mDPM is the admin package, and allow the specified packages to lock task
+            myDevicePolicyManager.setLockTaskPackages(mDPM, packages);
+        } else {
+            Toast.makeText(getApplicationContext(),"Not owner", Toast.LENGTH_LONG).show();
+        }
+
+        startLockTask();
+
 
         mBottomNav = findViewById(R.id.bottom_navigation);
         mBottomNav.setOnNavigationItemSelectedListener(navListener);
