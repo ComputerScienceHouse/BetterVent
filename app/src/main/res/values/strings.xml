@@ -4,7 +4,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="participants">Participants</string>
     <string name="event_time">Event Time</string>
     <string name="next_event_title">Next Event Title</string>
     <string name="event_title">Event Title</string>
@@ -12,4 +11,21 @@
     <string name="next_event_time">Next Event Time</string>
     <string name="reserved">Reserved</string>
     <string name="free">Free</string>
+    <string name="sample_device_admin">BetterVent</string>
+    <string name="sample_device_admin_description">Allows kiosk mode to be enabled so that the app cannot be quit by a non-administrator</string>
+    <string name="settings">Settings</string>
+    <string name="event_filtering_keywords">Event Filtering Keywords</string>
+    <string name="colors">Colors</string>
+    <string name="separate_keywords_with_commas">Separate keywords with commas</string>
+    <string name="enter_keywords_to_only_display_events_that_contain_those_words">Enter keywords to only display events that contain those words</string>
+    <string name="status_page_colors">Status Page Colors</string>
+    <string name="enter_a_hex_number_xxxxxx">hex_prompt</string>
+    <string name="this_room_is_currently_reserved_for">This room is currently reserved for:</string>
+    <string name="enter_event_title">Enter event title...</string>
+    <string name="add">Add</string>
+    <string name="participants">Participants:</string>
+    <!--<string name="admin_receiver_status">Device Administrator Status: %s</string>-->
+    <!--<string name="admin_receiver_status_enabled">Enabled</string>-->
+    <!--<string name="admin_receiver_status_disable_warning">The application will no longer be protected</string>-->
+    <!--<string name="admin_receiver_status_disabled">Disabled</string>-->
 </resources>

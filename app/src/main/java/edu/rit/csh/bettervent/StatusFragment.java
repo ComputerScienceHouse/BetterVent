@@ -1,13 +1,21 @@
 package edu.rit.csh.bettervent;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.api.client.util.DateTime;
@@ -28,6 +36,9 @@ public class StatusFragment extends Fragment {
     private TextView mEventTime;
     private TextView mNextTitle;
     private TextView mNextTime;
+
+    private Button mLeaveButton;
+    private Button mSettingsButton;
 
     public List<Event> events;
 
@@ -90,6 +101,50 @@ public class StatusFragment extends Fragment {
 
         mNextTitle = view.findViewById(R.id.next_event_title);
         mNextTime = view.findViewById(R.id.next_event_time);
+
+        mLeaveButton = view.findViewById(R.id.leave_button);
+        mSettingsButton = view.findViewById(R.id.settings_button);
+
+        mLeaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Enter Password:");
+
+// Set up the input
+                final EditText input = new EditText(getContext());
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+                builder.setView(input);
+
+// Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String password = input.getText().toString();
+                        if (password.equals("dicks123")){
+                            System.exit(0);
+                        }
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        mSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new SettingsFragment()).commit();;
+            }
+        });
 
         if (currentTitle == null) {
             textMessage = currentTitle = currentTime = nextTitle = nextTime = "";
