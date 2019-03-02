@@ -74,9 +74,9 @@ public class MainActivity extends AppCompatActivity {
     public BottomNavigationView mBottomNav;
     public FloatingActionButton mRefreshButton;
 
-    // So here's the strat. This MainActivity gets the data from the API, and holds it
-    // as various strings and Booleans and all that. The Fragments then update themselves using
-    // that.
+    // This MainActivity gets the data from the API, and holds it
+    // as various strings and Booleans and all that.
+    // The Fragments then update themselves using that.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

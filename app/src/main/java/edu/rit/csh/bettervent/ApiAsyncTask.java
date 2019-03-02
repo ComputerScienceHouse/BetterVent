@@ -1,5 +1,6 @@
 package edu.rit.csh.bettervent;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
@@ -22,6 +23,8 @@ import java.util.List;
 
 public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
     private MainActivity mActivity;
+
+    private SharedPreferences appSettings;
 
     /**
      * Constructor.

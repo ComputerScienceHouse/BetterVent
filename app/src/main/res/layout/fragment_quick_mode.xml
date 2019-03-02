@@ -77,7 +77,10 @@
             android:layout_height="100dp"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
+            android:clickable="false"
+            android:enabled="false"
             android:text="+"
+            android:textColor="@color/white"
             android:textSize="50sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
