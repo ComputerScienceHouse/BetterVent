@@ -80,8 +80,6 @@ public class QuickModeFragment extends Fragment {
                         mNameSetLabel.setTextColor(getResources().getColor(R.color.white));
                         mEventName.setTextColor(getResources().getColor(R.color.white));
                         mParticipantsLabel.setTextColor(getResources().getColor(R.color.white));
-                        mAddButton.setTextColor(getResources().getColor(R.color.white));
-
                         mNameSetLabel.setVisibility(View.VISIBLE);
                         mEventName.setText(title);
                         mEventName.setTypeface(null, Typeface.BOLD);

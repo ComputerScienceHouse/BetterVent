@@ -1,9 +1,12 @@
 package edu.rit.csh.bettervent;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -11,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +52,8 @@ public class StatusFragment extends Fragment {
     public String nextTitle;
     public String nextTime;
 
+    private SharedPreferences appSettings;
+
     public static StatusFragment newInstance(List<Event> events) {
         StatusFragment f = new StatusFragment();
         Bundle args = new Bundle();
@@ -72,6 +78,10 @@ public class StatusFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         infoPrint("Loaded Status Fragment.");
+
+        // Load up app settings to fetch passwords and background colors.
+        appSettings = getContext().getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         Bundle args = getArguments();
         if (args != null) {
@@ -105,24 +115,29 @@ public class StatusFragment extends Fragment {
         mLeaveButton = view.findViewById(R.id.leave_button);
         mSettingsButton = view.findViewById(R.id.settings_button);
 
+        //TODO: There has to be a better way to implement the same password box
+        //TODO: for two different things.
         mLeaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Enter Password:");
 
-// Set up the input
+                // Set up the input
                 final EditText input = new EditText(getContext());
-// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                input.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
                 builder.setView(input);
 
-// Set up the buttons
+                // Set up the buttons
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String password = input.getText().toString();
-                        if (password.equals("dicks123")){
+                        if (password.equals(appSettings.getString("edu.rit.csh.bettervent.password", ""))){
                             System.exit(0);
                         }
                     }
@@ -141,8 +156,36 @@ public class StatusFragment extends Fragment {
         mSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new SettingsFragment()).commit();;
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Enter Password:");
+
+                // Set up the input
+                final EditText input = new EditText(getContext());
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                input.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String password = input.getText().toString();
+                        if (password.equals(appSettings.getString("edu.rit.csh.bettervent.password", ""))){
+                            getFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                    new SettingsFragment()).commit();
+                        }
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
             }
         });
 

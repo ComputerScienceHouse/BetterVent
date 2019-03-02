@@ -19,11 +19,12 @@
     <string name="separate_keywords_with_commas">Separate keywords with commas</string>
     <string name="enter_keywords_to_only_display_events_that_contain_those_words">Enter keywords to only display events that contain those words</string>
     <string name="status_page_colors">Status Page Colors</string>
-    <string name="enter_a_hex_number_xxxxxx">hex_prompt</string>
+    <string name="hex_prompt">Enter a hex number</string>
     <string name="this_room_is_currently_reserved_for">This room is currently reserved for:</string>
     <string name="enter_event_title">Enter event title...</string>
     <string name="add">Add</string>
     <string name="participants">Participants:</string>
+    <string name="preference_file_key" />
     <!--<string name="admin_receiver_status">Device Administrator Status: %s</string>-->
     <!--<string name="admin_receiver_status_enabled">Enabled</string>-->
     <!--<string name="admin_receiver_status_disable_warning">The application will no longer be protected</string>-->
