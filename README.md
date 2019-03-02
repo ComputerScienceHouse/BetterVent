@@ -1,7 +1,7 @@
 # BetterVent
 A tablet-based reservation app written for Computer Science House.
 <br>
-<img src="https://github.com/WillNilges/BetterVent/blob/master/app/src/main/images/bettervent%20logo.png" width="200" height="200">
+<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/app/src/main/res/mipmap-hdpi/logo.png" width="200" height="200">
 
 # What is it?
 BetterVent is a lightweight, open source, customizable android app that shows the status of conference rooms.
@@ -11,6 +11,8 @@ It has three main functions:
 View when the room is free:
 
 <img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/Screenshot_20190121_042312.png" width="50%" height="50%">
+
+<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/Screenshot_20190302-044311_BetterVent.jpg" width="50%" height="50%">
 
 View when the room is reserved:
 
@@ -22,7 +24,9 @@ View when the room is reserved:
 
 - A quick-mode function for ad-hoc events. Has an editable title field, as well as a name-list for queuing or attendance purposes
 
-<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/Screenshot_20190121_042635.png" width="50%" height="50%">
+<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/Screenshot_20190302-045308_BetterVent.jpg" width="50%" height="50%">
+
+<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/Screenshot_20190302-045456_BetterVent.jpg" width="50%" height="50%">
 
 # How do I get it?
 Currently, BetterVent is not on the Play Store, but you can download the .apk file in the releases tab.
