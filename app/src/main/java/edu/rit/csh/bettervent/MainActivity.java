@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { CalendarScopes.CALENDAR_READONLY };
 
+    private SharedPreferences appSettings;
+
     public String APIStatusMessage;
     public String APIResultsMessage;
     public String currentEventTitle;
@@ -82,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        // Load up app settings to fetch passwords and background colors.
+        appSettings = getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         //Following code allow the app packages to lock task in true kiosk mode
         // get policy manager
@@ -338,12 +345,37 @@ public class MainActivity extends AppCompatActivity {
                     nextEventTime = "";
                 } else {
                     APIStatusMessage = "API Call Complete.";
-                    System.out.println("*** Events found.  *** " + dataEvents);
-                    APIOutList = dataEvents;
+                    infoPrint("*** Events found.  *** " + dataEvents.toString());
+                    String eventKeyword = appSettings.getString("edu.rit.csh.bettervent.filterkeywords", "");
+                    APIOutList = new ArrayList<>();
+                    for (Event event : dataEvents){
+                        infoPrint(event.getSummary());
+                        if (eventKeyword.length() > 0 && event.getSummary() != null){
+                            if (event.getSummary().contains(eventKeyword)){
+//                                infoPrint("Found an invalid event: " + event.getSummary());
+                                APIOutList.add(event);
+                            }
+                        }else if(eventKeyword.length() < 1){
+                            APIOutList.add(event);
+                        }
+                    }
+//                    for (int i = 0; i < dataEvents.size(); i++){
+//                        Event event = dataEvents.get(i);
+//                        infoPrint("Found event: " + event.getSummary());
+//                        String eventKeyword = appSettings.getString("edu.rit.csh.bettervent.filterkeywords", "");
+//                        // Good good this is messy.
+//                        if (eventKeyword.length() > 0 && event.getSummary() != null){
+//                            if (!event.getSummary().contains(eventKeyword)){
+////                                infoPrint("Found an invalid event: " + event.getSummary());
+//                                dataEvents.remove(event);
+//                            }
+//                        }
+//                    }
+//                    APIOutList = dataEvents;
+                    // Check if a desired keyword is set.
+                    // If it is, Check if a desired keyword is present in an event's title or location.
+                    //If it is not, remove it from the returned events.
                     isFree();
-//                    getCurrentAndNextEvents();
-//                    getCurrentEvent();
-//                    getNextEvent();
                 }
             }
         });
