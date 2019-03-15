@@ -348,33 +348,22 @@ public class MainActivity extends AppCompatActivity {
                     infoPrint("*** Events found.  *** " + dataEvents.toString());
                     String eventKeyword = appSettings.getString("edu.rit.csh.bettervent.filterkeywords", "");
                     APIOutList = new ArrayList<>();
+                    String eventFieldToCheck;
                     for (Event event : dataEvents){
-                        infoPrint(event.getSummary());
-                        if (eventKeyword.length() > 0 && event.getSummary() != null){
-                            if (event.getSummary().contains(eventKeyword)){
-//                                infoPrint("Found an invalid event: " + event.getSummary());
+                        if (appSettings.getBoolean("edu.rit.csh.bettervent.filterbytitle", false)){
+                            eventFieldToCheck = event.getSummary();
+                        }else{
+                            eventFieldToCheck = event.getLocation();
+                        }
+                        infoPrint(eventFieldToCheck);
+                        if (eventKeyword.length() > 0 && eventFieldToCheck != null){
+                            if (eventFieldToCheck.contains(eventKeyword)){
                                 APIOutList.add(event);
                             }
                         }else if(eventKeyword.length() < 1){
                             APIOutList.add(event);
                         }
                     }
-//                    for (int i = 0; i < dataEvents.size(); i++){
-//                        Event event = dataEvents.get(i);
-//                        infoPrint("Found event: " + event.getSummary());
-//                        String eventKeyword = appSettings.getString("edu.rit.csh.bettervent.filterkeywords", "");
-//                        // Good good this is messy.
-//                        if (eventKeyword.length() > 0 && event.getSummary() != null){
-//                            if (!event.getSummary().contains(eventKeyword)){
-////                                infoPrint("Found an invalid event: " + event.getSummary());
-//                                dataEvents.remove(event);
-//                            }
-//                        }
-//                    }
-//                    APIOutList = dataEvents;
-                    // Check if a desired keyword is set.
-                    // If it is, Check if a desired keyword is present in an event's title or location.
-                    //If it is not, remove it from the returned events.
                     isFree();
                 }
             }

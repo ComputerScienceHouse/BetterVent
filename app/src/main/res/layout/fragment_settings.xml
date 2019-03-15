@@ -55,12 +55,21 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
                     android:text="@string/enter_keywords_to_only_display_events_that_contain_those_words"
                     android:textSize="20sp"
-                    app:layout_constraintBottom_toTopOf="@+id/filtering_keywords_prompt"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/filter_label" />
+
+                <TextView
+                    android:id="@+id/filter_desc3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Filter events based on..."
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/filtering_keywords_prompt" />
 
                 <TextView
                     android:id="@+id/escape_square_password_desc"
@@ -111,7 +120,7 @@
                     android:textColor="@color/black"
                     android:textSize="40sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/filtering_keywords_prompt" />
+                    app:layout_constraintTop_toBottomOf="@+id/filter_options_group" />
 
                 <EditText
                     android:id="@+id/free_color"
@@ -166,12 +175,12 @@
                     android:layout_width="556dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="52dp"
+                    android:layout_marginTop="8dp"
                     android:ems="10"
                     android:hint="@string/separate_keywords_with_commas"
                     android:inputType="textPersonName"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/filter_label" />
+                    app:layout_constraintTop_toBottomOf="@+id/filter_desc" />
 
                 <EditText
                     android:id="@+id/password_prompt"
@@ -184,6 +193,30 @@
                     android:inputType="textPassword"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/escape_square_password_desc" />
+
+                <RadioGroup
+                    android:id="@+id/filter_options_group"
+                    android:layout_width="319dp"
+                    android:layout_height="61dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/filter_desc3"
+                    tools:layout_editor_absoluteX="9dp">
+
+                    <RadioButton
+                        android:id="@+id/title_filter_option"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Title"
+                        android:textSize="16sp" />
+
+                    <RadioButton
+                        android:id="@+id/location_filter_option"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Location" />
+                </RadioGroup>
             </android.support.constraint.ConstraintLayout>
         </LinearLayout>
     </ScrollView>

@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 public class SettingsFragment extends Fragment {
 
@@ -18,6 +20,11 @@ public class SettingsFragment extends Fragment {
 
     EditText filterKeywords;
     String filterKeywordsString = "edu.rit.csh.bettervent.filterkeywords";
+    RadioGroup filterOptions;
+    RadioButton filterByTitle;
+    String filterByTitleString = "edu.rit.csh.bettervent.filterbytitle";
+    RadioButton filterByLocation;
+    String filterByLocationString = "edu.rit.csh.bettervent.filterbylocation";
     EditText freeColor;
     String freeColorString = "edu.rit.csh.bettervent.freecolor";
     EditText reservedColor;
@@ -35,18 +42,30 @@ public class SettingsFragment extends Fragment {
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         filterKeywords = view.findViewById(R.id.filtering_keywords_prompt);
+        filterOptions = view.findViewById(R.id.filter_options_group);
+        filterByTitle = view.findViewById(R.id.title_filter_option);
+        filterByLocation = view.findViewById(R.id.location_filter_option);
         freeColor = view.findViewById(R.id.free_color);
         reservedColor = view.findViewById(R.id.reserved_color);
         password = view.findViewById(R.id.password_prompt);
 
         // Log the current settings and load them into the settings fields.
         infoPrint("Keywords: " + appSettings.getString(filterKeywordsString, "") + "\n" +
+                  "Filtering by Title/Location " + appSettings.getBoolean(filterByTitleString, false) + " / " + appSettings.getBoolean(filterByLocationString, false) + "\n" +
                   "ColorFree: " + appSettings.getString(freeColorString, "") + "\n" +
                   "ColorReserved: " + appSettings.getString(reservedColorString, "") + "\n" +
                   "Password: [REDACTED]"
         );
 
         filterKeywords.setText(appSettings.getString(filterKeywordsString, ""));
+        //TODO: Set which radio button is clicked
+        if (appSettings.getBoolean(filterByTitleString, false)){
+            filterByTitle.setChecked(true);
+            filterByLocation.setChecked(false);
+        }else if (appSettings.getBoolean(filterByLocationString, false)){
+            filterByTitle.setChecked(false);
+            filterByLocation.setChecked(true);
+        }
         freeColor.setText(appSettings.getString(freeColorString, ""));
         reservedColor.setText(appSettings.getString(reservedColorString, ""));
         password.setText(appSettings.getString(passwordString, ""));
@@ -60,6 +79,23 @@ public class SettingsFragment extends Fragment {
                 if (!hasFocus) {
                     appSettings.edit().putString(filterKeywordsString, filterKeywords.getText().toString()).apply();
                 }
+            }
+        });
+
+        //TODO: Put radio button code here
+        filterByTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                appSettings.edit().putBoolean(filterByTitleString, true).apply();
+                appSettings.edit().putBoolean(filterByLocationString, false).apply();
+            }
+        });
+
+        filterByLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                appSettings.edit().putBoolean(filterByTitleString, false).apply();
+                appSettings.edit().putBoolean(filterByLocationString, true).apply();
             }
         });
 
