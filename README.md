@@ -38,11 +38,12 @@ Currently, BetterVent is not on the Play Store, but you can download the .apk fi
 - Quality of life changes for Quick Mode
   - Add confirmation when leaving the fragment
   - Add button to clear Quick Mode without leaving the fragment
-- Kiosk mode to prevent users from leaving the app
-  - Device provisioning (make app admin?)
-- Ability to filter events by keyword
+- Anti tampering
+  - Require a pattern of clicks on the escape squares to activate
 - Settings panel
-  - Event filtering
+  - Ability to filter events by keyword
+    - Better parsing of event keywords
+    - Set keywords that usually pertain to a location
   - Colors
   
 ## Device Admin
