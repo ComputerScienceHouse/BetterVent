@@ -44,3 +44,11 @@ Currently, BetterVent is not on the Play Store, but you can download the .apk fi
 - Settings panel
   - Event filtering
   - Colors
+  
+## Device Admin
+To set the app as device admin (You need to do this before kiosk features work (Thanks, Google)) Connect to a computer and in the terminal (after installing adb) do this *BEFORE SETTING UP A GOOGLE ACCOUNT*:
+
+```
+adb shell
+dpm set-device-owner --user current edu.rit.csh.bettervent/.AdminReceiver                                            
+```
