@@ -64,6 +64,9 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
         }else{
             infoPrint("ERROR! NO DATA FOUND!");
         }
+
+        MainActivity.centralClock.setTextColor(0xff000000);
+
         mWeekView = view.findViewById(R.id.week_view);
         mWeekView.setMonthChangeListener(this);
         mWeekView.setNumberOfVisibleDays(7);
