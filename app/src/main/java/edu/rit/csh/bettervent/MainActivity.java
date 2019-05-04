@@ -27,6 +27,8 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextClock;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -49,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
     com.google.api.services.calendar.Calendar mService;
 
     GoogleAccountCredential credential;
-    //    private TextView mStatusText;
-//    private TextView mResultsText;
     private String APIOut;
     private List<Event> APIOutList;
     final HttpTransport transport = AndroidHttp.newCompatibleTransport();
@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
     public String nextEventTitle;
     public String nextEventTime;
     public boolean isReserved = true;
+
+    public static TextClock centralClock;
 
     public Fragment mSelectedFragment;
     public BottomNavigationView mBottomNav;
@@ -140,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     mSelectedFragment).commit();
         }
+
+        centralClock = (TextClock) findViewById(R.id.central_clock);
 
         // Initialize API Refresher
 //        final Handler handler = new Handler();
@@ -467,6 +471,14 @@ public class MainActivity extends AppCompatActivity {
             // If something weird happens, just assume the room is free.
             isReserved = false;
             return true;
+        }
+    }
+
+    public void flopClockColor(boolean color){
+        if (color){
+            centralClock.setTextColor(0xffffff);
+        }else {
+            centralClock.setTextColor(0x555555);
         }
     }
 

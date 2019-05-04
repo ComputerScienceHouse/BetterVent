@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:visibility="visible"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:keepScreenOn="true">
 
     <FrameLayout
         android:id="@+id/fragment_container"
@@ -43,12 +44,25 @@
         <!--android:layout_width="0dp"-->
         <!--android:layout_height="match_parent" />-->
 
+    <TextClock
+        android:id="@+id/central_clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:format12Hour="hh:mm a"
+        android:textColor="#ffffff"
+        android:textSize="45dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="@+id/fragment_container" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/refresh_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="68dp"
+        android:layout_marginBottom="140dp"
         android:clickable="true"
         android:focusable="true"
         android:visibility="visible"

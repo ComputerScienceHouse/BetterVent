@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class QuickModeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         infoPrint("Loaded QuickMode Fragment.");
         View view = inflater.inflate(R.layout.fragment_quick_mode, container, false);
+        MainActivity.centralClock.setTextColor(0xff000000);
 
         mQuickModeLayout = view.findViewById(R.id.quick_mode_layout);
 
@@ -76,11 +78,11 @@ public class QuickModeFragment extends Fragment {
                         String title = input.getText().toString();
                         mAddButton.setEnabled(true);
                         mQuickModeLayout.setBackgroundColor(getResources().getColor(R.color.CSHRed));
-
                         mNameSetLabel.setTextColor(getResources().getColor(R.color.white));
                         mEventName.setTextColor(getResources().getColor(R.color.white));
                         mParticipantsLabel.setTextColor(getResources().getColor(R.color.white));
                         mNameSetLabel.setVisibility(View.VISIBLE);
+                        MainActivity.centralClock.setTextColor(0xffffffff);
                         mEventName.setText(title);
                         mEventName.setTypeface(null, Typeface.BOLD);
                     }

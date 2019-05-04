@@ -115,6 +115,8 @@ public class StatusFragment extends Fragment {
         mLeaveButton = view.findViewById(R.id.leave_button);
         mSettingsButton = view.findViewById(R.id.settings_button);
 
+        MainActivity.centralClock.setTextColor(0xffffffff);
+
         //TODO: There has to be a better way to implement the same password box
         //TODO: for two different things.
         mLeaveButton.setOnClickListener(new View.OnClickListener() {
