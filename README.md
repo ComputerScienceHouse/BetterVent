@@ -33,8 +33,6 @@ Currently, BetterVent is not on the Play Store, but you can download the .apk fi
 (I'll try to keep it up to date)
 
 # Future Features
-- UI fixes
-  - Adaptive layout that conforms to more screensizes
 - Quality of life changes for Quick Mode
   - Add confirmation when leaving the fragment
   - Add button to clear Quick Mode without leaving the fragment
