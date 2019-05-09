@@ -51,3 +51,10 @@ To set the app as device admin (You need to do this before kiosk features work (
 adb shell
 dpm set-device-owner --user current edu.rit.csh.bettervent/.AdminReceiver                                            
 ```
+
+## Setting up the API for development
+If you want to develop for this app, you're going to have to set up your own dev environment. That involves getting the API set up properly. If you want to know how to do that, you can find instructions on it in here: https://github.com/WillNilges/CalendarQuickStart
+
+Also, this command will be useful: keytool -alias androiddebugkey -keystore ~/.android/debug.keystore -list -v 
+
+I will update this page with more detailed instructions before I die (probably).
