@@ -81,7 +81,7 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
                 .setSingleEvents(true)
                 .execute();
         List<Event> items = events.getItems();
-//        System.out.println("*** items: " + items);
+        System.out.println("*** items: " + items);
         return items;
 //        for (Event event : items) {
 //            DateTime start = event.getStart().getDateTime();

@@ -57,6 +57,8 @@ public class SettingsFragment extends Fragment {
                   "Password: [REDACTED]"
         );
 
+        MainActivity.centralClock.setTextColor(0xff000000);
+
         filterKeywords.setText(appSettings.getString(filterKeywordsString, ""));
         //TODO: Set which radio button is clicked
         if (appSettings.getBoolean(filterByTitleString, false)){

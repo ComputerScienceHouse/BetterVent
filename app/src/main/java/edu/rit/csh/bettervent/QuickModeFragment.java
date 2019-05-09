@@ -19,7 +19,11 @@ import android.widget.EditText;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import com.google.api.services.calendar.model.Event;
+
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class QuickModeFragment extends Fragment {
 
@@ -35,6 +39,7 @@ public class QuickModeFragment extends Fragment {
     private TextView mNameSetLabel;
     private TextView mEventName;
     private Button mAddButton;
+    private Button mClearButton;
 
     @Nullable
     @Override
@@ -75,25 +80,17 @@ public class QuickModeFragment extends Fragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String title = input.getText().toString();
-                        mAddButton.setEnabled(true);
-                        mQuickModeLayout.setBackgroundColor(getResources().getColor(R.color.CSHRed));
-                        mNameSetLabel.setTextColor(getResources().getColor(R.color.white));
-                        mEventName.setTextColor(getResources().getColor(R.color.white));
-                        mParticipantsLabel.setTextColor(getResources().getColor(R.color.white));
-                        mNameSetLabel.setVisibility(View.VISIBLE);
-                        MainActivity.centralClock.setTextColor(0xffffffff);
-                        mEventName.setText(title);
-                        mEventName.setTypeface(null, Typeface.BOLD);
+                    String title = input.getText().toString();
+                    mEventName.setText(title);
+                    reserveRoom();
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
+                    dialog.cancel();
                     }
                 });
-
                 builder.show();
             }
         });
@@ -120,7 +117,7 @@ public class QuickModeFragment extends Fragment {
                         String nameToAdd = input.getText().toString();
                         participants.add(nameToAdd);
                         mAdapter.notifyDataSetChanged();
-                        mAdapter.notifyItemInserted(participants.size()-1);
+                        mAdapter.notifyItemInserted(participants.size() - 1);
                         infoPrint("Added new person.");
                     }
                 });
@@ -138,7 +135,18 @@ public class QuickModeFragment extends Fragment {
         return view;
     }
 
-    public void infoPrint(String info){
+    public void infoPrint(String info) {
         System.out.println("QUIC_: " + info);
+    }
+
+    private void reserveRoom() {
+        mAddButton.setEnabled(true);
+        mQuickModeLayout.setBackgroundColor(getResources().getColor(R.color.CSHRed));
+        mNameSetLabel.setTextColor(getResources().getColor(R.color.white));
+        mEventName.setTextColor(getResources().getColor(R.color.white));
+        mParticipantsLabel.setTextColor(getResources().getColor(R.color.white));
+        mNameSetLabel.setVisibility(View.VISIBLE);
+        MainActivity.centralClock.setTextColor(0xffffffff);
+        mEventName.setTypeface(null, Typeface.BOLD);
     }
 }

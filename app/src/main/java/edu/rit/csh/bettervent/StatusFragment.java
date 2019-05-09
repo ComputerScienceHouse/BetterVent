@@ -85,7 +85,7 @@ public class StatusFragment extends Fragment {
 
         Bundle args = getArguments();
         if (args != null) {
-            infoPrint("Found status data: " + args.getSerializable("events"));
+//            infoPrint("Found status data: " + args.getSerializable("events"));
             events = (List<Event>) args.getSerializable("events");
             getCurrentAndNextEvents();
 //            textMessage = args.getString("textMessage");
@@ -175,8 +175,9 @@ public class StatusFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String password = input.getText().toString();
                         if (password.equals(appSettings.getString("edu.rit.csh.bettervent.password", ""))){
+                            MainActivity.mSelectedFragment = new SettingsFragment();
                             getFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                    new SettingsFragment()).commit();
+                                    MainActivity.mSelectedFragment).commit();
                         }
                     }
                 });
@@ -261,7 +262,8 @@ public class StatusFragment extends Fragment {
      */
     private void getCurrentAndNextEvents() {
         if (events == null)
-            infoPrint("There may have been an issue getting the data.");
+            infoPrint("There may have been an issue getting the data." +
+                    "\nor maybe there was just no data.");
 
         if (events == null || events.size() == 0) {
             currentTitle = "";
@@ -327,12 +329,16 @@ public class StatusFragment extends Fragment {
      * @return: HH:MM on YYYY/MM/DD
      */
     private String formatDateTime(DateTime dateTime) {
-        String[] t = dateTime.toString().split("T");
-        String time = t[1].substring(0, 5);
-        String[] date = t[0].toString().split("-");
-        String dateString = date[0] + "/" + date[1] + "/" + date[2];
+        if (dateTime.isDateOnly()){
+            return dateTime.toString();
+        }else{
+            String[] t = dateTime.toString().split("T");
+            String time = t[1].substring(0, 5);
+            String[] date = t[0].split("-");
+            String dateString = date[0] + "/" + date[1] + "/" + date[2];
 
-        return time + " on " + dateString;
+            return time + " on " + dateString;
+        }
     }
 
     private void infoPrint(String info) {

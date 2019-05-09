@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static TextClock centralClock;
 
-    public Fragment mSelectedFragment;
+    public static Fragment mSelectedFragment;
     public BottomNavigationView mBottomNav;
     public FloatingActionButton mRefreshButton;
 
@@ -145,22 +145,22 @@ public class MainActivity extends AppCompatActivity {
 
         centralClock = (TextClock) findViewById(R.id.central_clock);
 
-        // Initialize API Refresher
-//        final Handler handler = new Handler();
-//        Runnable runnable = new Runnable() {
-//            @Override
-//            public void run() {
-////                if (credential.getSelectedAccountName() != null){
-//                    refreshResults();
-//                    System.out.println(" *** Refreshed.");
-//                    refreshUI();
-//                    handler.postDelayed(this, 30000);
-////                }
-//            }
-//        };
-//
-//        //Start API Refresher
-//        handler.postDelayed(runnable, 1000);
+        // Initialize API Refresher. Make sure to sign into a google account before launching the app.
+        final Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (credential.getSelectedAccountName() != null){
+                    refreshResults();
+                    System.out.println(" *** Refreshed.");
+                    refreshUI();
+                    handler.postDelayed(this, 10000);
+                }
+            }
+        };
+
+        //Start API Refresher
+        handler.postDelayed(runnable, 1000);
 
     }
 
@@ -361,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         infoPrint(eventFieldToCheck);
                         if (eventKeyword.length() > 0 && eventFieldToCheck != null){
-                            if (eventFieldToCheck.contains(eventKeyword)){
+                            if (eventFieldToCheck.toLowerCase().contains(eventKeyword.toLowerCase())){
                                 APIOutList.add(event);
                             }
                         }else if(eventKeyword.length() < 1){
@@ -485,4 +485,5 @@ public class MainActivity extends AppCompatActivity {
     private void infoPrint(Object info){
         System.out.println("MAIN_: " + info);
     }
+
 }
