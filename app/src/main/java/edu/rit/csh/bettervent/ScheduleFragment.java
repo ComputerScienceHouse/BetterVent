@@ -1,20 +1,15 @@
 package edu.rit.csh.bettervent;
 
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alamkanak.weekview.DateTimeInterpreter;
-import com.alamkanak.weekview.EmptyViewLongPressListener;
-import com.alamkanak.weekview.EventClickListener;
-import com.alamkanak.weekview.EventLongPressListener;
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewDisplayable;
@@ -30,20 +25,12 @@ import java.util.Locale;
 
 public class ScheduleFragment extends Fragment implements MonthLoader.MonthChangeListener<Event>{
 
-    WeekView mWeekView;
-
-//    private static final int TYPE_DAY_VIEW = 1;
-//    private static final int TYPE_THREE_DAY_VIEW = 2;
-//    private static final int TYPE_WEEK_VIEW = 3;
-//
-//    private int mWeekViewType = TYPE_WEEK_VIEW;
-
+    WeekView weekView;
     List<Event> events;
 
     public static ScheduleFragment newInstance(List<Event> events){
         ScheduleFragment f = new ScheduleFragment();
         Bundle args = new Bundle();
-        // I guess you can serialize events. Huh. That's OP.
         args.putSerializable("events", (Serializable) events);
         f.setArguments(args);
         return f;
@@ -67,38 +54,20 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
 
         MainActivity.centralClock.setTextColor(0xff000000);
 
-        mWeekView = view.findViewById(R.id.week_view);
-        mWeekView.setMonthChangeListener(this);
-        mWeekView.setNumberOfVisibleDays(7);
+        weekView = view.findViewById(R.id.week_view);
+        weekView.setMonthChangeListener(this);
+        weekView.setNumberOfVisibleDays(7);
 
         // Lets change some dimensions to best fit the view.
-        mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
-        mWeekView.setTimeColumnTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
-        mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
+        weekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
+        weekView.setTimeColumnTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
+        weekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
         return view;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-//        item.setChecked(!item.isChecked());
-
-
-        // Get a reference for the week view in the layout.
-
-        // Set an action when any event is clicked.
-//        mWeekView.setOnEventClickListener(mEventClickListener);
-
-        // The week view has infinite scrolling horizontally. We have to provide the events of a
-        // month every time the month changes on the week view.
-//        mWeekView.setMonthChangeListener(this);
-
-        // Set long press listener for events.
-//        mWeekView.setEventLongPressListener(mEventLongPressListener);
-
-//        mWeekView.setWeekViewLoader(null);
     }
 
     /**
@@ -106,7 +75,7 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
      * date values otherwise.
      */
     private void setupDateTimeInterpreter() {
-        mWeekView.setDateTimeInterpreter(new DateTimeInterpreter() {
+        weekView.setDateTimeInterpreter(new DateTimeInterpreter() {
 
             SimpleDateFormat weekdayNameFormat = new SimpleDateFormat("EEE", Locale.getDefault());
             SimpleDateFormat format = new SimpleDateFormat(" M/d", Locale.getDefault());
@@ -114,7 +83,7 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
             @Override
             public String interpretDate(Calendar date) {
                 String weekday = weekdayNameFormat.format(date.getTime());
-                if (mWeekView.getNumberOfVisibleDays() == 7) {
+                if (weekView.getNumberOfVisibleDays() == 7) {
                     weekday = String.valueOf(weekday.charAt(0));
                 }
                 return weekday.toUpperCase() + format.format(date.getTime());
@@ -144,39 +113,42 @@ public class ScheduleFragment extends Fragment implements MonthLoader.MonthChang
 
         List<WeekViewDisplayable<Event>> weekViewEvents = new ArrayList<>();
 
-        final int color1 = getResources().getColor(R.color.event_color_01);
-        final int color2 = getResources().getColor(R.color.event_color_02);
-        final int color3 = getResources().getColor(R.color.event_color_03);
-        final int color4 = getResources().getColor(R.color.event_color_04);
+        final int color1 = getResources().getColor(R.color.colorPrimaryDark);
 
         if (events != null){
             infoPrint("event size : " + events.size());
             for (int i = 0; i < events.size(); i++){
-                Event e = events.get(i);
+                Event event = events.get(i);
                 WeekViewEvent wve = new WeekViewEvent();
 
-                // Set ID (not the Google Calendar ID. I guess. Long.parseLong(e.getId()))
+                // Set ID (not the Google Calendar ID).
                 wve.setId(i);
 
                 // Set Title
-                wve.setTitle(e.getSummary());
+                wve.setTitle(event.getSummary());
                 
                 final int newYear = startDate.get(Calendar.YEAR);
                 final int newMonth = startDate.get(Calendar.MONTH);
 
-                // Start Time
-                Calendar startCal = Calendar.getInstance();
-                startCal.setTimeInMillis(e.getStart().getDateTime().getValue());
-                startCal.set(Calendar.MONTH, newMonth);
-                startCal.set(Calendar.YEAR, newYear);
-                wve.setStartTime(startCal);
+                //TODO: NullPointerException still happens somewhere in WeekViewEvent.
+                try{
+                    // Start Time
+                    Calendar startCal = Calendar.getInstance();
+                    startCal.setTimeInMillis(event.getStart().getDateTime().getValue());
+                    startCal.set(Calendar.MONTH, newMonth);
+                    startCal.set(Calendar.YEAR, newYear);
+                    wve.setStartTime(startCal);
 
-                // End Time
-                Calendar endCal = Calendar.getInstance();
-                endCal.setTimeInMillis(e.getEnd().getDateTime().getValue());
-                endCal.set(Calendar.MONTH, newMonth);
-                endCal.set(Calendar.YEAR, newYear);
-                wve.setEndTime(endCal);
+                    // End Time
+                    Calendar endCal = Calendar.getInstance();
+                    endCal.setTimeInMillis(event.getEnd().getDateTime().getValue());
+                    endCal.set(Calendar.MONTH, newMonth);
+                    endCal.set(Calendar.YEAR, newYear);
+                    wve.setEndTime(endCal);
+                }catch (NullPointerException error){
+                    error.printStackTrace();
+                    wve.setIsAllDay(true);
+                }
 
                 wve.setColor(color1);
 
