@@ -60,7 +60,6 @@ public class SettingsFragment extends Fragment {
         MainActivity.centralClock.setTextColor(0xff000000);
 
         filterKeywords.setText(appSettings.getString(filterKeywordsString, ""));
-        //TODO: Set which radio button is clicked
         if (appSettings.getBoolean(filterByTitleString, false)){
             filterByTitle.setChecked(true);
             filterByLocation.setChecked(false);
@@ -84,7 +83,6 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        //TODO: Put radio button code here
         filterByTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,30 +102,21 @@ public class SettingsFragment extends Fragment {
         (view.findViewById(R.id.free_color)).setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                // When focus is lost run code.
-                if (!hasFocus) {
-                    appSettings.edit().putString(freeColorString, freeColor.getText().toString()).apply();
-                }
+                if (!hasFocus) appSettings.edit().putString(freeColorString, freeColor.getText().toString()).apply();
             }
         });
 
         (view.findViewById(R.id.reserved_color)).setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                // When focus is lost run code.
-                if (!hasFocus) {
-                    appSettings.edit().putString(reservedColorString, reservedColor.getText().toString()).apply();
-                }
+                if (!hasFocus) appSettings.edit().putString(reservedColorString, reservedColor.getText().toString()).apply();
             }
         });
 
         (view.findViewById(R.id.password_prompt)).setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                // When focus is lost run code.
-                if (!hasFocus) {
-                    appSettings.edit().putString(passwordString, password.getText().toString()).apply();
-                }
+                if (!hasFocus) appSettings.edit().putString(passwordString, password.getText().toString()).apply();
             }
         });
 

@@ -1,17 +1,14 @@
 package edu.rit.csh.bettervent;
 
 import android.accounts.Account;
-import android.app.AlertDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.MenuItem;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
@@ -24,11 +21,8 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextClock;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -51,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
     com.google.api.services.calendar.Calendar mService;
 
     GoogleAccountCredential credential;
-    private String APIOut;
+    // This MainActivity gets the data from the API, and holds it
+    // as a list. The Fragments then update themselves using that.
     private List<Event> APIOutList;
     final HttpTransport transport = AndroidHttp.newCompatibleTransport();
     final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
@@ -62,25 +57,17 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { CalendarScopes.CALENDAR_READONLY };
 
-    private SharedPreferences appSettings;
+    private SharedPreferences mAppSettings;
 
     public String APIStatusMessage;
-    public String APIResultsMessage;
-    public String currentEventTitle;
-    public String currentEventTime;
-    public String nextEventTitle;
-    public String nextEventTime;
     public boolean isReserved = true;
 
     public static TextClock centralClock;
 
-    public static Fragment mSelectedFragment;
-    public BottomNavigationView mBottomNav;
-    public FloatingActionButton mRefreshButton;
-
-    // This MainActivity gets the data from the API, and holds it
-    // as various strings and Booleans and all that.
-    // The Fragments then update themselves using that.
+    //UI Elements visible throughout the app
+    public static Fragment selectedFragment;
+    public BottomNavigationView bottomNav;
+    public FloatingActionButton refreshButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Load up app settings to fetch passwords and background colors.
-        appSettings = getSharedPreferences(
+        mAppSettings = getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         //Following code allow the app packages to lock task in true kiosk mode
@@ -110,12 +97,12 @@ public class MainActivity extends AppCompatActivity {
         startLockTask();
 
 
-        mBottomNav = findViewById(R.id.bottom_navigation);
-        mBottomNav.setOnNavigationItemSelectedListener(navListener);
+        bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        mRefreshButton = findViewById(R.id.refresh_button);
+        refreshButton = findViewById(R.id.refresh_button);
 
-        mRefreshButton.setOnClickListener(new View.OnClickListener() {
+        refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: figure out why you have to do this twice to make anything happen.
@@ -137,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         refreshResults();
-        if (mSelectedFragment == null) {
-            mSelectedFragment = StatusFragment.newInstance(APIOutList);
+        if (selectedFragment == null) {
+            selectedFragment = StatusFragment.newInstance(APIOutList);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    mSelectedFragment).commit();
+                    selectedFragment).commit();
         }
 
         centralClock = (TextClock) findViewById(R.id.central_clock);
@@ -168,23 +155,23 @@ public class MainActivity extends AppCompatActivity {
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    mSelectedFragment = null;
+                    selectedFragment = null;
                     switch (item.getItemId()) {
                         case R.id.navigation_status:
-//                            mSelectedFragment = new StatusFragment();
-                            mSelectedFragment = StatusFragment.newInstance(APIOutList);
+//                            selectedFragment = new StatusFragment();
+                            selectedFragment = StatusFragment.newInstance(APIOutList);
                             break;
                         case R.id.navigation_schedule:
-                            mSelectedFragment = ScheduleFragment.newInstance(APIOutList);
+                            selectedFragment = ScheduleFragment.newInstance(APIOutList);
                             break;
                         case R.id.navigation_quick_mode:
-                            mSelectedFragment = new QuickModeFragment();
+                            selectedFragment = new QuickModeFragment();
                             break;
                     }
 
-                    System.out.println("*** currentEventTitle: " + currentEventTitle);
+//                    System.out.println("*** currentEventTitle: " + currentEventTitle);
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            mSelectedFragment).commit();
+                            selectedFragment).commit();
 
                     return true;
                 }
@@ -291,19 +278,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshUI(){
         try {
-            if (mSelectedFragment.getClass() == StatusFragment.class){
-                mSelectedFragment = StatusFragment.newInstance(APIOutList);
+            if (selectedFragment.getClass() == StatusFragment.class){
+                selectedFragment = StatusFragment.newInstance(APIOutList);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        mSelectedFragment).commit();
+                        selectedFragment).commit();
                 System.out.println(" *** Refreshed Status UI");
-            }else if (mSelectedFragment.getClass() == ScheduleFragment.class){
-                mSelectedFragment = ScheduleFragment.newInstance(APIOutList);
+            }else if (selectedFragment.getClass() == ScheduleFragment.class){
+                selectedFragment = ScheduleFragment.newInstance(APIOutList);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        mSelectedFragment).commit();
+                        selectedFragment).commit();
                 System.out.println(" *** Refreshed Schedule UI");
-            }else {
-                System.out.println(" *** UI is not status.");
-            }
+            }else System.out.println(" *** UI is not status.");
         }catch (Exception e ){
             System.err.println("Caught Exception\n" + e.toString());
         }
@@ -320,7 +305,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 APIStatusMessage = "Retrieving data…";
                 APIStatusMessage = "";
-                APIResultsMessage = "";
             }
         });
     }
@@ -338,23 +322,17 @@ public class MainActivity extends AppCompatActivity {
                 if (dataEvents == null) {
                     APIStatusMessage = "Error retrieving data!";
                 } else if (dataEvents.size() == 0) {
-                    // TODO: Call a "setFree" method in StatusFragment or something.
                     APIStatusMessage = "No data found.";
                     System.out.println("*** No data found. ***");
-                    APIResultsMessage = "Free" ;
                     APIOutList = new ArrayList<>();
-                    currentEventTitle = "";
-                    currentEventTime = "";
-                    nextEventTitle = "";
-                    nextEventTime = "";
                 } else {
                     APIStatusMessage = "API Call Complete.";
                     infoPrint("*** Events found.  *** " + dataEvents.toString());
-                    String eventKeyword = appSettings.getString("edu.rit.csh.bettervent.filterkeywords", "");
+                    String eventKeyword = mAppSettings.getString("edu.rit.csh.bettervent.filterkeywords", "");
                     APIOutList = new ArrayList<>();
                     String eventFieldToCheck;
                     for (Event event : dataEvents){
-                        if (appSettings.getBoolean("edu.rit.csh.bettervent.filterbytitle", false)){
+                        if (mAppSettings.getBoolean("edu.rit.csh.bettervent.filterbytitle", false)){
                             eventFieldToCheck = event.getSummary();
                         }else{
                             eventFieldToCheck = event.getLocation();
@@ -471,14 +449,6 @@ public class MainActivity extends AppCompatActivity {
             // If something weird happens, just assume the room is free.
             isReserved = false;
             return true;
-        }
-    }
-
-    public void flopClockColor(boolean color){
-        if (color){
-            centralClock.setTextColor(0xffffff);
-        }else {
-            centralClock.setTextColor(0x555555);
         }
     }
 

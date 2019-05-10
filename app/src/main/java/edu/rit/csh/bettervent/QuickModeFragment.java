@@ -16,30 +16,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextClock;
 import android.widget.TextView;
 
-import com.google.api.services.calendar.model.Event;
-
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class QuickModeFragment extends Fragment {
 
     private ArrayList<String> participants = new ArrayList<>();
 
-    private ConstraintLayout mQuickModeLayout;
+    private ConstraintLayout quickModeLayout;
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
-    private TextView mParticipantsLabel;
-    private TextView mNameSetLabel;
-    private TextView mEventName;
-    private Button mAddButton;
-    private Button mClearButton;
+    private TextView participantsLabel;
+    private TextView nameSetLabel;
+    private TextView eventName;
+    private Button addButton;
 
     @Nullable
     @Override
@@ -48,23 +42,23 @@ public class QuickModeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_quick_mode, container, false);
         MainActivity.centralClock.setTextColor(0xff000000);
 
-        mQuickModeLayout = view.findViewById(R.id.quick_mode_layout);
+        quickModeLayout = view.findViewById(R.id.quick_mode_layout);
 
-        mRecyclerView = view.findViewById(R.id.participants_list);
+        recyclerView = view.findViewById(R.id.participants_list);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this.getContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        layoutManager = new LinearLayoutManager(this.getContext());
+        recyclerView.setLayoutManager(layoutManager);
 
         // specify an adapter
-        mAdapter = new ParticipantListAdapter(this.getContext(), participants);
-        mRecyclerView.setAdapter(mAdapter);
+        adapter = new ParticipantListAdapter(this.getContext(), participants);
+        recyclerView.setAdapter(adapter);
 
-        mParticipantsLabel = view.findViewById(R.id.label_participants);
+        participantsLabel = view.findViewById(R.id.label_participants);
 
-        mNameSetLabel = view.findViewById(R.id.name_set_label);
-        mEventName = view.findViewById(R.id.event_name);
-        mEventName.setOnClickListener(new View.OnClickListener() {
+        nameSetLabel = view.findViewById(R.id.name_set_label);
+        eventName = view.findViewById(R.id.event_name);
+        eventName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -72,17 +66,24 @@ public class QuickModeFragment extends Fragment {
 
                 // Set up the input
                 final EditText input = new EditText(getContext());
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
                 builder.setView(input);
 
-                // Set up the buttons
+                // Set up the button
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     String title = input.getText().toString();
-                    mEventName.setText(title);
-                    reserveRoom();
+                    eventName.setText(title);
+                    //Change appearance of UI to indicate the room is reserved
+                    addButton.setEnabled(true);
+                    quickModeLayout.setBackgroundColor(getResources().getColor(R.color.CSHRed));
+                    nameSetLabel.setTextColor(getResources().getColor(R.color.white));
+                    eventName.setTextColor(getResources().getColor(R.color.white));
+                    participantsLabel.setTextColor(getResources().getColor(R.color.white));
+                    nameSetLabel.setVisibility(View.VISIBLE);
+                    MainActivity.centralClock.setTextColor(0xffffffff);
+                    eventName.setTypeface(null, Typeface.BOLD);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -95,9 +96,9 @@ public class QuickModeFragment extends Fragment {
             }
         });
 
-        mAddButton = view.findViewById(R.id.add_participant_button);
+        addButton = view.findViewById(R.id.add_participant_button);
 
-        mAddButton.setOnClickListener(new View.OnClickListener() {
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 infoPrint("Add button clicked.");
@@ -106,18 +107,17 @@ public class QuickModeFragment extends Fragment {
 
                 // Set up the input
                 final EditText input = new EditText(getContext());
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
                 builder.setView(input);
 
-                // Set up the buttons
+                // Set up the button
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String nameToAdd = input.getText().toString();
                         participants.add(nameToAdd);
-                        mAdapter.notifyDataSetChanged();
-                        mAdapter.notifyItemInserted(participants.size() - 1);
+                        adapter.notifyDataSetChanged();
+                        adapter.notifyItemInserted(participants.size() - 1);
                         infoPrint("Added new person.");
                     }
                 });
@@ -137,16 +137,5 @@ public class QuickModeFragment extends Fragment {
 
     public void infoPrint(String info) {
         System.out.println("QUIC_: " + info);
-    }
-
-    private void reserveRoom() {
-        mAddButton.setEnabled(true);
-        mQuickModeLayout.setBackgroundColor(getResources().getColor(R.color.CSHRed));
-        mNameSetLabel.setTextColor(getResources().getColor(R.color.white));
-        mEventName.setTextColor(getResources().getColor(R.color.white));
-        mParticipantsLabel.setTextColor(getResources().getColor(R.color.white));
-        mNameSetLabel.setVisibility(View.VISIBLE);
-        MainActivity.centralClock.setTextColor(0xffffffff);
-        mEventName.setTypeface(null, Typeface.BOLD);
     }
 }
