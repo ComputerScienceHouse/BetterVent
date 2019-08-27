@@ -58,3 +58,7 @@ If you want to develop for this app, you're going to have to set up your own dev
 Also, this command will be useful: `keytool -alias androiddebugkey -keystore ~/.android/debug.keystore -list -v` 
 
 I will update this page with more detailed instructions before I die (probably).
+
+To point bettervent at a specific calendar, change this line:
+        `Events events = mainActivity.mService.events().list("<calendar_id>")`
+
