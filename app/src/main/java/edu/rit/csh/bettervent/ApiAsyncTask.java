@@ -1,5 +1,6 @@
 package edu.rit.csh.bettervent;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
@@ -41,7 +42,7 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
         try {
             mainActivity.clearResultsText();
-            mainActivity.updateResultsText(getDataFromApi());
+            mainActivity.updateResultsText(getDataFromApi(mainActivity.calendarID));
 
         } catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
 //            mainActivity.showGooglePlayServicesAvailabilityErrorDialog(
@@ -67,11 +68,12 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
      * @return List of Strings describing returned events.
      * @throws IOException
      */
-    private List<Event> getDataFromApi() throws IOException {
+    private List<Event> getDataFromApi(String calendarID) throws IOException {
+        // Load up app settings to fetch passwords and background colors.
 //        System.out.println("*** Attempting to get data from API. ***");
         // List the next 10 events from the primary calendar.
         DateTime now = new DateTime(System.currentTimeMillis());
-        Events events = mainActivity.mService.events().list("primary")
+        Events events = mainActivity.mService.events().list(calendarID)
                 .setMaxResults(10)
                 .setTimeMin(now)
                 .setOrderBy("startTime")

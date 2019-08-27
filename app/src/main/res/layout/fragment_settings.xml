@@ -61,6 +61,17 @@
                     app:layout_constraintTop_toBottomOf="@+id/filter_label" />
 
                 <TextView
+                    android:id="@+id/calendar_id_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Enter the ID of the calendar to display events from"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/calendar_id_label" />
+
+                <TextView
                     android:id="@+id/filter_desc3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -139,8 +150,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
                     android:text="@string/event_filtering_keywords"
+                    android:textColor="@color/black"
+                    android:textSize="40sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/calendar_id_prompt" />
+
+                <TextView
+                    android:id="@+id/calendar_id_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Calendar ID"
                     android:textColor="@color/black"
                     android:textSize="40sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -181,6 +203,18 @@
                     android:inputType="textPersonName"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/filter_desc" />
+
+                <EditText
+                    android:id="@+id/calendar_id_prompt"
+                    android:layout_width="556dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:ems="10"
+                    android:hint="Enter a complete Calendar ID URL"
+                    android:inputType="textPersonName"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/calendar_id_desc" />
 
                 <EditText
                     android:id="@+id/password_prompt"
