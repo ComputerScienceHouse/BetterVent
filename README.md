@@ -52,6 +52,13 @@ adb shell
 dpm set-device-owner --user current edu.rit.csh.bettervent/.AdminReceiver
 ```
 
+To remove device admins:
+
+```
+adb shell
+dpm remove-active-admin  edu.rit.csh.bettervent/.AdminReceiver
+```
+
 ## Setting up the API for development
 If you want to develop for this app, you're going to have to set up your own dev environment. That involves getting the API set up properly. If you want to know how to do that, you can find instructions on it in here: https://github.com/WillNilges/CalendarQuickStart
 
