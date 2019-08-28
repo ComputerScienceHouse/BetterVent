@@ -42,7 +42,7 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
         try {
             mainActivity.clearResultsText();
-            mainActivity.updateResultsText(getDataFromApi(mainActivity.calendarID));
+            mainActivity.updateResultsText(getDataFromApi(mainActivity.calendarID, mainActivity.maxResults));
 
         } catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
 //            mainActivity.showGooglePlayServicesAvailabilityErrorDialog(
@@ -68,13 +68,13 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
      * @return List of Strings describing returned events.
      * @throws IOException
      */
-    private List<Event> getDataFromApi(String calendarID) throws IOException {
+    private List<Event> getDataFromApi(String calendarID, int maxResults) throws IOException {
         // Load up app settings to fetch passwords and background colors.
 //        System.out.println("*** Attempting to get data from API. ***");
         // List the next 10 events from the primary calendar.
         DateTime now = new DateTime(System.currentTimeMillis());
         Events events = mainActivity.mService.events().list(calendarID)
-                .setMaxResults(10)
+                .setMaxResults(maxResults)
                 .setTimeMin(now)
                 .setOrderBy("startTime")
                 .setSingleEvents(true)

@@ -20,6 +20,8 @@ public class SettingsFragment extends Fragment {
 
     EditText calendarID;
     String calendarIDString = "edu.rit.csh.bettervent.calendarid";
+    EditText maxResults;
+    String maxResultsString = "edu.rit.csh.bettervent.maxresults";
     EditText filterKeywords;
     String filterKeywordsString = "edu.rit.csh.bettervent.filterkeywords";
     RadioGroup filterOptions;
@@ -44,6 +46,7 @@ public class SettingsFragment extends Fragment {
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         calendarID = view.findViewById(R.id.calendar_id_prompt);
+        maxResults = view.findViewById(R.id.max_results_prompt);
         filterKeywords = view.findViewById(R.id.filtering_keywords_prompt);
         filterOptions = view.findViewById(R.id.filter_options_group);
         filterByTitle = view.findViewById(R.id.title_filter_option);
@@ -63,6 +66,7 @@ public class SettingsFragment extends Fragment {
         MainActivity.centralClock.setTextColor(0xff000000);
 
         calendarID.setText(appSettings.getString(calendarIDString, ""));
+        maxResults.setText(appSettings.getString(maxResultsString, ""));
         filterKeywords.setText(appSettings.getString(filterKeywordsString, ""));
         if (appSettings.getBoolean(filterByTitleString, false)){
             filterByTitle.setChecked(true);
@@ -82,6 +86,14 @@ public class SettingsFragment extends Fragment {
             public void onFocusChange(View v, boolean hasFocus) {
                 // When focus is lost run code.
                 if (!hasFocus) appSettings.edit().putString(calendarIDString, calendarID.getText().toString()).apply();
+            }
+        });
+
+        (view.findViewById(R.id.max_results_prompt)).setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                // When focus is lost run code.
+                if (!hasFocus) appSettings.edit().putString(maxResultsString, maxResults.getText().toString()).apply();
             }
         });
 

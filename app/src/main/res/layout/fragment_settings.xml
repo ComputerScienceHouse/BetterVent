@@ -72,6 +72,17 @@
                     app:layout_constraintTop_toBottomOf="@+id/calendar_id_label" />
 
                 <TextView
+                    android:id="@+id/max_results_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Enter the number of future events to fetch"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/calendar_id_prompt" />
+
+                <TextView
                     android:id="@+id/filter_desc3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -150,11 +161,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/event_filtering_keywords"
                     android:textColor="@color/black"
                     android:textSize="40sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/calendar_id_prompt" />
+                    app:layout_constraintTop_toBottomOf="@+id/max_results_prompt" />
 
                 <TextView
                     android:id="@+id/calendar_id_label"
@@ -251,6 +263,18 @@
                         android:layout_weight="1"
                         android:text="Location" />
                 </RadioGroup>
+
+                <EditText
+                    android:id="@+id/max_results_prompt"
+                    android:layout_width="240dp"
+                    android:layout_height="42dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:ems="10"
+                    android:hint="Fetch a quantity of events"
+                    android:inputType="number"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/max_results_desc" />
             </android.support.constraint.ConstraintLayout>
         </LinearLayout>
     </ScrollView>

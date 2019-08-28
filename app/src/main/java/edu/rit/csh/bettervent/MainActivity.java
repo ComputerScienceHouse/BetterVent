@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { CalendarScopes.CALENDAR_READONLY };
     public String calendarID;
+    public int maxResults;
 
     private SharedPreferences mAppSettings;
 
@@ -80,7 +81,15 @@ public class MainActivity extends AppCompatActivity {
         mAppSettings = getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
+        // Must restart for these preferences to take hold.
         calendarID = mAppSettings.getString("edu.rit.csh.bettervent.calendarid", "");
+        String maxResultsStr = mAppSettings.getString("edu.rit.csh.bettervent.maxresults", "");
+        if (maxResultsStr != "" && maxResultsStr != null) maxResults = Integer.parseInt(maxResultsStr);
+        else {
+            infoPrint("Max Results not set. Defaulting to 100.");
+            maxResults = 100;
+        }
+
 
         //Following code allow the app packages to lock task in true kiosk mode
         // get policy manager
