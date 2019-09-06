@@ -2,43 +2,33 @@ package edu.rit.csh.bettervent
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
 import android.text.InputType
 import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 
 import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.model.Event
+import kotlinx.android.synthetic.main.fragment_status.*
+import kotlinx.android.synthetic.main.fragment_status.view.*
+import kotlinx.android.synthetic.main.password_alert.*
+import kotlinx.android.synthetic.main.password_alert.view.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.yesButton
 
 import java.io.Serializable
 
 class StatusFragment : Fragment() {
 
-    private var appSettings: SharedPreferences? = null // Settings object containing user preferences.
+    private lateinit var appSettings: SharedPreferences // Settings object containing user preferences.
 
-    // Oops, all UI!
-    private var statusLayout: ConstraintLayout? = null
-    private var reservedText: TextView? = null
-    private var freeText: TextView? = null
-    private var nextText: TextView? = null
-    private var eventTitleText: TextView? = null
-    private var eventTimeText: TextView? = null
-    private var nextTitleText: TextView? = null
-    private var nextTimeText: TextView? = null
-
-    private var leaveButton: Button? = null
-    private var settingsButton: Button? = null
-
-    var events: List<Event>? = null
+    var events: ArrayList<Event> = ArrayList()
 
     // Variables for storing what the status should read out as
     var currentTitle: String? = null
@@ -65,7 +55,7 @@ class StatusFragment : Fragment() {
 
         val args = arguments
         if (args != null) {
-            events = args.getSerializable("events") as List<Event>
+            events.addAll(args.getSerializable("events") as List<Event>)
             getCurrentAndNextEvents()
 
         } else {
@@ -74,71 +64,31 @@ class StatusFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_status, container, false)
 
-        statusLayout = view.findViewById(R.id.status_layout)
-
-        reservedText = view.findViewById(R.id.reserved_label)
-        freeText = view.findViewById(R.id.free_label)
-        nextText = view.findViewById(R.id.next_label)
-        eventTitleText = view.findViewById(R.id.event_title)
-        eventTimeText = view.findViewById(R.id.event_time)
-        nextTitleText = view.findViewById(R.id.next_event_title)
-        nextTimeText = view.findViewById(R.id.next_event_time)
-
-        leaveButton = view.findViewById(R.id.leave_button)
-        settingsButton = view.findViewById(R.id.settings_button)
-
         MainActivity.centralClock.setTextColor(-0x1)
 
-        //TODO: There has to be a better way to implement the same password box
-        //TODO: for two different things.
-        leaveButton!!.setOnClickListener {
-            val builder = AlertDialog.Builder(context)
-            builder.setTitle("Enter Password:")
-
-            // Set up the input
-            val input = EditText(context)
-            input.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
-            input.transformationMethod = PasswordTransformationMethod.getInstance()
-
-            input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_NORMAL
-            builder.setView(input)
-
-            // Set up the buttons
-            builder.setPositiveButton("OK") { dialog, which ->
-                val password = input.text.toString()
-                if (password == appSettings!!.getString("edu.rit.csh.bettervent.password", "")) {
-                    System.exit(0)
+        fun showAlertWithFunction(onSuccess: () -> Unit){
+            context!!.alert("Enter Password:"){
+                val v = layoutInflater.inflate(R.layout.password_alert, null)
+                customView = v
+                fun checkPassword(pw: String){
+                    if (pw == appSettings!!.getString("edu.rit.csh.bettervent.password", "")) onSuccess()
                 }
-            }
-            builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
-
-            builder.show()
+                yesButton { checkPassword(v.password_et.text.toString()) }
+                noButton { dialog -> dialog.cancel() }
+            }.show()
         }
 
-        settingsButton!!.setOnClickListener {
-            val builder = AlertDialog.Builder(context)
-            builder.setTitle("Enter Password:")
-
-            // Set up the input
-            val input = EditText(context)
-            input.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
-            input.transformationMethod = PasswordTransformationMethod.getInstance()
-            input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_NORMAL
-            builder.setView(input)
-
-            // Set up the buttons
-            builder.setPositiveButton("OK") { dialog, which ->
-                val password = input.text.toString()
-                if (password == appSettings!!.getString("edu.rit.csh.bettervent.password", "")) {
-                    MainActivity.selectedFragment = SettingsFragment()
-                    fragmentManager!!.beginTransaction().replace(R.id.fragment_container,
-                            MainActivity.selectedFragment as SettingsFragment).commit()
-                }
-            }
-            builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
-
-            builder.show()
+        view.leave_button.setOnClickListener {
+            showAlertWithFunction { System.exit(0) }
         }
+
+        view.settings_button.setOnClickListener {
+            MainActivity.selectedFragment = SettingsFragment()
+
+            showAlertWithFunction { fragmentManager!!.beginTransaction().replace(R.id.fragment_container,
+                    MainActivity.selectedFragment as SettingsFragment).commit() }
+        }
+
         if (currentTitle == null) {
             nextTime = ""
             nextTitle = nextTime
@@ -164,28 +114,28 @@ class StatusFragment : Fragment() {
     private fun setRoomStatus() {
         // Set current status of the room
         if (currentTitle != "") {
-            freeText!!.visibility = View.INVISIBLE
-            reservedText!!.visibility = View.VISIBLE
-            eventTitleText!!.text = currentTitle
-            eventTimeText!!.text = currentTime
-            statusLayout!!.setBackgroundColor(resources.getColor(R.color.CSHRed))
+            free_label.visibility = View.INVISIBLE
+            reserved_label.visibility = View.VISIBLE
+            event_title.text = currentTitle
+            event_time!!.text = currentTime
+            status_layout.setBackgroundColor(resources.getColor(R.color.CSHRed))
         } else {
-            reservedText!!.visibility = View.INVISIBLE
-            freeText!!.visibility = View.VISIBLE
-            eventTitleText!!.text = ""
-            eventTimeText!!.text = ""
-            statusLayout!!.setBackgroundColor(resources.getColor(R.color.CSHGreen))
+            reserved_label.visibility = View.INVISIBLE
+            free_label.visibility = View.VISIBLE
+            event_title.text = ""
+            event_time.text = ""
+            status_layout.setBackgroundColor(resources.getColor(R.color.CSHGreen))
         }
 
         // Set the future status of the room
         if (nextTitle !== "") {
-            nextText!!.visibility = View.VISIBLE
-            nextTitleText!!.text = nextTitle
-            nextTimeText!!.text = nextTime
+            next_label.visibility = View.VISIBLE
+            next_event_title.text = nextTitle
+            next_event_time.text = nextTime
         } else {
-            nextText!!.visibility = View.INVISIBLE
-            nextTitleText!!.text = "There are no upcoming events."
-            nextTimeText!!.text = ""
+            next_label.visibility = View.INVISIBLE
+            next_event_title.text = "There are no upcoming events."
+            next_event_time.text = ""
         }
     }
 
@@ -199,7 +149,7 @@ class StatusFragment : Fragment() {
         if (events == null)
             infoPrint("There may have been an issue getting the data." + "\nor maybe there was no data.")
 
-        if (events == null || events!!.size == 0) {
+        if (events == null || events!!.isEmpty()) {
             nextTime = ""
             nextTitle = nextTime
             currentTime = nextTitle as String
@@ -257,7 +207,6 @@ class StatusFragment : Fragment() {
             nextTitle = ""
             nextTime = ""
         }
-
     }
 
     /**
@@ -267,15 +216,15 @@ class StatusFragment : Fragment() {
      * @return: HH:MM on YYYY/MM/DD
      */
     private fun formatDateTime(dateTime: DateTime): String {
-        if (dateTime.isDateOnly) {
-            return dateTime.toString()
+        return if (dateTime.isDateOnly) {
+            dateTime.toString()
         } else {
             val t = dateTime.toString().split("T".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val time = t[1].substring(0, 5)
             val date = t[0].split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val dateString = date[0] + "/" + date[1] + "/" + date[2]
 
-            return "$time on $dateString"
+            "$time on $dateString"
         }
     }
 
