@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -12,37 +12,12 @@
 
     <FrameLayout
         android:id="@+id/fragment_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_above="@id/bottom_navigation"
-        android:layout_marginBottom="50dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:background="#000000"
+        android:visibility="visible">
     </FrameLayout>
-
-    <!--<fragment android:name="edu.rit.csh.bettervent.StatusFragment"-->
-        <!--android:id="@+id/status_fragment"-->
-        <!--android:layout_weight="1"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="match_parent" />-->
-
-    <!--<fragment android:name="edu.rit.csh.bettervent.ScheduleFragment"-->
-        <!--android:id="@+id/schedule_fragment"-->
-        <!--android:layout_weight="1"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="match_parent" />-->
-
-    <!--<fragment android:name="edu.rit.csh.bettervent.QuickModeFragment"-->
-        <!--android:id="@+id/quick_mode_fragment"-->
-        <!--android:layout_weight="1"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="match_parent" />-->
 
     <TextClock
         android:id="@+id/central_clock"
@@ -50,12 +25,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
+        android:layout_above="@id/bottom_navigation"
         android:format12Hour="hh:mm a"
         android:textColor="#ffffff"
         android:textSize="45dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
-        app:layout_constraintEnd_toEndOf="@+id/fragment_container" />
+        android:layout_alignParentEnd="true"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/refresh_button"
@@ -67,20 +42,18 @@
         android:focusable="true"
         android:visibility="visible"
         app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         app:srcCompat="@drawable/quantum_ic_refresh_white_24" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_alignParentBottom="true"
         app:menu="@menu/navigation">
 
     </android.support.design.widget.BottomNavigationView>
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

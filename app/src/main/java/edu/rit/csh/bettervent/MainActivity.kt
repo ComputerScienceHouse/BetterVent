@@ -316,18 +316,21 @@ class MainActivity : AppCompatActivity() {
 
     fun refreshUI() {
         try {
-            if (selectedFragment!!.javaClass == StatusFragment::class.java) {
-                selectedFragment = StatusFragment.newInstance(APIOutList)
-                supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
-                        selectedFragment!!).commit()
-                println(" *** Refreshed Status UI")
-            } else if (selectedFragment!!.javaClass == ScheduleFragment::class.java) {
-                selectedFragment = ScheduleFragment.newInstance(APIOutList)
-                supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
-                        selectedFragment!!).commit()
-                println(" *** Refreshed Schedule UI")
-            } else
-                println(" *** UI is not status.")
+            when (selectedFragment!!.javaClass){
+                StatusFragment::class.java -> {
+                    selectedFragment = StatusFragment.newInstance(APIOutList)
+                    supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
+                            selectedFragment!!).commit()
+                    println(" *** Refreshed Status UI")
+                }
+                ScheduleFragment::class.java -> {
+                    selectedFragment = ScheduleFragment.newInstance(APIOutList)
+                    supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
+                            selectedFragment!!).commit()
+                    println(" *** Refreshed Schedule UI")
+                }
+                else -> println(" *** UI is not status.")
+            }
         } catch (e: Exception) {
             System.err.println("Caught Exception\n$e")
         }
