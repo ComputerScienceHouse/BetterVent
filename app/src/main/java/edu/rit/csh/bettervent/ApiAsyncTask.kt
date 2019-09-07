@@ -73,7 +73,7 @@ internal constructor(private val mainActivity: MainActivity) : AsyncTask<Void, V
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
                 .execute()
-//        System.out.println("*** items: " + items);
+//        println("*** items: " + events)
         return events.items
     }
 

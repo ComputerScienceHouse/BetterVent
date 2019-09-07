@@ -425,7 +425,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun infoPrint(info: Any?) {
+        if (info != null)
         println("MAIN_: " + info!!)
+        else println("MAIN_: null!?!?!?")
     }
 
     companion object {
