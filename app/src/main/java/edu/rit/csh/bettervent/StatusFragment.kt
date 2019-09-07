@@ -11,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 
 import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.model.Event
@@ -120,20 +122,46 @@ class StatusFragment : Fragment() {
             event_time!!.text = currentTime
             status_layout.setBackgroundColor(resources.getColor(R.color.CSHRed))
         } else {
+            next_event_title.textSize = 64F
+            next_event_time.textSize = 32F
+
             reserved_label.visibility = View.INVISIBLE
             free_label.visibility = View.VISIBLE
             event_title.text = ""
             event_time.text = ""
+            event_title.visibility = View.GONE
+            event_time.visibility = View.GONE
             status_layout.setBackgroundColor(resources.getColor(R.color.CSHGreen))
         }
 
+        if (currentTitle == "") {
+//            val next_label_params = next_label.layoutParams as RelativeLayout.LayoutParams
+//            next_label_params.setMargins(0, 128, 0, 0) //substitute parameters for left, top, right, bottom
+//            next_event_title.layoutParams = next_label_params
+
+            val next_event_title_params = next_event_title.layoutParams as RelativeLayout.LayoutParams
+            next_event_title_params.setMargins(0, 72, 0, 0) //substitute parameters for left, top, right, bottom
+            next_event_title.layoutParams = next_event_title_params
+
+            val separator_params = separator.layoutParams as RelativeLayout.LayoutParams
+            separator_params.setMargins(0, 0, 0, 0) //substitute parameters for left, top, right, bottom
+            separator.layoutParams = separator_params
+
+
+        }
+
         // Set the future status of the room
-        if (nextTitle !== "") {
+        if (nextTitle != "") {
             next_label.visibility = View.VISIBLE
             next_event_title.text = nextTitle
             next_event_time.text = nextTime
         } else {
-            next_label.visibility = View.INVISIBLE
+            val next_event_title_params = next_event_title.layoutParams as RelativeLayout.LayoutParams
+            next_event_title_params.setMargins(0, 192, 0, 0) //substitute parameters for left, top, right, bottom
+            next_event_title.layoutParams = next_event_title_params
+
+            next_label.visibility = View.GONE
+            next_event_time.visibility = View.GONE
             next_event_title.text = "There are no upcoming events."
             next_event_time.text = ""
         }
