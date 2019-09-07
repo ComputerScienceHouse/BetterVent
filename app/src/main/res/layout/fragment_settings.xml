@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/settings_label"
@@ -13,29 +13,153 @@
         android:layout_marginStart="8dp"
         android:text="@string/settings"
         android:textColor="@color/black"
-        android:textSize="60sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="60sp"/>
 
     <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_label">
+        android:layout_marginEnd="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/calendar_id_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="Calendar ID"
+                android:textColor="@color/black"
+                android:textSize="40sp"/>
+
+            <TextView
+                android:id="@+id/calendar_id_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Enter the ID of the calendar to display events from"
+                android:textSize="20sp"/>
+
+            <EditText
+                android:id="@+id/calendar_id_prompt"
+                android:layout_width="556dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="Enter a complete Calendar ID URL"
+                android:inputType="textPersonName"/>
+
+            <TextView
+                android:id="@+id/max_results_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Enter the number of future events to fetch"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/max_results_prompt"
+                android:layout_width="240dp"
+                android:layout_height="42dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="Fetch a quantity of events"
+                android:inputType="number"/>
+
+            <TextView
+                android:id="@+id/filter_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/event_filtering_keywords"
+                android:textColor="@color/black"
+                android:textSize="40sp"/>
+
+            <TextView
+                android:id="@+id/filter_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/enter_keywords_to_only_display_events_that_contain_those_words"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/filtering_keywords_prompt"
+                android:layout_width="556dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="@string/separate_keywords_with_commas"
+                android:inputType="textPersonName"/>
+
+            <TextView
+                android:id="@+id/filter_desc3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Filter events based on..."
+                android:textSize="20sp"/>
+
+            <RadioGroup
+                android:id="@+id/filter_options_group"
+                android:layout_width="319dp"
+                android:layout_height="61dp"
+                android:layout_marginTop="8dp"
+                tools:layout_editor_absoluteX="9dp">
+
+                <RadioButton
+                    android:id="@+id/title_filter_option"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Title"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/location_filter_option"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Location" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/color_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/colors"
+                android:textColor="@color/black"
+                android:textSize="40sp"/>
+
+            <TextView
+                android:id="@+id/status_page_colors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/status_page_colors"
+                android:textColor="@color/black"
+                android:textSize="25sp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/free_color_label"
@@ -45,64 +169,23 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/free"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/free_color" />
+                    android:textSize="20sp"/>
 
-                <TextView
-                    android:id="@+id/filter_desc"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/free_color"
+                    android:layout_width="247dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/enter_keywords_to_only_display_events_that_contain_those_words"
-                    android:textSize="20sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/filter_label" />
+                    android:layout_marginStart="56dp"
+                    android:layout_marginTop="12dp"
+                    android:ems="10"
+                    android:hint="@string/hex_prompt"
+                    android:inputType="textPersonName"/>
+            </LinearLayout>
 
-                <TextView
-                    android:id="@+id/calendar_id_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Enter the ID of the calendar to display events from"
-                    android:textSize="20sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/calendar_id_label" />
-
-                <TextView
-                    android:id="@+id/max_results_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Enter the number of future events to fetch"
-                    android:textSize="20sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/calendar_id_prompt" />
-
-                <TextView
-                    android:id="@+id/filter_desc3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Filter events based on..."
-                    android:textSize="20sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/filtering_keywords_prompt" />
-
-                <TextView
-                    android:id="@+id/escape_square_password_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Set a password to open the settings menu and leave the app via the escape squares"
-                    android:textSize="20sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/password_label" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/reserved_color_label"
@@ -113,11 +196,7 @@
                     android:layout_marginEnd="8dp"
                     android:text="@string/reserved"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
-                    app:layout_constraintEnd_toStartOf="@+id/reserved_color"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/reserved_color" />
+                    android:textSize="20sp"/>
 
                 <EditText
                     android:id="@+id/reserved_color"
@@ -126,157 +205,36 @@
                     android:layout_marginTop="8dp"
                     android:ems="10"
                     android:hint="@string/hex_prompt"
-                    android:inputType="textPersonName"
-                    app:layout_constraintEnd_toEndOf="@+id/free_color"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/free_color"
-                    app:layout_constraintTop_toBottomOf="@+id/free_color" />
+                    android:inputType="textPersonName"/>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/password_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:text="Password"
+                android:textColor="@color/black"
+                android:textSize="40sp"/>
 
-                <TextView
-                    android:id="@+id/color_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="32dp"
-                    android:text="@string/colors"
-                    android:textColor="@color/black"
-                    android:textSize="40sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/filter_options_group" />
+            <TextView
+                android:id="@+id/escape_square_password_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Set a password to open the settings menu and leave the app via the escape squares"
+                android:textSize="20sp"/>
 
-                <EditText
-                    android:id="@+id/free_color"
-                    android:layout_width="247dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="56dp"
-                    android:layout_marginTop="12dp"
-                    android:ems="10"
-                    android:hint="@string/hex_prompt"
-                    android:inputType="textPersonName"
-                    app:layout_constraintStart_toEndOf="@+id/free_color_label"
-                    app:layout_constraintTop_toBottomOf="@+id/status_page_colors" />
-
-                <TextView
-                    android:id="@+id/filter_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/event_filtering_keywords"
-                    android:textColor="@color/black"
-                    android:textSize="40sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/max_results_prompt" />
-
-                <TextView
-                    android:id="@+id/calendar_id_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:text="Calendar ID"
-                    android:textColor="@color/black"
-                    android:textSize="40sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/password_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="32dp"
-                    android:text="Password"
-                    android:textColor="@color/black"
-                    android:textSize="40sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/reserved_color" />
-
-                <TextView
-                    android:id="@+id/status_page_colors"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/status_page_colors"
-                    android:textColor="@color/black"
-                    android:textSize="25sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/color_label" />
-
-                <EditText
-                    android:id="@+id/filtering_keywords_prompt"
-                    android:layout_width="556dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:ems="10"
-                    android:hint="@string/separate_keywords_with_commas"
-                    android:inputType="textPersonName"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/filter_desc" />
-
-                <EditText
-                    android:id="@+id/calendar_id_prompt"
-                    android:layout_width="556dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:ems="10"
-                    android:hint="Enter a complete Calendar ID URL"
-                    android:inputType="textPersonName"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/calendar_id_desc" />
-
-                <EditText
-                    android:id="@+id/password_prompt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:ems="10"
-                    android:hint="Enter a password"
-                    android:inputType="textPassword"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/escape_square_password_desc" />
-
-                <RadioGroup
-                    android:id="@+id/filter_options_group"
-                    android:layout_width="319dp"
-                    android:layout_height="61dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/filter_desc3"
-                    tools:layout_editor_absoluteX="9dp">
-
-                    <RadioButton
-                        android:id="@+id/title_filter_option"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Title"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/location_filter_option"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Location" />
-                </RadioGroup>
-
-                <EditText
-                    android:id="@+id/max_results_prompt"
-                    android:layout_width="240dp"
-                    android:layout_height="42dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:ems="10"
-                    android:hint="Fetch a quantity of events"
-                    android:inputType="number"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/max_results_desc" />
-            </android.support.constraint.ConstraintLayout>
+            <EditText
+                android:id="@+id/password_prompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="Enter a password"
+                android:inputType="textPassword"/>
         </LinearLayout>
     </ScrollView>
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

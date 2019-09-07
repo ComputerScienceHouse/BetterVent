@@ -1,184 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/status_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:layout_gravity="center_horizontal"
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/status_layout"
-        android:layout_width="match_parent"
-        android:layout_height="672dp"
+    android:background="#000000"
+    android:gravity="center_horizontal">
+
+    <Button
+        android:id="@+id/leave_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="191dp"
+        android:layout_height="128dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/settings_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="191dp"
+        android:layout_height="128dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/free_label"
+        style="@style/StatusLayoutStyle"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:text="@string/free"
+        android:textColor="#ffffff"
+        android:textSize="80sp"
+        android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/leave_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="191dp"
-            android:layout_height="128dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:visibility="visible"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/reserved_label"
+        style="@style/StatusLayoutStyle"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/reserved"
+        android:textColor="#ffffff"
+        android:textSize="80sp"
+        android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/settings_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="191dp"
-            android:layout_height="128dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/event_title"
+        style="@style/StatusLayoutStyle"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/free_label"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/event_title"
+        android:textColor="#ffffff"
+        android:textSize="64sp" />
 
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5"/>
+    <TextView
+        android:id="@+id/event_time"
+        style="@style/StatusLayoutStyle"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/event_title"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/event_time"
+        android:textColor="#ffffff"
+        android:textSize="32sp" />
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="698dp"
-            android:layout_height="1dp"
-            android:layout_marginStart="290dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="292dp"
-            android:background="#ffffff"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/event_time" />
-
-        <TextView
-            android:id="@+id/event_title"
-            android:layout_width="1053dp"
-            android:layout_height="87dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="408dp"
-            android:text="@string/event_title"
-            android:textAlignment="center"
-            android:textColor="#ffffff"
-            android:textSize="64sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/reserved_label"
-            app:layout_constraintVertical_bias="0.989" />
-
-        <TextView
-            android:id="@+id/event_time"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/event_time"
-            android:textAlignment="center"
-            android:textColor="#ffffff"
-            android:textSize="32sp"
-            app:layout_constraintBottom_toTopOf="@+id/guideline8"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/event_title" />
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/event_time"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="200dp"
+        android:background="#ffffff" />
 
 
-        <TextView
-            android:id="@+id/next_event_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/next_event_title"
-            android:textAlignment="center"
-            android:textColor="#ffffff"
-            android:textSize="36sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/next_label" />
+    <TextView
+        android:id="@+id/next_label"
+        style="@style/StatusLayoutStyle"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/separator"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/next_event"
+        android:textColor="#ffffff"
+        android:textSize="40sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/next_event_time"
-            android:layout_width="0dp"
-            android:layout_height="74dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/next_event_time"
-            android:textAlignment="center"
-            android:textColor="#ffffff"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/next_event_title" />
+    <TextView
+        android:id="@+id/next_event_title"
+        style="@style/StatusLayoutStyle"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/next_label"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/next_event_title"
+        android:textColor="#ffffff"
+        android:textSize="48sp" />
 
-        <TextView
-            android:id="@+id/next_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/next_event"
-            android:textAlignment="center"
-            android:textColor="#ffffff"
-            android:textSize="45sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view" />
+    <TextView
+        android:id="@+id/next_event_time"
+        style="@style/StatusLayoutStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/next_event_title"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/next_event_time"
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/reserved_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="68dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/reserved"
-            android:textAlignment="center"
-            android:textColor="#ffffff"
-            android:textSize="80sp"
-            android:textStyle="bold"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:id="@+id/free_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="68dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/free"
-            android:textAlignment="center"
-            android:textColor="#ffffff"
-            android:textSize="80sp"
-            android:textStyle="bold"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.221" />
-
-    </android.support.constraint.ConstraintLayout>
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

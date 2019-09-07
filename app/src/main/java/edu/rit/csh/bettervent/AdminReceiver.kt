@@ -1,12 +1,11 @@
-package edu.rit.csh.bettervent;
+package edu.rit.csh.bettervent
 
-import android.app.admin.DeviceAdminReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.widget.Toast;
+import android.app.admin.DeviceAdminReceiver
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
 
-public class AdminReceiver extends DeviceAdminReceiver {
-//    void showToast(Context context, String msg) {
+class AdminReceiver : DeviceAdminReceiver()//    void showToast(Context context, String msg) {
 //        String status = context.getString(R.string.admin_receiver_status, msg);
 //        Toast.makeText(context, status, Toast.LENGTH_SHORT).show();
 //    }
@@ -25,4 +24,3 @@ public class AdminReceiver extends DeviceAdminReceiver {
 //    public void onDisabled(Context context, Intent intent) {
 //        showToast(context, context.getString(R.string.admin_receiver_status_disabled));
 //    }
-}
