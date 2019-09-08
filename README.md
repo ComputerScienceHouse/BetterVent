@@ -10,17 +10,17 @@ It has three main functions:
 
 View when the room is free:
 
-<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/Screenshot_20190121_042312.png" width="50%" height="50%">
+<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/free_not_upcoming.png" width="50%" height="50%">
 
-<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/Screenshot_20190302-044311_BetterVent.jpg" width="50%" height="50%">
+<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/free_upcoming.png" width="50%" height="50%">
 
 View when the room is reserved:
 
-<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/Screenshot_20190121_042156.png" width="50%" height="50%">
+<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/reserved_upcoming.png" width="50%" height="50%">
 
 - Show a week-view interface of events for the next seven days
 
-<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/Screenshot_20190121_042504.png" width="50%" height="50%">
+<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/dark_calendar_view.png" width="50%" height="50%">
 
 - A quick-mode function for ad-hoc events. Has an editable title field, as well as a name-list for queuing or attendance purposes
 
