@@ -113,14 +113,22 @@ class ScheduleFragment : Fragment(), MonthLoader.MonthChangeListener<Event> {
                 try {
                     // Start Time
                     val startCal = Calendar.getInstance()
-                    startCal.timeInMillis = event.start.dateTime.value
+                    if (event.start.dateTime != null) {
+                        startCal.timeInMillis = event.start.dateTime.value
+                    } else {
+                        startCal.timeInMillis = 0
+                    }
                     startCal.set(Calendar.MONTH, newMonth)
                     startCal.set(Calendar.YEAR, newYear)
                     wve.setStartTime(startCal)
 
                     // End Time
                     val endCal = Calendar.getInstance()
-                    endCal.timeInMillis = event.end.dateTime.value
+                    if (event.end.dateTime != null) {
+                        endCal.timeInMillis = event.end.dateTime.value
+                    } else {
+                        endCal.timeInMillis = 0
+                    }
                     endCal.set(Calendar.MONTH, newMonth)
                     endCal.set(Calendar.YEAR, newYear)
                     wve.setEndTime(endCal)

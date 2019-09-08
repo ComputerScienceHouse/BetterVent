@@ -134,20 +134,15 @@ class StatusFragment : Fragment() {
             status_layout.setBackgroundColor(resources.getColor(R.color.CSHGreen))
         }
 
-        if (currentTitle == "") {
-//            val next_label_params = next_label.layoutParams as RelativeLayout.LayoutParams
-//            next_label_params.setMargins(0, 128, 0, 0) //substitute parameters for left, top, right, bottom
-//            next_event_title.layoutParams = next_label_params
+        val next_event_title_params = next_event_title.layoutParams as RelativeLayout.LayoutParams
+        val separator_params = separator.layoutParams as RelativeLayout.LayoutParams
 
-            val next_event_title_params = next_event_title.layoutParams as RelativeLayout.LayoutParams
+        if (currentTitle == "") {
             next_event_title_params.setMargins(0, 72, 0, 0) //substitute parameters for left, top, right, bottom
             next_event_title.layoutParams = next_event_title_params
 
-            val separator_params = separator.layoutParams as RelativeLayout.LayoutParams
             separator_params.setMargins(0, 0, 0, 0) //substitute parameters for left, top, right, bottom
             separator.layoutParams = separator_params
-
-
         }
 
         // Set the future status of the room
@@ -156,9 +151,13 @@ class StatusFragment : Fragment() {
             next_event_title.text = nextTitle
             next_event_time.text = nextTime
         } else {
-            val next_event_title_params = next_event_title.layoutParams as RelativeLayout.LayoutParams
-            next_event_title_params.setMargins(0, 192, 0, 0) //substitute parameters for left, top, right, bottom
-            next_event_title.layoutParams = next_event_title_params
+            if (currentTitle == "") {
+                next_event_title_params.setMargins(0, 192, 0, 0) //substitute parameters for left, top, right, bottom
+                next_event_title.layoutParams = next_event_title_params
+            }else {
+                next_event_title_params.setMargins(0, 32, 0, 0) //substitute parameters for left, top, right, bottom
+                next_event_title.layoutParams = next_event_title_params
+            }
 
             next_label.visibility = View.GONE
             next_event_time.visibility = View.GONE
