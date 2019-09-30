@@ -74,7 +74,7 @@ internal constructor(private val mainActivity: MainActivity) : AsyncTask<Void, V
                 .setSingleEvents(true)
                 .execute()
 //        println("*** items: " + events)
-        return events.items
+        return ArrayList<Event>()
     }
 
 }
