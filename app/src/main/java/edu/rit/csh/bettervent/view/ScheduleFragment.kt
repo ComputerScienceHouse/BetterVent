@@ -1,4 +1,4 @@
-package edu.rit.csh.bettervent
+package edu.rit.csh.bettervent.view
 
 import android.os.Bundle
 import android.util.Log
@@ -7,13 +7,15 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProviders
 
 import com.alamkanak.weekview.DateTimeInterpreter
 import com.alamkanak.weekview.MonthLoader
 import com.alamkanak.weekview.WeekView
 import com.alamkanak.weekview.WeekViewDisplayable
 import com.alamkanak.weekview.WeekViewEvent
-import kotlinx.android.synthetic.main.fragment_status.*
+import edu.rit.csh.bettervent.R
+import edu.rit.csh.bettervent.viewmodel.EventActivityViewModel
 
 import java.io.Serializable
 import java.text.SimpleDateFormat
@@ -24,21 +26,18 @@ import java.util.Locale
 class ScheduleFragment : Fragment(){
 
     lateinit var weekView: WeekView<Any>
-    private lateinit var events: ArrayList<Event>
+    private lateinit var viewModel: EventActivityViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProviders.of(requireActivity()).get(EventActivityViewModel::class.java)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         infoPrint("Loaded Schedule Fragment.")
         val view = inflater.inflate(R.layout.fragment_schedule, container, false)
-        val args = arguments
-        if (args != null) {
-            infoPrint("Found events data")
-            events = args.getParcelableArrayList("events")!!
-            if ( events.isNotEmpty())
-                infoPrint("First event title: " + events[0].summary)
-        } else {
-            infoPrint("ERROR! NO DATA FOUND!")
-        }
+
 
         EventActivity.centralClock.setTextColor(-0x1000000)
 
@@ -89,27 +88,16 @@ class ScheduleFragment : Fragment(){
         println("SCHE_: $info")
     }
 
-    companion object {
-
-        fun newInstance(events: List<Event>?): ScheduleFragment {
-            val f = ScheduleFragment()
-            val args = Bundle()
-            args.putSerializable("events", events as Serializable)
-            f.arguments = args
-            return f
-        }
-    }
-
-    inner class MonthChangeListener: MonthLoader.MonthChangeListener<edu.rit.csh.bettervent.Event>{
+    inner class MonthChangeListener: MonthLoader.MonthChangeListener<Event>{
 
         override fun onMonthChange(startDate: Calendar, endDate: Calendar): List<WeekViewDisplayable<Event>> {
 
             val weekViewEvents = ArrayList<WeekViewDisplayable<Event>>()
 
             val color1 = resources.getColor(R.color.colorPrimaryDark)
-            infoPrint("event size : " + events.size)
-            for (i in events.indices) {
-                val event = events[i]
+            infoPrint("event size : " + viewModel.events.size)
+            for (i in viewModel.events.indices) {
+                val event = viewModel.events[i]
                 val wve = WeekViewEvent<Event>()
 
                 // Set ID (not the Google Calendar ID).

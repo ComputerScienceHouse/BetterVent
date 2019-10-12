@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import java.util.Date;
 
+import edu.rit.csh.bettervent.view.Event;
+
 import static org.junit.Assert.*;
 
 /**

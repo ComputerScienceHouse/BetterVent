@@ -1,9 +1,7 @@
-package edu.rit.csh.bettervent
+package edu.rit.csh.bettervent.view
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
-import android.graphics.Typeface
 import androidx.recyclerview.widget.RecyclerView
 import android.text.InputType
 import android.view.LayoutInflater
@@ -11,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import edu.rit.csh.bettervent.R
 
 import java.util.ArrayList
 

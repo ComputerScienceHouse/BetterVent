@@ -1,4 +1,4 @@
-package edu.rit.csh.bettervent
+package edu.rit.csh.bettervent.view
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProviders
+import edu.rit.csh.bettervent.R
+import edu.rit.csh.bettervent.viewmodel.EventActivityViewModel
 
 import kotlinx.android.synthetic.main.fragment_status.*
 import kotlinx.android.synthetic.main.password_alert.view.*
@@ -22,7 +25,7 @@ import kotlin.system.exitProcess
 class StatusFragment : Fragment(){
 
     private lateinit var appSettings: SharedPreferences // Settings object containing user preferences.
-    private lateinit var events: ArrayList<Event>
+    private lateinit var viewModel: EventActivityViewModel
     private lateinit var listener: OpenSettingsListener
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -37,10 +40,10 @@ class StatusFragment : Fragment(){
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // Load up app settings to fetch passwords and background colors.
-        appSettings = context!!.getSharedPreferences(
+        appSettings = requireActivity().applicationContext!!.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
-        events = arguments?.getParcelableArrayList<Event>("events")!!
+        viewModel = ViewModelProviders.of(requireActivity()).get(EventActivityViewModel::class.java)
 
         EventActivity.centralClock.setTextColor(-0x1)
 
@@ -85,7 +88,7 @@ class StatusFragment : Fragment(){
 
     private fun updateCurrentAndNextEventsInUI() {
 
-        events.also {
+        viewModel.events.also {
             when {
                 it.isEmpty() -> {
                     setRoomAsEmpty(); setNoNextEvent()

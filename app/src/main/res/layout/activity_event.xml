@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:visibility="visible"
-    tools:context=".MainActivity"
+    tools:context=".view.MainActivity"
     android:keepScreenOn="true">
 
     <androidx.viewpager.widget.ViewPager

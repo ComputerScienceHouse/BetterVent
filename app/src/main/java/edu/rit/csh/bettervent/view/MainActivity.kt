@@ -1,4 +1,4 @@
-package edu.rit.csh.bettervent
+package edu.rit.csh.bettervent.view
 
 import android.accounts.Account
 import android.app.admin.DevicePolicyManager
@@ -21,6 +21,8 @@ import android.widget.Toast
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.api.services.calendar.CalendarScopes
+import edu.rit.csh.bettervent.AdminReceiver
+import edu.rit.csh.bettervent.R
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -31,8 +33,9 @@ class MainActivity : AppCompatActivity(){
     var maxResults: Int = 0
 
     private lateinit var mAppSettings: SharedPreferences
-
     private lateinit var apiStatusMessage: String
+
+
 
     /**
      * Checks whether the device currently has a network connection.
@@ -79,7 +82,7 @@ class MainActivity : AppCompatActivity(){
 
 
         // Load up app settings to fetch passwords and background colors.
-        mAppSettings = getSharedPreferences(
+        mAppSettings = applicationContext.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE)!!
 
         // Must restart for these preferences to take hold.
@@ -200,6 +203,11 @@ class MainActivity : AppCompatActivity(){
         runOnUiThread { apiStatusMessage = message }
     }
 
+    /**
+     * Checks for a signed in account in the app; if one exists, it starts the EventActivity.
+     * Otherwise, it allows the user to choose an account
+    */
+
     private fun checkForAccount(){
         val accountName = mAppSettings.getString(PREF_ACCOUNT_NAME, "")!!
         Log.i("MainActivity", "Account Name: $accountName")
@@ -250,7 +258,6 @@ class MainActivity : AppCompatActivity(){
         internal const val REQUEST_GOOGLE_PLAY_SERVICES = 1002
         private const val PREF_ACCOUNT_NAME = "accountName"
         val SCOPES = arrayListOf(CalendarScopes.CALENDAR_READONLY)
-
     }
 }
 

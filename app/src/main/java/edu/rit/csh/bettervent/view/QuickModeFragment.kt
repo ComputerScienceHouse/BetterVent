@@ -1,4 +1,4 @@
-package edu.rit.csh.bettervent
+package edu.rit.csh.bettervent.view
 
 import android.app.AlertDialog
 import android.graphics.Typeface
@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import edu.rit.csh.bettervent.R
 import kotlinx.android.synthetic.main.fragment_quick_mode.*
 import kotlinx.android.synthetic.main.fragment_quick_mode.view.*
 
