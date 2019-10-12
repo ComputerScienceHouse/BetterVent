@@ -1,91 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:id="@+id/quick_mode_view"
+    android:gravity="center_horizontal">
 
-    <androidx.constraintlayout.ConstraintLayout
-        android:id="@+id/quick_mode_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+    <TextView
+        android:id="@+id/name_set_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/this_room_is_currently_reserved_for"
+        android:layout_gravity="center_horizontal"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="35sp"
+        android:visibility="visible"/>
 
-        <TextView
-            android:id="@+id/name_set_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/this_room_is_currently_reserved_for"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="35sp"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/event_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/enter_event_title"
+        android:textAlignment="center"
+        android:textSize="40sp"
+        android:visibility="visible"/>
 
-        <TextView
-            android:id="@+id/event_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/enter_event_title"
-            android:textAlignment="center"
-            android:textSize="40sp"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name_set_label" />
-
-        <TextView
-            android:id="@+id/label_participants"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/participants"
-            android:textColor="@color/black"
-            android:textSize="40sp"
-            app:layout_constraintEnd_toEndOf="@+id/participants_list"
-            app:layout_constraintHorizontal_bias="0.509"
-            app:layout_constraintStart_toStartOf="@+id/participants_list"
-            app:layout_constraintTop_toBottomOf="@+id/event_name" />
+    <TextView
+        android:id="@+id/label_participants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/participants"
+        android:textColor="@color/black"
+        android:textSize="40sp"/>
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/participants_list"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_participants" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/participants_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"/>
 
-        <Button
-            android:id="@+id/add_participant_button"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="36dp"
-            android:clickable="false"
-            android:enabled="false"
-            android:text="+"
-            android:textColor="@color/white"
-            android:textSize="50sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+    <Button
+        android:id="@+id/add_participant_button"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="36dp"
+        android:clickable="false"
+        android:enabled="false"
+        android:text="+"
+        android:textColor="@color/white"
+        android:textSize="50sp"/>
 
-    </androidx.constraintlayout.ConstraintLayout>
-
-</androidx.constraintlayout.ConstraintLayout>
+</LinearLayout>

@@ -45,7 +45,7 @@ class SettingsFragment : Fragment() {
                 "Password: [REDACTED]"
         )
 
-        MainActivity.centralClock.setTextColor(-0x1000000)
+        EventActivity.centralClock.setTextColor(-0x1000000)
 
         view.calendar_id_prompt.setText(appSettings.getString(calendarIDString, ""))
         view.max_results_prompt.setText(appSettings.getString(maxResultsString, ""))

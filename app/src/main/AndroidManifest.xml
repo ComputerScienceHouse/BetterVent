@@ -21,7 +21,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light.NoActionBar">
-        <activity android:name=".SignInActivity"></activity>
+        <activity android:name=".EventActivity"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation">
+
+        </activity>
 
         <receiver
             android:name=".AdminReceiver"

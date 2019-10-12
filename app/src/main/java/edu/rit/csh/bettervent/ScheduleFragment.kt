@@ -1,6 +1,7 @@
 package edu.rit.csh.bettervent
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -12,7 +13,7 @@ import com.alamkanak.weekview.MonthLoader
 import com.alamkanak.weekview.WeekView
 import com.alamkanak.weekview.WeekViewDisplayable
 import com.alamkanak.weekview.WeekViewEvent
-import com.google.api.services.calendar.model.Event
+import kotlinx.android.synthetic.main.fragment_status.*
 
 import java.io.Serializable
 import java.text.SimpleDateFormat
@@ -20,10 +21,10 @@ import java.util.ArrayList
 import java.util.Calendar
 import java.util.Locale
 
-class ScheduleFragment : Fragment(), MonthLoader.MonthChangeListener<Event> {
+class ScheduleFragment : Fragment(){
 
     lateinit var weekView: WeekView<Any>
-    private var events: List<Event>? = null
+    private lateinit var events: ArrayList<Event>
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -32,17 +33,17 @@ class ScheduleFragment : Fragment(), MonthLoader.MonthChangeListener<Event> {
         val args = arguments
         if (args != null) {
             infoPrint("Found events data")
-            events = args.getSerializable("events") as List<Event>
-            if (events != null && events!!.isNotEmpty())
-                infoPrint("First event title: " + events!![0].summary)
+            events = args.getParcelableArrayList("events")!!
+            if ( events.isNotEmpty())
+                infoPrint("First event title: " + events[0].summary)
         } else {
             infoPrint("ERROR! NO DATA FOUND!")
         }
 
-        MainActivity.centralClock.setTextColor(-0x1000000)
+        EventActivity.centralClock.setTextColor(-0x1000000)
 
         weekView = view.findViewById(R.id.week_view)
-        weekView.setMonthChangeListener(this as MonthLoader.MonthChangeListener<Any>)
+        weekView.setMonthChangeListener(MonthChangeListener() as MonthLoader.MonthChangeListener<Any>)
         weekView.numberOfVisibleDays = 7
 
         // Lets change some dimensions to best fit the view.
@@ -88,23 +89,34 @@ class ScheduleFragment : Fragment(), MonthLoader.MonthChangeListener<Event> {
         println("SCHE_: $info")
     }
 
-    override fun onMonthChange(startDate: Calendar, endDate: Calendar): List<WeekViewDisplayable<Event>> {
+    companion object {
 
-        val weekViewEvents = ArrayList<WeekViewDisplayable<Event>>()
+        fun newInstance(events: List<Event>?): ScheduleFragment {
+            val f = ScheduleFragment()
+            val args = Bundle()
+            args.putSerializable("events", events as Serializable)
+            f.arguments = args
+            return f
+        }
+    }
 
-        val color1 = resources.getColor(R.color.colorPrimaryDark)
+    inner class MonthChangeListener: MonthLoader.MonthChangeListener<edu.rit.csh.bettervent.Event>{
 
-        if (events != null) {
-            infoPrint("event size : " + events!!.size)
-            for (i in events!!.indices) {
-                val event = events!![i]
+        override fun onMonthChange(startDate: Calendar, endDate: Calendar): List<WeekViewDisplayable<Event>> {
+
+            val weekViewEvents = ArrayList<WeekViewDisplayable<Event>>()
+
+            val color1 = resources.getColor(R.color.colorPrimaryDark)
+            infoPrint("event size : " + events.size)
+            for (i in events.indices) {
+                val event = events[i]
                 val wve = WeekViewEvent<Event>()
 
                 // Set ID (not the Google Calendar ID).
-                wve.setId(i.toLong())
+                wve.id = i.toLong()
 
                 // Set Title
-                wve.setTitle(event.summary)
+                wve.title = event.summary
 
                 val newYear = startDate.get(Calendar.YEAR)
                 val newMonth = startDate.get(Calendar.MONTH)
@@ -113,17 +125,18 @@ class ScheduleFragment : Fragment(), MonthLoader.MonthChangeListener<Event> {
                 try {
                     // Start Time
                     val startCal = Calendar.getInstance()
-                    startCal.timeInMillis = event.start.dateTime.value
+                    startCal.timeInMillis = event.start.time
                     startCal.set(Calendar.MONTH, newMonth)
                     startCal.set(Calendar.YEAR, newYear)
-                    wve.setStartTime(startCal)
+                    Log.i("ScheduleFragment", "Startcal: $startCal")
+                    wve.startTime = startCal
 
                     // End Time
                     val endCal = Calendar.getInstance()
-                    endCal.timeInMillis = event.end.dateTime.value
+                    endCal.timeInMillis = event.end.time
                     endCal.set(Calendar.MONTH, newMonth)
                     endCal.set(Calendar.YEAR, newYear)
-                    wve.setEndTime(endCal)
+                    wve.endTime = endCal
                 } catch (error: NullPointerException) {
                     error.printStackTrace()
                     wve.setIsAllDay(true)
@@ -135,18 +148,7 @@ class ScheduleFragment : Fragment(), MonthLoader.MonthChangeListener<Event> {
 
                 weekViewEvents.add(wve as WeekViewDisplayable<Event>)
             }
-        }
-        return weekViewEvents
-    }
-
-    companion object {
-
-        fun newInstance(events: List<Event>?): ScheduleFragment {
-            val f = ScheduleFragment()
-            val args = Bundle()
-            args.putSerializable("events", events as Serializable)
-            f.arguments = args
-            return f
+            return weekViewEvents
         }
     }
 }

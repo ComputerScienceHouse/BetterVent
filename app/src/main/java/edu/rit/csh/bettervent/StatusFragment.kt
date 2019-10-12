@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 
 import kotlinx.android.synthetic.main.fragment_status.*
-import kotlinx.android.synthetic.main.fragment_status.view.*
 import kotlinx.android.synthetic.main.password_alert.view.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
@@ -28,34 +27,8 @@ class StatusFragment : Fragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         infoPrint("Loaded Status Fragment.")
-        // Load up app settings to fetch passwords and background colors.
-        appSettings = context!!.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
-        val view = inflater.inflate(R.layout.fragment_status, container, false)
-
-        MainActivity.centralClock.setTextColor(-0x1)
-
-        fun showAlertWithFunction(onSuccess: () -> Unit) {
-            context!!.alert("Enter Password:") {
-                val v = layoutInflater.inflate(R.layout.password_alert, null)
-                customView = v
-                fun checkPassword(pw: String) {
-                    if (pw == appSettings!!.getString("edu.rit.csh.bettervent.password", "")) onSuccess()
-                }
-                yesButton { checkPassword(v.password_et.text.toString()) }
-                noButton { dialog -> dialog.cancel() }
-            }.show()
-        }
-
-        view.leave_button.setOnClickListener {
-            showAlertWithFunction { exitProcess(0) }
-        }
-
-        view.settings_button.setOnClickListener {
-            showAlertWithFunction {  }
-        }
-        return view
+        return inflater.inflate(R.layout.fragment_status, container, false)
     }
 
     /**
@@ -63,7 +36,33 @@ class StatusFragment : Fragment(){
      * @param savedInstanceState
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        infoPrint("Fragment Event Title: ${events[0].summary}")
+        // Load up app settings to fetch passwords and background colors.
+        appSettings = context!!.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+
+        events = arguments?.getParcelableArrayList<Event>("events")!!
+
+        EventActivity.centralClock.setTextColor(-0x1)
+
+        fun showAlertWithFunction(onSuccess: () -> Unit) {
+            context?.alert("Enter Password:") {
+                val v = layoutInflater.inflate(R.layout.password_alert, null)
+                customView = v
+                fun checkPassword(pw: String) {
+                    if (pw == appSettings.getString("edu.rit.csh.bettervent.password", "")) onSuccess()
+                }
+                yesButton { checkPassword(v.password_et.text.toString()) }
+                noButton { dialog -> dialog.cancel() }
+            }?.show()
+        }
+
+        leave_button.setOnClickListener {
+            showAlertWithFunction { exitProcess(0) }
+        }
+
+        settings_button.setOnClickListener {
+            showAlertWithFunction { listener.openSettings() }
+        }
         updateCurrentAndNextEventsInUI()
     }
 
@@ -91,12 +90,15 @@ class StatusFragment : Fragment(){
                 it.isEmpty() -> {
                     setRoomAsEmpty(); setNoNextEvent()
                 }
-                it[0].isHappeningNow() and (it.size == 1) -> setCurrentEvent(it[0])
-                it.size == 1 -> {
-                    setRoomAsEmpty(); setNextEvent(it[0])
-                }
+                it.size == 1 ->  if (it[0].isHappeningNow()) setCurrentEvent(it[0]) else setNextEvent(it[0])
                 else -> {
-                    setCurrentEvent(it[0]); setNextEvent(it[1])
+                    if (it[0].isHappeningNow()){
+                        setCurrentEvent(it[0])
+                        setNextEvent(it[1])
+                    } else {
+                        setRoomAsEmpty()
+                        setNextEvent(it[0])
+                    }
                 }
             }
         }
@@ -120,13 +122,13 @@ class StatusFragment : Fragment(){
         free_label.visibility = View.INVISIBLE
         reserved_label.visibility = View.VISIBLE
         event_title.text = e.summary
-        event_time.text = "${formatDate(e.startDate)} - ${formatDate(e.endDate)}"
+        event_time.text = "${formatDate(e.start)} - ${formatDate(e.end)}"
         status_layout.setBackgroundColor(resources.getColor(R.color.CSHRed))
     }
 
     private fun setNextEvent(e: Event){
         next_label.visibility = View.VISIBLE
-        next_event_time.text = "${formatDate(e.startDate)} - ${formatDate(e.endDate)}"
+        next_event_time.text = "${formatDate(e.start)} - ${formatDate(e.end)}"
         next_event_title.text = e.summary
     }
 
@@ -137,8 +139,8 @@ class StatusFragment : Fragment(){
      * @return: HH:MM on YYYY/MM/DD
      */
     private fun formatDate(inputDate: Date): String {
-        val simpleTimeFormat = SimpleDateFormat("HH:MM")
-        val simpleDateFormat = SimpleDateFormat("YYYY/MM/DD")
+        val simpleTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val time = simpleTimeFormat.format(inputDate)
         val date = simpleDateFormat.format(inputDate)
         return "$time on $date"

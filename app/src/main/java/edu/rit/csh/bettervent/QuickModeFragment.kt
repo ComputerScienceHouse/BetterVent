@@ -1,7 +1,6 @@
 package edu.rit.csh.bettervent
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.graphics.Typeface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,8 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_quick_mode.*
 import kotlinx.android.synthetic.main.fragment_quick_mode.view.*
@@ -24,7 +23,7 @@ class QuickModeFragment : Fragment() {
 
     private val participants = ArrayList<String>()
 
-    private var quickModeLayout: ConstraintLayout? = null
+    private var quickModeLayout: LinearLayout? = null
 
     private var adapter: RecyclerView.Adapter<*>? = null
     private var layoutManager: RecyclerView.LayoutManager? = null
@@ -36,13 +35,21 @@ class QuickModeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         infoPrint("Loaded QuickMode Fragment.")
         val view = inflater.inflate(R.layout.fragment_quick_mode, container, false)
-        MainActivity.centralClock.setTextColor(-0x1000000)
 
-        quickModeLayout = view.findViewById(R.id.quick_mode_layout)
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        EventActivity.centralClock.setTextColor(-0x1000000)
+
+        quickModeLayout = view.findViewById(R.id.quick_mode_view)
 
 
         // use a linear layout manager
-        layoutManager = LinearLayoutManager(this.context)
+        layoutManager = LinearLayoutManager(context)
         participants_list.layoutManager = layoutManager
 
         // specify an adapter
@@ -72,7 +79,7 @@ class QuickModeFragment : Fragment() {
                 view.event_name.setTextColor(resources.getColor(R.color.white))
                 participantsLabel!!.setTextColor(resources.getColor(R.color.white))
                 nameSetLabel!!.visibility = View.VISIBLE
-                MainActivity.centralClock.setTextColor(-0x1)
+                EventActivity.centralClock.setTextColor(-0x1)
                 view.event_name.setTypeface(null, Typeface.BOLD)
             }
             builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
@@ -103,8 +110,6 @@ class QuickModeFragment : Fragment() {
 
             builder.show()
         }
-
-        return view
     }
 
     fun infoPrint(info: String) {
