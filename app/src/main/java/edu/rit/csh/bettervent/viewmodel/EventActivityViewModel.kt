@@ -24,15 +24,14 @@ import kotlin.collections.ArrayList
 
 class EventActivityViewModel(application: Application) : AndroidViewModel(application) {
     val events: ArrayList<Event> = arrayListOf()
-    private val settings: SharedPreferences by lazy {
-        Log.i("EventActivityViewModel", "Creating sharedprefs!")
+
+    private val settings: SharedPreferences =
         application.applicationContext.getSharedPreferences(application.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-    }
 
     private val mService = getCalendarService()
 
-    fun refresh() {
-        updateEvents()
+    fun refresh(onComplete: () -> Unit) {
+        updateEvents(onComplete)
     }
 
     private fun getCalendarService(): Calendar {
@@ -51,11 +50,12 @@ class EventActivityViewModel(application: Application) : AndroidViewModel(applic
                 .build()
     }
 
-    private fun updateEvents(){
+    private fun updateEvents(f: () -> Unit){
         doAsync{
             val events = getEventsFromServer()
             uiThread {
                 handleEvents(parseEvents(events))
+                f.invoke()
             }
         }
     }
@@ -113,7 +113,6 @@ class EventActivityViewModel(application: Application) : AndroidViewModel(applic
     companion object {
         private const val PREF_ACCOUNT_NAME = "accountName"
         private val SCOPES = arrayOf(CalendarScopes.CALENDAR_READONLY)
-        private lateinit var settings: SharedPreferences
     }
 
 

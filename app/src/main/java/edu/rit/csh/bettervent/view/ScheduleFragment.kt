@@ -17,7 +17,6 @@ import com.alamkanak.weekview.WeekViewEvent
 import edu.rit.csh.bettervent.R
 import edu.rit.csh.bettervent.viewmodel.EventActivityViewModel
 
-import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Calendar
@@ -49,6 +48,9 @@ class ScheduleFragment : Fragment(){
         weekView.columnGap = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics).toInt()
         weekView.setTimeColumnTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10f, resources.displayMetrics).toInt())
         weekView.eventTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10f, resources.displayMetrics).toInt()
+
+        setupDateTimeInterpreter()
+
         return view
     }
 
@@ -67,13 +69,31 @@ class ScheduleFragment : Fragment(){
                 if (weekView.numberOfVisibleDays == 7) {
                     weekday = weekday[0].toString()
                 }
-                return weekday.toUpperCase() + format.format(date.time)
+                return weekday.toUpperCase(Locale.getDefault()) + format.format(date.time)
             }
 
             override fun interpretTime(hour: Int): String {
                 return if (hour > 11) (hour - 12).toString() + " PM" else if (hour == 0) "12 AM" else "$hour AM"
             }
         }
+    }
+
+    private fun getEvents(cal: Calendar): ArrayList<Event>{
+        val month = cal.get(Calendar.MONTH)
+        val year = cal.get(Calendar.YEAR)
+        val events = arrayListOf<Event>()
+
+        for (event in viewModel.events){
+            val eventCal = Calendar.getInstance()
+            eventCal.timeInMillis = event.start.time
+            val eventMonth = eventCal.get(Calendar.MONTH)
+            val eventYear = eventCal.get(Calendar.YEAR)
+
+            if (month == eventMonth && year == eventYear){
+                events.add(event)
+            }
+        }
+        return events
     }
 
     protected fun getEventTitle(time: Calendar): String {
@@ -85,7 +105,7 @@ class ScheduleFragment : Fragment(){
     }
 
     private fun infoPrint(info: String) {
-        println("SCHE_: $info")
+        Log.i("ScheduleFragment", info)
     }
 
     inner class MonthChangeListener: MonthLoader.MonthChangeListener<Event>{
@@ -96,9 +116,13 @@ class ScheduleFragment : Fragment(){
 
             val color1 = resources.getColor(R.color.colorPrimaryDark)
             infoPrint("event size : " + viewModel.events.size)
-            for (i in viewModel.events.indices) {
+
+            val events = getEvents(startDate)
+            for (i in events.indices) {
                 val event = viewModel.events[i]
                 val wve = WeekViewEvent<Event>()
+
+                infoPrint(event.toString())
 
                 // Set ID (not the Google Calendar ID).
                 wve.id = i.toLong()

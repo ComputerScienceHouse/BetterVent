@@ -1,7 +1,5 @@
 package edu.rit.csh.bettervent.view
 
-import android.content.Context
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,22 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProviders
-import com.google.api.client.extensions.android.http.AndroidHttp
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.json.JsonFactory
-import com.google.api.client.json.gson.GsonFactory
-import com.google.api.client.util.DateTime
-import com.google.api.client.util.ExponentialBackOff
-import com.google.api.services.calendar.Calendar
-import com.google.api.services.calendar.CalendarScopes
-import com.google.api.services.calendar.model.Events
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import edu.rit.csh.bettervent.R
 import edu.rit.csh.bettervent.viewmodel.EventActivityViewModel
 import kotlinx.android.synthetic.main.activity_event.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import java.util.*
-import kotlin.collections.ArrayList
 
 class EventActivity : AppCompatActivity(), OpenSettingsListener {
     private lateinit var statusFragment: StatusFragment
@@ -34,6 +22,24 @@ class EventActivity : AppCompatActivity(), OpenSettingsListener {
     private lateinit var fragments: List<Fragment>
     private lateinit var viewModel: EventActivityViewModel
 
+
+    private val onNavigationListener = BottomNavigationView.OnNavigationItemSelectedListener {item ->
+        when (item.itemId){
+            R.id.navigation_status -> {
+                pager.currentItem = fragments.indexOf(statusFragment)
+                true
+            }
+            R.id.navigation_schedule -> {
+                pager.currentItem = fragments.indexOf(scheduleFragment)
+                true
+            }
+            R.id.navigation_quick_mode -> {
+                pager.currentItem = fragments.indexOf(quickModeFragment)
+                true
+            }
+            else -> false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +50,14 @@ class EventActivity : AppCompatActivity(), OpenSettingsListener {
         Log.i("EventActivity", "Started activity")
 
         refresh_button.setOnClickListener {
-            viewModel.refresh()
+            viewModel.refresh { statusFragment.updateCurrentAndNextEventsInUI() }
         }
 
-        viewModel.refresh()
+        viewModel.refresh {
+            statusFragment.updateCurrentAndNextEventsInUI()
+            scheduleFragment.weekView.monthChangeListener?.onMonthChange(Calendar.getInstance(), Calendar.getInstance())
+            scheduleFragment.weekView.notifyDataSetChanged()
+        }
 
         statusFragment = StatusFragment()
         scheduleFragment = ScheduleFragment()
@@ -56,15 +66,32 @@ class EventActivity : AppCompatActivity(), OpenSettingsListener {
 
         pager.adapter = SlidingPagerAdapter(supportFragmentManager)
         centralClock = findViewById(R.id.central_clock)
+
+        bottom_navigation.setOnNavigationItemSelectedListener(onNavigationListener)
+        pager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+            override fun onPageSelected(position: Int) {
+                val id = getIdFromIndex(position)
+                bottom_navigation.menu.findItem(id).isChecked = true
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+        })
+    }
+
+    private fun getIdFromIndex(index: Int): Int{
+        return when (index){
+            0 -> R.id.navigation_status
+            1 -> R.id.navigation_schedule
+            2 -> R.id.navigation_quick_mode
+            else -> R.id.navigation_status
+        }
     }
 
     private inner class SlidingPagerAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm){
         override fun getCount(): Int = fragments.size
-        override fun getItem(p0: Int): Fragment {
-            Log.i("MainActivity", "Swipe index: $p0")
-            bottom_navigation.selectedItemId = p0
-            return fragments[p0]
-        }
+        override fun getItem(p0: Int) = fragments[p0]
     }
 
     override fun openSettings() {

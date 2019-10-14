@@ -3,6 +3,7 @@ package edu.rit.csh.bettervent.view
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -86,7 +87,9 @@ class StatusFragment : Fragment(){
      * nextEventTime.
      */
 
-    private fun updateCurrentAndNextEventsInUI() {
+    fun updateCurrentAndNextEventsInUI() {
+
+        infoPrint("Updating UI")
 
         viewModel.events.also {
             when {
@@ -143,14 +146,14 @@ class StatusFragment : Fragment(){
      */
     private fun formatDate(inputDate: Date): String {
         val simpleTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
         val time = simpleTimeFormat.format(inputDate)
         val date = simpleDateFormat.format(inputDate)
         return "$time on $date"
     }
 
     private fun infoPrint(info: String) {
-        println("STAT_: $info")
+        Log.i("StatusFragment",  info)
     }
 }
 
