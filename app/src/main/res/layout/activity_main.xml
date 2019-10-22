@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:id="@+id/main_root"
+    android:visibility="invisible">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calendar ID:"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Google Calendar ID"
+        android:id="@+id/id_et" />
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        android:text="Companion Mode"
+        android:id="@+id/companion_btn"/>
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        android:text="Kiosk Mode"
+        android:id="@+id/kiosk_btn"/>
+
+</LinearLayout>

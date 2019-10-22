@@ -3,7 +3,6 @@ package edu.rit.csh.bettervent.viewmodel
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -21,11 +20,12 @@ import org.jetbrains.anko.uiThread
 import java.util.*
 import kotlin.collections.ArrayList
 
-class EventActivityViewModel(application: Application) : AndroidViewModel(application) {
-    val events: ArrayList<Event> = arrayListOf()
+class CompanionActivityViewModel(application: Application) : AndroidViewModel(application) {
+    private val usedLocations = mutableListOf("Lounge", "User Center")
+    val eventsByLocation = mutableMapOf<String, Event?>()
 
     private val settings: SharedPreferences =
-        application.applicationContext.getSharedPreferences(application.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+            application.applicationContext.getSharedPreferences(application.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
     private val mService = getCalendarService()
 
@@ -34,7 +34,6 @@ class EventActivityViewModel(application: Application) : AndroidViewModel(applic
     }
 
     private fun getCalendarService(): Calendar {
-        Log.i("EventActivityViewModel", settings.getString("test", "test")!!)
         val transport = AndroidHttp.newCompatibleTransport()
         val jsonFactory: JsonFactory = GsonFactory.getDefaultInstance()
 
@@ -62,12 +61,9 @@ class EventActivityViewModel(application: Application) : AndroidViewModel(applic
     private fun getEventsFromServer(): Events {
         val calendarId = settings.getString("edu.rit.csh.bettervent.calendarid", "rti648k5hv7j3ae3a3rum8potk@group.calendar.google.com")
 
-        val maxResultsStr = settings.getString("edu.rit.csh.bettervent.maxresults", "100")
-        val maxResults = maxResultsStr?.let { Integer.parseInt(it) }
-
         val now = DateTime(System.currentTimeMillis())
         return mService.events().list(calendarId)
-                .setMaxResults(maxResults)
+                .setMaxResults(25)
                 .setTimeMin(now)
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
@@ -79,7 +75,6 @@ class EventActivityViewModel(application: Application) : AndroidViewModel(applic
         for (calendarEvent in calendarEvents.items){
             val event = calendarEvent.parseToEvent()
             event?.also{
-                Log.i("EventActivity", "Event added: $event")
                 events.add(it)
             }
         }
@@ -87,34 +82,19 @@ class EventActivityViewModel(application: Application) : AndroidViewModel(applic
     }
 
     private fun handleEvents(inEvents: ArrayList<Event>){
-        events.removeAll(events)
-
-        if (inEvents.isNotEmpty()){
-            val eventKeyword = settings.getString("edu.rit.csh.bettervent.filterkeywords", "")!!
-            events.removeAll(events)
-            for (event in inEvents) {
-                val eventFieldToCheck = if (settings.getBoolean("edu.rit.csh.bettervent.filterbytitle", false)) {
-                    event.summary
-                } else {
-                    event.location
-                }
-                if (eventKeyword.isNotEmpty()) {
-                    if (eventFieldToCheck.toLowerCase(Locale.getDefault()).contains(eventKeyword.toLowerCase(Locale.getDefault()))) {
-                        events.add(event)
-                    }
-                } else {
-                    events.add(event)
-                }
+        eventsByLocation.clear()
+        eventsByLocation.putAll(usedLocations.map { location ->
+            location to inEvents.firstOrNull { event ->
+                event.location.trim().toLowerCase(Locale.getDefault()) ==
+                        location.trim().toLowerCase(Locale.getDefault())
             }
-        }
+        })
     }
 
     companion object {
         private const val PREF_ACCOUNT_NAME = "accountName"
         private val SCOPES = arrayOf(CalendarScopes.CALENDAR_READONLY)
     }
-
-
 
     private fun com.google.api.services.calendar.model.Event.parseToEvent(): Event?{
         location?.also{

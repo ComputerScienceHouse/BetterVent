@@ -1,4 +1,4 @@
-package edu.rit.csh.bettervent.view
+package edu.rit.csh.bettervent.view.kiosk
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import edu.rit.csh.bettervent.R
+import edu.rit.csh.bettervent.view.Event
 import edu.rit.csh.bettervent.viewmodel.EventActivityViewModel
 
 import kotlinx.android.synthetic.main.fragment_status.*
@@ -20,7 +21,6 @@ import org.jetbrains.anko.yesButton
 
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.system.exitProcess
 
 class StatusFragment : Fragment(){
@@ -45,8 +45,6 @@ class StatusFragment : Fragment(){
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
         viewModel = ViewModelProviders.of(requireActivity()).get(EventActivityViewModel::class.java)
-
-        EventActivity.centralClock.setTextColor(-0x1)
 
         fun showAlertWithFunction(onSuccess: () -> Unit) {
             context?.alert("Enter Password:") {

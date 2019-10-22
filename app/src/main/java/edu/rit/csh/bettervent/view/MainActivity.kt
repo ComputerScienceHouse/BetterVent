@@ -14,8 +14,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import android.opengl.Visibility
 import android.os.Parcelable
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 
 import com.google.android.gms.common.ConnectionResult
@@ -23,7 +25,10 @@ import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.api.services.calendar.CalendarScopes
 import edu.rit.csh.bettervent.AdminReceiver
 import edu.rit.csh.bettervent.R
+import edu.rit.csh.bettervent.view.companion.CompanionActivity
+import edu.rit.csh.bettervent.view.kiosk.EventActivity
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 class MainActivity : AppCompatActivity(){
@@ -78,7 +83,7 @@ class MainActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_loading)
+        setContentView(R.layout.activity_main)
 
 
         // Load up app settings to fetch passwords and background colors.
@@ -86,9 +91,9 @@ class MainActivity : AppCompatActivity(){
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE)!!
 
         // Must restart for these preferences to take hold.
-        //TODO: Prompt for calendarid if not found
-        calendarID = mAppSettings.getString("edu.rit.csh.bettervent.calendarid", "rti648k5hv7j3ae3a3rum8potk@group.calendar.google.com")
-        val maxResultsStr = mAppSettings!!.getString("edu.rit.csh.bettervent.maxresults", "")
+        calendarID = mAppSettings.getString("edu.rit.csh.bettervent.calendarid", "")
+        id_et.setText(calendarID)
+        val maxResultsStr = mAppSettings.getString("edu.rit.csh.bettervent.maxresults", "")
         maxResults = if (maxResultsStr !== "" && maxResultsStr != null)
             Integer.parseInt(maxResultsStr)
         else {
@@ -113,9 +118,28 @@ class MainActivity : AppCompatActivity(){
             Toast.makeText(applicationContext, "Not owner", Toast.LENGTH_LONG).show()
         }
 
+        companion_btn.setOnClickListener { startCompanionActivity() }
+        kiosk_btn.setOnClickListener { startEventActivity() }
 //        startLockTask()
-        Log.i("MainActivity", "End onCreate")
         checkForAccount()
+    }
+
+    private fun startCompanionActivity() {
+        mAppSettings.edit()
+                .putString("edu.rit.csh.bettervent.calendarid", id_et.text.toString())
+                .apply()
+
+        val intent = Intent(this, CompanionActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun startEventActivity() {
+        mAppSettings.edit()
+                .putString("edu.rit.csh.bettervent.calendarid", id_et.text.toString())
+                .apply()
+
+        val intent = Intent(this, EventActivity::class.java)
+        startActivity(intent)
     }
 
     /**
@@ -215,9 +239,7 @@ class MainActivity : AppCompatActivity(){
             chooseAccount()
             Log.i("MainActivity", "Begin chooseAccount")
         } else {
-            Log.i("MainActivity", "Start EventActivity")
-            val intent = Intent(this, EventActivity::class.java)
-            startActivity(intent)
+            enableUI()
         }
     }
 
@@ -229,6 +251,14 @@ class MainActivity : AppCompatActivity(){
         val credential = GoogleAccountCredential.usingOAuth2(applicationContext, SCOPES)
         startActivityForResult(
                 credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER)
+    }
+
+    /**
+     * Enables the UI to allow the user to choose which version they want to use,
+     * Kiosk or Companion
+     */
+    private fun enableUI() {
+        main_root.visibility = View.VISIBLE
     }
 
     /**

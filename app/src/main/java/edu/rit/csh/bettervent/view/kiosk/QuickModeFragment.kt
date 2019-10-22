@@ -1,4 +1,4 @@
-package edu.rit.csh.bettervent.view
+package edu.rit.csh.bettervent.view.kiosk
 
 import android.app.AlertDialog
 import android.graphics.Typeface
@@ -43,9 +43,6 @@ class QuickModeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        EventActivity.centralClock.setTextColor(-0x1000000)
-
         quickModeLayout = view.findViewById(R.id.quick_mode_view)
 
 
@@ -80,7 +77,6 @@ class QuickModeFragment : Fragment() {
                 view.event_name.setTextColor(resources.getColor(R.color.white))
                 participantsLabel!!.setTextColor(resources.getColor(R.color.white))
                 nameSetLabel!!.visibility = View.VISIBLE
-                EventActivity.centralClock.setTextColor(-0x1)
                 view.event_name.setTypeface(null, Typeface.BOLD)
             }
             builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }

@@ -1,4 +1,4 @@
-package edu.rit.csh.bettervent.view
+package edu.rit.csh.bettervent.view.kiosk
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -21,6 +21,7 @@ class EventActivity : AppCompatActivity(), OpenSettingsListener {
     private lateinit var quickModeFragment: QuickModeFragment
     private lateinit var fragments: List<Fragment>
     private lateinit var viewModel: EventActivityViewModel
+    private lateinit var centralClock: TextClock
 
 
     private val onNavigationListener = BottomNavigationView.OnNavigationItemSelectedListener {item ->
@@ -55,7 +56,8 @@ class EventActivity : AppCompatActivity(), OpenSettingsListener {
 
         viewModel.refresh {
             statusFragment.updateCurrentAndNextEventsInUI()
-            scheduleFragment.weekView.monthChangeListener?.onMonthChange(Calendar.getInstance(), Calendar.getInstance())
+            scheduleFragment.weekView.monthChangeListener
+                    ?.onMonthChange(Calendar.getInstance(), Calendar.getInstance())
             scheduleFragment.weekView.notifyDataSetChanged()
         }
 
@@ -71,6 +73,7 @@ class EventActivity : AppCompatActivity(), OpenSettingsListener {
         pager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
             override fun onPageSelected(position: Int) {
                 val id = getIdFromIndex(position)
+                val color = getColorFromIndex(position)
                 bottom_navigation.menu.findItem(id).isChecked = true
             }
 
@@ -89,6 +92,15 @@ class EventActivity : AppCompatActivity(), OpenSettingsListener {
         }
     }
 
+    private fun getColorFromIndex(index: Int): Int{
+        return when (index){
+            0 -> -0x1
+            1 -> -0x1000000
+            2 -> -0x1000000
+            else -> -0x1000000
+        }
+    }
+
     private inner class SlidingPagerAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm){
         override fun getCount(): Int = fragments.size
         override fun getItem(p0: Int) = fragments[p0]
@@ -96,9 +108,5 @@ class EventActivity : AppCompatActivity(), OpenSettingsListener {
 
     override fun openSettings() {
         Log.i("EventActivity", "Open settings")
-    }
-
-    companion object {
-        lateinit var centralClock: TextClock
     }
 }

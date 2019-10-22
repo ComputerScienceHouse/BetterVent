@@ -1,4 +1,4 @@
-package edu.rit.csh.bettervent.view
+package edu.rit.csh.bettervent.view.kiosk
 
 import android.app.AlertDialog
 import android.content.Context

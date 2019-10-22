@@ -21,11 +21,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light.NoActionBar">
-        <activity android:name=".view.EventActivity"
-            android:screenOrientation="landscape"
-            android:configChanges="orientation">
-
-        </activity>
+        <activity android:name=".view.companion.CompanionActivity"></activity>
+        <activity
+            android:name=".view.kiosk.EventActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="landscape"></activity>
 
         <receiver
             android:name=".AdminReceiver"

@@ -1,4 +1,4 @@
-package edu.rit.csh.bettervent.view
+package edu.rit.csh.bettervent.view.kiosk
 
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +15,7 @@ import com.alamkanak.weekview.WeekView
 import com.alamkanak.weekview.WeekViewDisplayable
 import com.alamkanak.weekview.WeekViewEvent
 import edu.rit.csh.bettervent.R
+import edu.rit.csh.bettervent.view.Event
 import edu.rit.csh.bettervent.viewmodel.EventActivityViewModel
 
 import java.text.SimpleDateFormat
@@ -37,8 +38,6 @@ class ScheduleFragment : Fragment(){
         infoPrint("Loaded Schedule Fragment.")
         val view = inflater.inflate(R.layout.fragment_schedule, container, false)
 
-
-        EventActivity.centralClock.setTextColor(-0x1000000)
 
         weekView = view.findViewById(R.id.week_view)
         weekView.setMonthChangeListener(MonthChangeListener() as MonthLoader.MonthChangeListener<Any>)

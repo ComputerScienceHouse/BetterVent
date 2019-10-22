@@ -28,6 +28,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="room_open">Room Open!</string>
     <!--<string name="admin_receiver_status">Device Administrator Status: %s</string>-->
     <!--<string name="admin_receiver_status_enabled">Enabled</string>-->
     <!--<string name="admin_receiver_status_disable_warning">The application will no longer be protected</string>-->

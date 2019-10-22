@@ -1,4 +1,4 @@
-package edu.rit.csh.bettervent.view
+package edu.rit.csh.bettervent.view.kiosk
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -41,8 +41,6 @@ class SettingsFragment : Fragment() {
                 "ColorReserved: " + appSettings.getString(reservedColorString, "") + "\n" +
                 "Password: [REDACTED]"
         )
-
-        EventActivity.centralClock.setTextColor(-0x1000000)
 
         view.calendar_id_prompt.setText(appSettings.getString(calendarIDString, ""))
         view.max_results_prompt.setText(appSettings.getString(maxResultsString, ""))
