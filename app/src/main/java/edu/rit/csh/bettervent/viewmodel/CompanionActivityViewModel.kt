@@ -3,6 +3,7 @@ package edu.rit.csh.bettervent.viewmodel
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -21,16 +22,33 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class CompanionActivityViewModel(application: Application) : AndroidViewModel(application) {
-    private val usedLocations = mutableListOf("Lounge", "User Center")
-    val eventsByLocation = mutableMapOf<String, Event?>()
-
     private val settings: SharedPreferences =
             application.applicationContext.getSharedPreferences(application.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
-    private val mService = getCalendarService()
+    private val mService: Calendar by lazy { getCalendarService() }
+
+    private val locationsString = settings.getString("locations", "")!!
+
+    val usedLocations = locationsString.split("|").filterNot{ it.isBlank() }.toMutableSet()
+    val allLocations= mutableSetOf<String>()
+    val eventsByLocation = mutableMapOf<String, Event?>()
 
     fun refresh(onComplete: () -> Unit) {
         updateEvents(onComplete)
+    }
+
+    fun addUsedLocation(location: String){
+        var locationsString = settings.getString("locations", "")!!
+        locationsString = "$locationsString|$location"
+        settings.edit().putString("locations", locationsString).apply()
+        usedLocations.add(location)
+    }
+
+    fun removeUsedLocation(location: String){
+        var locationsString = settings.getString("locations", "")!!
+        locationsString = locationsString.replace(location, "").replace("||", "")
+        settings.edit().putString("locations", locationsString).apply()
+        usedLocations.remove(location)
     }
 
     private fun getCalendarService(): Calendar {
@@ -50,7 +68,7 @@ class CompanionActivityViewModel(application: Application) : AndroidViewModel(ap
 
     private fun updateEvents(f: () -> Unit){
         doAsync{
-            val events = getEventsFromServer()
+            val events = getEventsFromServer(MAX_EVENTS)
             uiThread {
                 handleEvents(parseEvents(events))
                 f.invoke()
@@ -58,30 +76,31 @@ class CompanionActivityViewModel(application: Application) : AndroidViewModel(ap
         }
     }
 
-    private fun getEventsFromServer(): Events {
+    private fun getEventsFromServer(maxEvents: Int): Events {
         val calendarId = settings.getString("edu.rit.csh.bettervent.calendarid", "rti648k5hv7j3ae3a3rum8potk@group.calendar.google.com")
 
         val now = DateTime(System.currentTimeMillis())
         return mService.events().list(calendarId)
-                .setMaxResults(25)
+                .setMaxResults(maxEvents)
                 .setTimeMin(now)
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
                 .execute()
     }
 
-    private fun parseEvents(calendarEvents: Events): ArrayList<Event>{
-        val events = ArrayList<Event>()
-        for (calendarEvent in calendarEvents.items){
-            val event = calendarEvent.parseToEvent()
-            event?.also{
-                events.add(it)
-            }
-        }
+    private fun parseEvents(calendarEvents: Events): MutableList<Event>{
+        val events = mutableListOf<Event>()
+
+        events.addAll(calendarEvents.items.mapNotNull { calendarEvent ->
+            calendarEvent.location?.let { allLocations.add(it) }
+            calendarEvent.parseToEvent()
+        })
+        Log.i("CompanionActivityViewModel", allLocations.toString())
+
         return events
     }
 
-    private fun handleEvents(inEvents: ArrayList<Event>){
+    private fun handleEvents(inEvents: Collection<Event>){
         eventsByLocation.clear()
         eventsByLocation.putAll(usedLocations.map { location ->
             location to inEvents.firstOrNull { event ->
@@ -93,6 +112,7 @@ class CompanionActivityViewModel(application: Application) : AndroidViewModel(ap
 
     companion object {
         private const val PREF_ACCOUNT_NAME = "accountName"
+        private const val MAX_EVENTS = 50
         private val SCOPES = arrayOf(CalendarScopes.CALENDAR_READONLY)
     }
 

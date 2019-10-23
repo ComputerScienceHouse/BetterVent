@@ -29,6 +29,9 @@ import edu.rit.csh.bettervent.view.companion.CompanionActivity
 import edu.rit.csh.bettervent.view.kiosk.EventActivity
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.okButton
+import org.jetbrains.anko.yesButton
 import java.util.*
 
 class MainActivity : AppCompatActivity(){
@@ -85,7 +88,6 @@ class MainActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         // Load up app settings to fetch passwords and background colors.
         mAppSettings = applicationContext.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE)!!
@@ -93,6 +95,7 @@ class MainActivity : AppCompatActivity(){
         // Must restart for these preferences to take hold.
         calendarID = mAppSettings.getString("edu.rit.csh.bettervent.calendarid", "")
         id_et.setText(calendarID)
+
         val maxResultsStr = mAppSettings.getString("edu.rit.csh.bettervent.maxresults", "")
         maxResults = if (maxResultsStr !== "" && maxResultsStr != null)
             Integer.parseInt(maxResultsStr)
@@ -100,8 +103,6 @@ class MainActivity : AppCompatActivity(){
             infoPrint("Max Results not set. Defaulting to 100.")
             100
         }
-
-
 
         //Following code allow the app packages to lock task in true kiosk mode
         // get policy manager
@@ -125,6 +126,14 @@ class MainActivity : AppCompatActivity(){
     }
 
     private fun startCompanionActivity() {
+        if (id_et.text.toString().isBlank()) {
+            alert{
+                title = "You must input a valid calendar ID"
+                okButton {  }
+            }.show()
+            return
+        }
+
         mAppSettings.edit()
                 .putString("edu.rit.csh.bettervent.calendarid", id_et.text.toString())
                 .apply()
@@ -249,8 +258,7 @@ class MainActivity : AppCompatActivity(){
      */
     private fun chooseAccount() {
         val credential = GoogleAccountCredential.usingOAuth2(applicationContext, SCOPES)
-        startActivityForResult(
-                credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER)
+        startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER)
     }
 
     /**
@@ -291,20 +299,21 @@ class MainActivity : AppCompatActivity(){
     }
 }
 
-@Parcelize
 data class Event(val summary: String, val start: Date,
-                 val end: Date, val location: String): Parcelable{
-    fun isHappeningNow(): Boolean{
-        return hasStarted() and !isOver()
-    }
+                 val end: Date, val location: String)
+{
+    val isHappeningNow = hasStarted and !isOver
 
-    fun isOver(): Boolean{
-        val now = Date()
-        return now.after(end)
-    }
+    private val isOver: Boolean
+        get() {
+            val now = Date()
+            return now.after(end)
+        }
 
-    fun hasStarted(): Boolean{
-        val now = Date()
-        return start.before(now)
-    }
+
+    private val hasStarted: Boolean
+        get(){
+            val now = Date()
+            return start.before(now)
+        }
 }

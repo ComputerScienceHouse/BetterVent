@@ -94,9 +94,9 @@ class StatusFragment : Fragment(){
                 it.isEmpty() -> {
                     setRoomAsEmpty(); setNoNextEvent()
                 }
-                it.size == 1 ->  if (it[0].isHappeningNow()) setCurrentEvent(it[0]) else setNextEvent(it[0])
+                it.size == 1 ->  if (it[0].isHappeningNow) setCurrentEvent(it[0]) else setNextEvent(it[0])
                 else -> {
-                    if (it[0].isHappeningNow()){
+                    if (it[0].isHappeningNow){
                         setCurrentEvent(it[0])
                         setNextEvent(it[1])
                     } else {

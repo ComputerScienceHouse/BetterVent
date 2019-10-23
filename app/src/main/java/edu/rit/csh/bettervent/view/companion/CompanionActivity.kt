@@ -1,19 +1,25 @@
 package edu.rit.csh.bettervent.view.companion
 
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.os.Parcelable
+import android.view.View
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import edu.rit.csh.bettervent.R
 import edu.rit.csh.bettervent.view.Event
 import edu.rit.csh.bettervent.viewmodel.CompanionActivityViewModel
-import edu.rit.csh.bettervent.viewmodel.EventActivityViewModel
+import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.activity_companion.*
+import kotlinx.android.synthetic.main.add_location_alert.view.*
+import kotlinx.android.synthetic.main.location_view.view.*
+import kotlinx.android.synthetic.main.fragment_status.view.event_time
+import org.jetbrains.anko.alert
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CompanionActivity : AppCompatActivity() {
+class CompanionActivity : AppCompatActivity(){
 
     lateinit var viewModel: CompanionActivityViewModel
 
@@ -25,36 +31,89 @@ class CompanionActivity : AppCompatActivity() {
 
         viewModel = ViewModelProviders.of(this).get(CompanionActivityViewModel::class.java)
 
+        refreshViewModel()
+
+        srl.setOnRefreshListener { refreshViewModel() }
+
+        add_fab.setOnClickListener { promptAddLocation() }
+    }
+
+    private fun refreshViewModel() {
+        srl.isRefreshing = true
         viewModel.refresh {
-            locations_rv.adapter = LocationAdapter(this, getRoomStatusesFromMap(viewModel.eventsByLocation))
+            locations_rv.adapter = LocationCardAdapter(this, getRoomStatusesFromMap(viewModel.eventsByLocation)) {openLocationFragment(it)}
+            if (viewModel.usedLocations.isEmpty()){
+                tooltip.visibility = View.VISIBLE
+                vertical_glue.visibility = View.VISIBLE
+            } else {
+                tooltip.visibility = View.GONE
+                vertical_glue.visibility = View.GONE
+            }
+            srl.isRefreshing = false
         }
     }
 
     private fun getRoomStatusesFromMap(map: Map<String, Event?>): List<RoomStatus> {
         return map.entries.map { entry ->
             entry.value?.let { findRoomStatus(it) } ?:
-                RoomStatus(entry.key, false, "", "")
+                RoomStatus(entry.key, false, "No upcoming events", "")
         }
     }
 
     private fun findRoomStatus(event: Event): RoomStatus{
-        val start = formatDate(event.start)
-        val end = formatDate(event.end)
+        val start = event.start.format()
+        val end = event.end.format()
 
-        return if (event.isHappeningNow()) {
-            RoomStatus(event.location, true, event.summary, "$start - $end")
+        return if (event.isHappeningNow) {
+            RoomStatus(event.location, true, "Happening now: ${event.summary}", "$start - $end")
         } else {
-            RoomStatus(event.location, false, event.summary, "$start - $end")
+            RoomStatus(event.location, false, "Upcoming: ${event.summary}", "$start - $end")
         }
     }
 
-    private fun formatDate(inputDate: Date): String {
-        val simpleTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
-        val time = simpleTimeFormat.format(inputDate)
-        val date = simpleDateFormat.format(inputDate)
-        return "$time on $date"
+    private fun promptAddLocation(){
+        lateinit var dialog: DialogInterface
+        dialog = alert {
+            val v = layoutInflater.inflate(R.layout.add_location_alert, null)
+            v.add_location_rv.adapter =
+                    LocationTextAdapter(applicationContext,
+                            viewModel.allLocations.minus(viewModel.usedLocations).toList()) { location ->
+                        dialog.dismiss()
+                        viewModel.addUsedLocation(location)
+                        refreshViewModel()
+                    }
+            v.add_location_rv.layoutManager = LinearLayoutManager(applicationContext)
+            customView = v
+        }.show()
+    }
+
+    private fun openLocationFragment(roomStatus: RoomStatus){
+        lateinit var dialog: DialogInterface
+        dialog = alert {
+            val v = layoutInflater.inflate(R.layout.location_view, null)
+            v.location_name.text = roomStatus.location
+            v.event_name.text = roomStatus.title
+            v.event_time.text = roomStatus.timeString
+            v.rootView.setBackgroundColor(resources.getColor(R.color.CSHGreen))
+            v.remove_fab.setOnClickListener {
+                dialog.dismiss()
+                viewModel.removeUsedLocation(roomStatus.location)
+                refreshViewModel()
+            }
+            customView = v
+        }.show()
     }
 }
 
-data class RoomStatus(val location: String, val isBusy: Boolean, val title: String, val timeString: String)
+fun Date.format(): String {
+    val simpleTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+    val time = simpleTimeFormat.format(this)
+    return simpleTimeFormat.format(this)
+}
+
+@Parcelize
+data class RoomStatus(val location: String,
+                      val isBusy: Boolean,
+                      val title: String,
+                      val timeString: String): Parcelable

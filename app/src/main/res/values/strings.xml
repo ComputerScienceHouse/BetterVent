@@ -29,6 +29,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="room_open">Room Open!</string>
+    <string name="add_a_location">Add a Location:</string>
+    <string name="tooltip_add_location">Press the plus button to add a location!</string>
+    <string name="locations">Locations</string>
     <!--<string name="admin_receiver_status">Device Administrator Status: %s</string>-->
     <!--<string name="admin_receiver_status_enabled">Enabled</string>-->
     <!--<string name="admin_receiver_status_disable_warning">The application will no longer be protected</string>-->
