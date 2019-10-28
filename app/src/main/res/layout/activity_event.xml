@@ -3,55 +3,73 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.MainActivity"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:visibility="visible"
-    tools:context=".view.MainActivity"
     android:keepScreenOn="true">
 
-    <androidx.viewpager.widget.ViewPager
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/pager" />
+        android:layout_width="match_parent">
 
-    <TextClock
-        android:id="@+id/central_clock"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/settings_frame"
+            android:visibility="gone" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/pager" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/windowBackground"
+            app:itemIconTint="@color/bottom_nav"
+            app:itemTextColor="@color/bottom_nav"
+            app:menu="@menu/navigation" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:layout_above="@id/bottom_navigation"
-        android:format12Hour="hh:mm a"
-        android:textColor="#ffffff"
-        android:textSize="45dp"
-        android:textStyle="bold"
-        android:layout_alignParentEnd="true"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/refresh_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="140dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="visible"
-        app:backgroundTint="@color/colorPrimary"
+        android:orientation="vertical"
+        android:gravity="end"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        app:srcCompat="@drawable/ic_add" />
+        android:layout_marginBottom="56dp">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
-        android:layout_alignParentBottom="true"
-        app:menu="@menu/navigation">
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/refresh_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="visible"
+            android:layout_marginEnd="16dp"
+            app:backgroundTint="@color/colorPrimary"
+            app:srcCompat="@drawable/ic_refresh_24px" />
 
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
+        <TextClock
+            android:id="@+id/central_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:format12Hour="hh:mm a"
+            android:textColor="#ffffff"
+            android:textSize="44sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

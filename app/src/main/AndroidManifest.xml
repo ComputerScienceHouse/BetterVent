@@ -23,7 +23,7 @@
         android:theme="@style/Theme.Design.Light.NoActionBar">
         <activity android:name=".view.companion.CompanionActivity"></activity>
         <activity
-            android:name=".view.kiosk.EventActivity"
+            android:name=".view.kiosk.MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="landscape"></activity>
 

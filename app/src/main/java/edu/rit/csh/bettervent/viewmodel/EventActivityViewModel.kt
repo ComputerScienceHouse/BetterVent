@@ -79,7 +79,7 @@ class EventActivityViewModel(application: Application) : AndroidViewModel(applic
         for (calendarEvent in calendarEvents.items){
             val event = calendarEvent.parseToEvent()
             event?.also{
-                Log.i("EventActivity", "Event added: $event")
+                Log.i("MainActivity", "Event added: $event")
                 events.add(it)
             }
         }

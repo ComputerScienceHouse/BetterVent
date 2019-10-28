@@ -14,8 +14,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
-import android.opengl.Visibility
-import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -26,12 +24,10 @@ import com.google.api.services.calendar.CalendarScopes
 import edu.rit.csh.bettervent.AdminReceiver
 import edu.rit.csh.bettervent.R
 import edu.rit.csh.bettervent.view.companion.CompanionActivity
-import edu.rit.csh.bettervent.view.kiosk.EventActivity
-import kotlinx.android.parcel.Parcelize
+import edu.rit.csh.bettervent.view.kiosk.MainActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.okButton
-import org.jetbrains.anko.yesButton
 import java.util.*
 
 class MainActivity : AppCompatActivity(){
@@ -143,11 +139,19 @@ class MainActivity : AppCompatActivity(){
     }
 
     private fun startEventActivity() {
+        if (id_et.text.toString().isBlank()) {
+            alert{
+                title = "You must input a valid calendar ID"
+                okButton {  }
+            }.show()
+            return
+        }
+        
         mAppSettings.edit()
                 .putString("edu.rit.csh.bettervent.calendarid", id_et.text.toString())
                 .apply()
 
-        val intent = Intent(this, EventActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }
 
@@ -237,7 +241,7 @@ class MainActivity : AppCompatActivity(){
     }
 
     /**
-     * Checks for a signed in account in the app; if one exists, it starts the EventActivity.
+     * Checks for a signed in account in the app; if one exists, it starts the MainActivity.
      * Otherwise, it allows the user to choose an account
     */
 
