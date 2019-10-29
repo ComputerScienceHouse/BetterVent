@@ -43,4 +43,9 @@
         <item name="android:textSize">64sp</item>
     </style>
 
+    <style name="SubHeaderStyle">
+        <item name="android:textSize">40sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
 </resources>

@@ -23,6 +23,27 @@
         android:hint="Google Calendar ID"
         android:id="@+id/id_et" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewStyle"
+        android:textSize="48sp"
+        android:text="Selected Account:"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/SubHeaderStyle"
+        android:id="@+id/account_name_tv"
+        android:text="Account name"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="Choose"
+        android:id="@+id/choose_account_btn" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"

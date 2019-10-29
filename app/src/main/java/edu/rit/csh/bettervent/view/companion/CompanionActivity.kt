@@ -1,12 +1,14 @@
 package edu.rit.csh.bettervent.view.companion
 
 import android.content.DialogInterface
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import edu.rit.csh.bettervent.R
 import edu.rit.csh.bettervent.view.Event
 import edu.rit.csh.bettervent.viewmodel.CompanionActivityViewModel
@@ -19,7 +21,7 @@ import org.jetbrains.anko.alert
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CompanionActivity : AppCompatActivity(){
+class CompanionActivity : AppCompatActivity() {
 
     lateinit var viewModel: CompanionActivityViewModel
 
@@ -41,8 +43,8 @@ class CompanionActivity : AppCompatActivity(){
     private fun refreshViewModel() {
         srl.isRefreshing = true
         viewModel.refresh {
-            locations_rv.adapter = LocationCardAdapter(this, getRoomStatusesFromMap(viewModel.eventsByLocation)) {openLocationFragment(it)}
-            if (viewModel.usedLocations.isEmpty()){
+            locations_rv.adapter = LocationCardAdapter(this, getRoomStatusesFromMap(viewModel.eventsByLocation)) { openLocationFragment(it) }
+            if (viewModel.usedLocations.isEmpty()) {
                 tooltip.visibility = View.VISIBLE
                 vertical_glue.visibility = View.VISIBLE
             } else {
@@ -55,23 +57,23 @@ class CompanionActivity : AppCompatActivity(){
 
     private fun getRoomStatusesFromMap(map: Map<String, Event?>): List<RoomStatus> {
         return map.entries.map { entry ->
-            entry.value?.let { findRoomStatus(it) } ?:
-                RoomStatus(entry.key, false, "No upcoming events", "")
+            entry.value?.let { findRoomStatus(it) }
+                    ?: RoomStatus(entry.key, false, "No upcoming events", "", getColor(R.color.CSHGreen))
         }
     }
 
-    private fun findRoomStatus(event: Event): RoomStatus{
+    private fun findRoomStatus(event: Event): RoomStatus {
         val start = event.start.format()
         val end = event.end.format()
 
         return if (event.isHappeningNow) {
-            RoomStatus(event.location, true, "Happening now: ${event.summary}", "$start - $end")
+            RoomStatus(event.location, true, "Happening now: ${event.summary}", "$start - $end", getColor(R.color.CSHRed))
         } else {
-            RoomStatus(event.location, false, "Upcoming: ${event.summary}", "$start - $end")
+            RoomStatus(event.location, false, "Upcoming: ${event.summary}", "$start - $end", getColor(R.color.CSHGreen))
         }
     }
 
-    private fun promptAddLocation(){
+    private fun promptAddLocation() {
         lateinit var dialog: DialogInterface
         dialog = alert {
             val v = layoutInflater.inflate(R.layout.add_location_alert, null)
@@ -87,14 +89,14 @@ class CompanionActivity : AppCompatActivity(){
         }.show()
     }
 
-    private fun openLocationFragment(roomStatus: RoomStatus){
+    private fun openLocationFragment(roomStatus: RoomStatus) {
         lateinit var dialog: DialogInterface
         dialog = alert {
             val v = layoutInflater.inflate(R.layout.location_view, null)
             v.location_name.text = roomStatus.location
             v.event_name.text = roomStatus.title
             v.event_time.text = roomStatus.timeString
-            v.rootView.setBackgroundColor(resources.getColor(R.color.CSHGreen))
+            v.rootView.setBackgroundColor(roomStatus.color)
             v.remove_fab.setOnClickListener {
                 dialog.dismiss()
                 viewModel.removeUsedLocation(roomStatus.location)
@@ -116,4 +118,5 @@ fun Date.format(): String {
 data class RoomStatus(val location: String,
                       val isBusy: Boolean,
                       val title: String,
-                      val timeString: String): Parcelable
+                      val timeString: String,
+                      val color: Int): Parcelable

@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.DateTime
@@ -22,6 +23,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class CompanionActivityViewModel(application: Application) : AndroidViewModel(application) {
+
     private val settings: SharedPreferences =
             application.applicationContext.getSharedPreferences(application.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
@@ -29,22 +31,22 @@ class CompanionActivityViewModel(application: Application) : AndroidViewModel(ap
 
     private val locationsString = settings.getString("locations", "")!!
 
-    val usedLocations = locationsString.split("|").filterNot{ it.isBlank() }.toMutableSet()
-    val allLocations= mutableSetOf<String>()
+    val usedLocations = locationsString.split("|").filterNot { it.isBlank() }.toMutableSet()
+    val allLocations = mutableSetOf<String>()
     val eventsByLocation = mutableMapOf<String, Event?>()
 
     fun refresh(onComplete: () -> Unit) {
         updateEvents(onComplete)
     }
 
-    fun addUsedLocation(location: String){
+    fun addUsedLocation(location: String) {
         var locationsString = settings.getString("locations", "")!!
         locationsString = "$locationsString|$location"
         settings.edit().putString("locations", locationsString).apply()
         usedLocations.add(location)
     }
 
-    fun removeUsedLocation(location: String){
+    fun removeUsedLocation(location: String) {
         var locationsString = settings.getString("locations", "")!!
         locationsString = locationsString.replace(location, "").replace("||", "")
         settings.edit().putString("locations", locationsString).apply()
@@ -66,8 +68,8 @@ class CompanionActivityViewModel(application: Application) : AndroidViewModel(ap
                 .build()
     }
 
-    private fun updateEvents(f: () -> Unit){
-        doAsync{
+    private fun updateEvents(f: () -> Unit) {
+        doAsync {
             val events = getEventsFromServer(MAX_EVENTS)
             uiThread {
                 handleEvents(parseEvents(events))
@@ -80,15 +82,16 @@ class CompanionActivityViewModel(application: Application) : AndroidViewModel(ap
         val calendarId = settings.getString("edu.rit.csh.bettervent.calendarid", "rti648k5hv7j3ae3a3rum8potk@group.calendar.google.com")
 
         val now = DateTime(System.currentTimeMillis())
+
         return mService.events().list(calendarId)
-                .setMaxResults(maxEvents)
-                .setTimeMin(now)
-                .setOrderBy("startTime")
-                .setSingleEvents(true)
-                .execute()
+                    .setMaxResults(maxEvents)
+                    .setTimeMin(now)
+                    .setOrderBy("startTime")
+                    .setSingleEvents(true)
+                    .execute()
     }
 
-    private fun parseEvents(calendarEvents: Events): MutableList<Event>{
+    private fun parseEvents(calendarEvents: Events): MutableList<Event> {
         val events = mutableListOf<Event>()
 
         events.addAll(calendarEvents.items.mapNotNull { calendarEvent ->
@@ -100,7 +103,7 @@ class CompanionActivityViewModel(application: Application) : AndroidViewModel(ap
         return events
     }
 
-    private fun handleEvents(inEvents: Collection<Event>){
+    private fun handleEvents(inEvents: Collection<Event>) {
         eventsByLocation.clear()
         eventsByLocation.putAll(usedLocations.map { location ->
             location to inEvents.firstOrNull { event ->
@@ -116,8 +119,8 @@ class CompanionActivityViewModel(application: Application) : AndroidViewModel(ap
         private val SCOPES = arrayOf(CalendarScopes.CALENDAR_READONLY)
     }
 
-    private fun com.google.api.services.calendar.model.Event.parseToEvent(): Event?{
-        location?.also{
+    private fun com.google.api.services.calendar.model.Event.parseToEvent(): Event? {
+        location?.also {
             return Event(summary,
                     Date(start.dateTime.value),
                     Date(end.dateTime.value),

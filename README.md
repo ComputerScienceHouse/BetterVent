@@ -28,6 +28,23 @@ View when the room is reserved:
 
 <img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/Screenshot_20190302-045456_BetterVent.jpg" width="50%" height="50%">
 
+# Companion Mode
+-BetterVent now supports a Companion Mode; rather than just viewing the app as a kiosk, users can download the application and configure it to show locations throughout their calendar.
+
+<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/companion_1.png" width="50%" height="50%">
+
+-Choose from automatically discovered locations which ones to track
+
+<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/companion_2.png" width="50%" height="50%">
+
+<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/companion_3.png" width="50%" height="50%">
+
+-Get detailed information on a room's status with a simple click
+
+<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/companion_4.png" width="50%" height="50%">
+
+<img src="https://raw.githubusercontent.com/WillNilges/BetterVent/master/BetterVent_Screenshots/companion_5.png" width="50%" height="50%">
+
 # How do I get it?
 Currently, BetterVent is not on the Play Store, but you can download the .apk file in the releases tab.
 (I'll try to keep it up to date)
@@ -43,7 +60,7 @@ Currently, BetterVent is not on the Play Store, but you can download the .apk fi
     - Better parsing of event keywords
     - Set keywords that usually pertain to a location
   - Colors
-  
+
 ## Device Admin
 To set the app as device admin (You need to do this before kiosk features work (Thanks, Google)) Connect to a computer and in the terminal (after installing adb) do this *BEFORE SETTING UP A GOOGLE ACCOUNT*:
 

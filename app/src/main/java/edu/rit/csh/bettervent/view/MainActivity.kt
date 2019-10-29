@@ -17,9 +17,21 @@ import android.net.ConnectivityManager
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.google.android.gms.auth.GoogleAuthUtil
+import com.google.android.gms.auth.UserRecoverableAuthException
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GooglePlayServicesUtil
+import com.google.android.gms.common.Scopes
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.Scope
+import com.google.android.gms.tasks.Task
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest
+import com.google.api.client.util.ExponentialBackOff
 import com.google.api.services.calendar.CalendarScopes
 import edu.rit.csh.bettervent.AdminReceiver
 import edu.rit.csh.bettervent.R
@@ -28,29 +40,18 @@ import edu.rit.csh.bettervent.view.kiosk.MainActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.okButton
+import org.jetbrains.anko.startActivityForResult
 import java.util.*
 
 class MainActivity : AppCompatActivity(){
     // This MainActivity gets the data from the API, and holds it
     // as a list. The Fragments then update themselves using that.
     var calendarID: String? = null
-    var maxResults: Int = 0
 
     private lateinit var mAppSettings: SharedPreferences
     private lateinit var apiStatusMessage: String
+    lateinit var signInClient: GoogleSignInClient
 
-
-
-    /**
-     * Checks whether the device currently has a network connection.
-     * @return true if the device has a network connection, false otherwise.
-     */
-    private val isDeviceOnline: Boolean
-        get() {
-            val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val networkInfo = connMgr.activeNetworkInfo
-            return networkInfo != null && networkInfo.isConnected
-        }
 
     /**
      * Check that Google Play services APK is installed and up to date. Will
@@ -92,13 +93,6 @@ class MainActivity : AppCompatActivity(){
         calendarID = mAppSettings.getString("edu.rit.csh.bettervent.calendarid", "")
         id_et.setText(calendarID)
 
-        val maxResultsStr = mAppSettings.getString("edu.rit.csh.bettervent.maxresults", "")
-        maxResults = if (maxResultsStr !== "" && maxResultsStr != null)
-            Integer.parseInt(maxResultsStr)
-        else {
-            infoPrint("Max Results not set. Defaulting to 100.")
-            100
-        }
 
         //Following code allow the app packages to lock task in true kiosk mode
         // get policy manager
@@ -115,10 +109,19 @@ class MainActivity : AppCompatActivity(){
             Toast.makeText(applicationContext, "Not owner", Toast.LENGTH_LONG).show()
         }
 
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestScopes(Scope("https://www.googleapis.com/auth/calendar.readonly"))
+                .requestEmail()
+                .build()
+
+        signInClient = GoogleSignIn.getClient(this, gso)
+
         companion_btn.setOnClickListener { startCompanionActivity() }
         kiosk_btn.setOnClickListener { startEventActivity() }
 //        startLockTask()
         checkForAccount()
+
+        choose_account_btn.setOnClickListener { signOutThenIn() }
     }
 
     private fun startCompanionActivity() {
@@ -156,17 +159,6 @@ class MainActivity : AppCompatActivity(){
     }
 
     /**
-     * Called whenever this activity is pushed to the foreground, such as after
-     * a call to onCreate().
-     */
-    override fun onResume() {
-        super.onResume()
-        if (!isGooglePlayServicesAvailable) {
-            apiStatusMessage = "Google Play Services required: " + "after installing, close and relaunch this app."
-        }
-    }
-
-    /**
      * Called when an activity launched here (specifically, AccountPicker
      * and authorization) exits, giving you the requestCode you started it with,
      * the resultCode it returned, and any additional data from it.
@@ -183,61 +175,36 @@ class MainActivity : AppCompatActivity(){
             REQUEST_GOOGLE_PLAY_SERVICES -> if (resultCode != Activity.RESULT_OK) {
                 isGooglePlayServicesAvailable
             }
-            REQUEST_ACCOUNT_PICKER -> {
-                infoPrint("Pick your account.")
-                if (resultCode == Activity.RESULT_OK && data != null &&
-                        data.extras != null) {
-                    infoPrint("Result = $resultCode")
-                    val accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
-                    infoPrint("Account name = " + accountName!!)
-                    //                        credential.setSelectedAccountName(accountName);
-                    val selectedAccount = Account(accountName, "edu.rit.csh.bettervent")
-                    infoPrint("Account name set. Account name = $accountName")
-                    infoPrint(selectedAccount.name)
-                    val editor = mAppSettings.edit()
-                    editor.putString(PREF_ACCOUNT_NAME, accountName)
-                    editor.apply()
-                    checkForAccount()
-                } else if (resultCode == Activity.RESULT_CANCELED) {
-                    infoPrint("Account Unspecified")
-                    apiStatusMessage = "Account unspecified."
-                }
-            }
-            REQUEST_AUTHORIZATION -> if (resultCode == Activity.RESULT_OK) {
-                chooseAccount()
+            RC_SIGN_IN -> {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                handleSignInResult(task)
             }
         }
 
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-
-    /**
-     * Clear any existing Google Calendar API data from the TextView and update
-     * the header message; called from background threads and async tasks
-     * that need to update the UI (in the UI thread).
-     */
-    fun clearResultsText() {
-        runOnUiThread {
-            apiStatusMessage = "Retrieving data…"
-            apiStatusMessage = ""
+    private fun handleSignInResult(task: Task<GoogleSignInAccount>){
+        try {
+            val account = task.getResult(ApiException::class.java)
+            mAppSettings.edit().putString(PREF_ACCOUNT_NAME, account?.email).apply()
+            checkForAccount()
+        } catch(e: ApiException){
+            Log.w("MainActivity", "signInResult failed; code=${e.statusCode}")
         }
     }
 
-    /**
-     * Fill the data TextView with the given List of Strings; called from
-     * background threads and async tasks that need to update the UI (in the
-     * UI thread).
-     * @param dataEvents a List of Strings to populate the main TextView with.
-     */
+    private fun signIn(){
+        startActivityForResult(signInClient.signInIntent, RC_SIGN_IN)
+    }
 
     /**
-     * Show a status message in the list header TextView; called from background
-     * threads and async tasks that need to update the UI (in the UI thread).
-     * @param message a String to display in the UI header TextView.
+     * Allow the user to change accounts
      */
-    fun updateStatus(message: String) {
-        runOnUiThread { apiStatusMessage = message }
+
+    private fun signOutThenIn(){
+        signInClient.signOut()
+                .addOnCompleteListener { signIn() }
     }
 
     /**
@@ -247,22 +214,14 @@ class MainActivity : AppCompatActivity(){
 
     private fun checkForAccount(){
         val accountName = mAppSettings.getString(PREF_ACCOUNT_NAME, "")!!
-        Log.i("MainActivity", "Account Name: $accountName")
+        account_name_tv.text = accountName
+
         if (accountName.isEmpty()){
-            chooseAccount()
+            signIn()
             Log.i("MainActivity", "Begin chooseAccount")
         } else {
             enableUI()
         }
-    }
-
-    /**
-     * Starts an activity in Google Play Services so the user can pick an
-     * account.
-     */
-    private fun chooseAccount() {
-        val credential = GoogleAccountCredential.usingOAuth2(applicationContext, SCOPES)
-        startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER)
     }
 
     /**
@@ -296,10 +255,10 @@ class MainActivity : AppCompatActivity(){
 
     companion object {
         internal const val REQUEST_ACCOUNT_PICKER = 1000
-        internal const val REQUEST_AUTHORIZATION = 1001
+        internal const val RC_SIGN_IN = 1001
         internal const val REQUEST_GOOGLE_PLAY_SERVICES = 1002
         private const val PREF_ACCOUNT_NAME = "accountName"
-        val SCOPES = arrayListOf(CalendarScopes.CALENDAR_READONLY)
+        val SCOPES = arrayOf(CalendarScopes.CALENDAR_READONLY)
     }
 }
 
