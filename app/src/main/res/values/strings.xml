@@ -32,6 +32,10 @@
     <string name="add_a_location">Add a Location:</string>
     <string name="tooltip_add_location">Press the plus button to add a location!</string>
     <string name="locations">Locations</string>
+
+    <string name="channel_id">notification</string>
+    <string name="notification_title">BetterVent</string>
+    <string name="remove">Remove location</string>
     <!--<string name="admin_receiver_status">Device Administrator Status: %s</string>-->
     <!--<string name="admin_receiver_status_enabled">Enabled</string>-->
     <!--<string name="admin_receiver_status_disable_warning">The application will no longer be protected</string>-->

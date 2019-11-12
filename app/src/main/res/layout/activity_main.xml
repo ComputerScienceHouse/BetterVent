@@ -15,19 +15,6 @@
         android:layout_height="wrap_content"
         style="@style/TextViewStyle"
         android:textSize="48sp"
-        android:text="Calendar ID:"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Google Calendar ID"
-        android:id="@+id/id_et" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/TextViewStyle"
-        android:textSize="48sp"
         android:text="Selected Account:"/>
 
     <TextView
@@ -43,6 +30,27 @@
         android:padding="8dp"
         android:text="Choose"
         android:id="@+id/choose_account_btn" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewStyle"
+        android:textSize="48sp"
+        android:text="Calendar:"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/SubHeaderStyle"
+        android:id="@+id/calendar_name_tv"
+        android:text="Calendar name"/>
+
+    <Button
+        android:id="@+id/choose_calendar_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="Choose" />
 
     <View
         android:layout_width="match_parent"

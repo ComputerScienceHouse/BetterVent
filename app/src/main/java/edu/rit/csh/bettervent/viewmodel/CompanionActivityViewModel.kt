@@ -14,8 +14,10 @@ import com.google.api.client.util.DateTime
 import com.google.api.client.util.ExponentialBackOff
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
+import com.google.api.services.calendar.model.CalendarList
 import com.google.api.services.calendar.model.Events
 import edu.rit.csh.bettervent.R
+import edu.rit.csh.bettervent.view.CalendarInfo
 import edu.rit.csh.bettervent.view.Event
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -27,13 +29,18 @@ class CompanionActivityViewModel(application: Application) : AndroidViewModel(ap
     private val settings: SharedPreferences =
             application.applicationContext.getSharedPreferences(application.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
-    private val mService: Calendar by lazy { getCalendarService() }
+    private var mService: Calendar = getCalendarService()
 
     private val locationsString = settings.getString("locations", "")!!
 
+    lateinit var calendarItems: List<CalendarInfo>
     val usedLocations = locationsString.split("|").filterNot { it.isBlank() }.toMutableSet()
     val allLocations = mutableSetOf<String>()
     val eventsByLocation = mutableMapOf<String, Event?>()
+
+    init {
+        refreshCalendarOptions()
+    }
 
     fun refresh(onComplete: () -> Unit) {
         updateEvents(onComplete)
@@ -66,6 +73,16 @@ class CompanionActivityViewModel(application: Application) : AndroidViewModel(ap
                 transport, jsonFactory, credential)
                 .setApplicationName("Google Calendar API Android Quickstart")
                 .build()
+    }
+
+    fun refreshCalendarOptions(){
+        mService = getCalendarService()
+        doAsync {
+            val inItems = mService.calendarList().list().execute()
+            uiThread {
+                calendarItems = inItems.items.map { it.toCalendarInfo() }
+            }
+        }
     }
 
     private fun updateEvents(f: () -> Unit) {
@@ -127,5 +144,9 @@ class CompanionActivityViewModel(application: Application) : AndroidViewModel(ap
                     location)
         }
         return null
+    }
+
+    private fun com.google.api.services.calendar.model.CalendarListEntry.toCalendarInfo(): CalendarInfo {
+        return CalendarInfo(summary, id)
     }
 }

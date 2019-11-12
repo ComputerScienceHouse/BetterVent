@@ -5,7 +5,11 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.ContextMenu
+import android.view.MenuItem
 import android.view.View
+import android.widget.AdapterView
+import android.widget.PopupMenu
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
@@ -52,6 +56,8 @@ class CompanionActivity : AppCompatActivity() {
                 vertical_glue.visibility = View.GONE
             }
             srl.isRefreshing = false
+
+            registerForContextMenu(locations_rv)
         }
     }
 
@@ -63,13 +69,12 @@ class CompanionActivity : AppCompatActivity() {
     }
 
     private fun findRoomStatus(event: Event): RoomStatus {
-        val start = event.start.format()
-        val end = event.end.format()
+        val timeString = formatDates(event.start, event.end)
 
         return if (event.isHappeningNow) {
-            RoomStatus(event.location, true, "Happening now: ${event.summary}", "$start - $end", getColor(R.color.CSHRed))
+            RoomStatus(event.location, true, "Happening now: ${event.summary}", timeString, getColor(R.color.CSHRed))
         } else {
-            RoomStatus(event.location, false, "Upcoming: ${event.summary}", "$start - $end", getColor(R.color.CSHGreen))
+            RoomStatus(event.location, false, "Upcoming: ${event.summary}", timeString, getColor(R.color.CSHGreen))
         }
     }
 
@@ -97,21 +102,61 @@ class CompanionActivity : AppCompatActivity() {
             v.event_name.text = roomStatus.title
             v.event_time.text = roomStatus.timeString
             v.rootView.setBackgroundColor(roomStatus.color)
-            v.remove_fab.setOnClickListener {
-                dialog.dismiss()
-                viewModel.removeUsedLocation(roomStatus.location)
-                refreshViewModel()
+            v.menu_ib.setOnClickListener {
+                PopupMenu(this@CompanionActivity, v.menu_ib).apply{
+                    setOnMenuItemClickListener { item ->
+                        when(item.itemId) {
+                            R.id.delete_location -> {
+                                viewModel.removeUsedLocation(roomStatus.location)
+                                refreshViewModel()
+                                dialog.dismiss()
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                    inflate(R.menu.location_menu)
+                    show()
+                }
             }
+
             customView = v
         }.show()
     }
 }
 
-fun Date.format(): String {
+fun formatDates(d1: Date, d2: Date): String {
+    return when {
+        d2.isToday() -> "${d1.formatJustTime()} - ${d2.formatJustTime()}"
+        d1.isToday() -> "${d1.formatJustTime()} - ${d2.formatWithDay()}"
+        isSameDay(d1, d2) -> "${d1.formatWithDay()} - ${d2.formatJustTime()}"
+        else -> "${d1.formatWithDay()} - ${d2.formatWithDay()}"
+    }
+}
+
+fun isSameDay(d1: Date, d2: Date): Boolean {
+
+    val cal1 = Calendar.getInstance()
+    val cal2 = Calendar.getInstance()
+    cal1.time = d1
+    cal2.time = d2
+    return cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+            cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+}
+
+fun Date.isToday(): Boolean {
+    return isSameDay(this, Date())
+}
+
+fun Date.formatJustTime(): String {
+    val simpleTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    return simpleTimeFormat.format(this)
+}
+
+fun Date.formatWithDay(): String {
     val simpleTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
-    val time = simpleTimeFormat.format(this)
-    return simpleTimeFormat.format(this)
+    return "${simpleDateFormat.format(this)} ${simpleTimeFormat.format(this)}"
 }
 
 @Parcelize
