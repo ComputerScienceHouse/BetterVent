@@ -101,7 +101,7 @@ class CompanionActivity : AppCompatActivity() {
             v.location_name.text = roomStatus.location
             v.event_name.text = roomStatus.title
             v.event_time.text = roomStatus.timeString
-            v.rootView.setBackgroundColor(roomStatus.color)
+            v.indicator.setBackgroundColor(roomStatus.color)
             v.menu_ib.setOnClickListener {
                 PopupMenu(this@CompanionActivity, v.menu_ib).apply{
                     setOnMenuItemClickListener { item ->
@@ -155,9 +155,12 @@ fun Date.formatJustTime(): String {
 
 fun Date.formatWithDay(): String {
     val simpleTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-    val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+    val simpleDateFormat = SimpleDateFormat("MM/dd", Locale.getDefault())
     return "${simpleDateFormat.format(this)} ${simpleTimeFormat.format(this)}"
 }
+
+data class Location(var display: String,
+                    val keys: Set<String>)
 
 @Parcelize
 data class RoomStatus(val location: String,

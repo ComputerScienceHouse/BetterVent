@@ -7,6 +7,7 @@
     <color name="CSHRed"> #E11C52</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="CSHComplement">#6a57c7</color>
 
 
     <color name="event_color_01">#296ba0</color>
