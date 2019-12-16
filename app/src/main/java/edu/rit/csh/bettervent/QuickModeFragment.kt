@@ -17,6 +17,9 @@ import android.widget.EditText
 import android.widget.TextView
 
 import java.util.ArrayList
+import android.text.InputFilter
+
+
 
 class QuickModeFragment : Fragment() {
 
@@ -60,6 +63,10 @@ class QuickModeFragment : Fragment() {
 
             // Set up the input
             val input = EditText(context)
+            val maxLength = 100
+            val fArray = arrayOfNulls<InputFilter>(1)
+            fArray[0] = InputFilter.LengthFilter(maxLength)
+            input.setFilters(fArray)
             input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_NORMAL
             builder.setView(input)
 
@@ -90,6 +97,10 @@ class QuickModeFragment : Fragment() {
 
             // Set up the input
             val input = EditText(context)
+            val maxLength = 30
+            val fArray = arrayOfNulls<InputFilter>(1)
+            fArray[0] = InputFilter.LengthFilter(maxLength)
+            input.setFilters(fArray)
             input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_NORMAL
             builder.setView(input)
 
