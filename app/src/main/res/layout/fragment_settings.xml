@@ -25,7 +25,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="60px">
 
             <TextView
                 android:id="@+id/calendar_id_label"
@@ -35,7 +36,7 @@
                 android:layout_marginTop="16dp"
                 android:text="Calendar ID"
                 android:textColor="@color/black"
-                android:textSize="40sp"/>
+                android:textSize="40sp" />
 
             <TextView
                 android:id="@+id/calendar_id_desc"
@@ -44,7 +45,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Enter the ID of the calendar to display events from"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/calendar_id_prompt"
@@ -54,7 +55,7 @@
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="Enter a complete Calendar ID URL"
-                android:inputType="textPersonName"/>
+                android:inputType="textPersonName" />
 
             <TextView
                 android:id="@+id/max_results_desc"
@@ -73,7 +74,7 @@
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="Fetch a quantity of events"
-                android:inputType="number"/>
+                android:inputType="number" />
 
             <TextView
                 android:id="@+id/filter_label"
@@ -83,7 +84,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/event_filtering_keywords"
                 android:textColor="@color/black"
-                android:textSize="40sp"/>
+                android:textSize="40sp" />
 
             <TextView
                 android:id="@+id/filter_desc"
@@ -102,7 +103,7 @@
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="@string/separate_keywords_with_commas"
-                android:inputType="textPersonName"/>
+                android:inputType="textPersonName" />
 
             <TextView
                 android:id="@+id/filter_desc3"
@@ -111,7 +112,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Filter events based on..."
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
 
             <RadioGroup
                 android:id="@+id/filter_options_group"
@@ -144,7 +145,7 @@
                 android:layout_marginTop="32dp"
                 android:text="@string/colors"
                 android:textColor="@color/black"
-                android:textSize="40sp"/>
+                android:textSize="40sp" />
 
             <TextView
                 android:id="@+id/status_page_colors"
@@ -154,7 +155,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/status_page_colors"
                 android:textColor="@color/black"
-                android:textSize="25sp"/>
+                android:textSize="25sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -169,7 +170,7 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/free"
                     android:textColor="@color/black"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/free_color"
@@ -179,7 +180,7 @@
                     android:layout_marginTop="12dp"
                     android:ems="10"
                     android:hint="@string/hex_prompt"
-                    android:inputType="textPersonName"/>
+                    android:inputType="textPersonName" />
             </LinearLayout>
 
             <LinearLayout
@@ -196,7 +197,7 @@
                     android:layout_marginEnd="8dp"
                     android:text="@string/reserved"
                     android:textColor="@color/black"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/reserved_color"
@@ -205,8 +206,9 @@
                     android:layout_marginTop="8dp"
                     android:ems="10"
                     android:hint="@string/hex_prompt"
-                    android:inputType="textPersonName"/>
+                    android:inputType="textPersonName" />
             </LinearLayout>
+
             <TextView
                 android:id="@+id/password_label"
                 android:layout_width="wrap_content"
@@ -215,7 +217,7 @@
                 android:layout_marginTop="32dp"
                 android:text="Password"
                 android:textColor="@color/black"
-                android:textSize="40sp"/>
+                android:textSize="40sp" />
 
             <TextView
                 android:id="@+id/escape_square_password_desc"
@@ -224,7 +226,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Set a password to open the settings menu and leave the app via the escape squares"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/password_prompt"
@@ -234,7 +236,7 @@
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="Enter a password"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
