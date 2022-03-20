@@ -6,7 +6,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.InputType
 import android.view.LayoutInflater
@@ -46,7 +46,7 @@ class QuickModeFragment : Fragment() {
         recyclerView = view.findViewById(R.id.participants_list)
 
         // use a linear layout manager
-        layoutManager = LinearLayoutManager(this.context)
+        layoutManager = GridLayoutManager(this.context, 4)
         recyclerView!!.layoutManager = layoutManager
 
         // specify an adapter

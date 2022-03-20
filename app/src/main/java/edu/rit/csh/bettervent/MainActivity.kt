@@ -156,7 +156,6 @@ class MainActivity : AppCompatActivity() {
             maxResults = 100
         }
 
-
         //Following code allow the app packages to lock task in true kiosk mode
         // get policy manager
         val myDevicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
@@ -173,7 +172,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         startLockTask()
-
 
         bottomNav = findViewById(R.id.bottom_navigation)
         bottomNav.setOnNavigationItemSelectedListener(navListener)
