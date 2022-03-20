@@ -15,9 +15,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/logo"
+        android:icon="@mipmap/bettervent"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/bettervent_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light.NoActionBar">
         <receiver android:name="edu.rit.csh.bettervent.AdminReceiver"
